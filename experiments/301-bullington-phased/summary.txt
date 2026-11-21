@@ -1,0 +1,18 @@
+experiment 301-bullington-phased   (matlab_itm 9bd6a4e, 21-Nov-2026 17:29:29)
+composite  15.9 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   17.7   (baseline 18.3)
+  long-term level RMS             24.9   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  13.4 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 13.4  mean +2.5   (baseline 13.3)
+  site R2 RMS 26.5  mean +8.9   (baseline 28.6)
+  site R3 RMS 8.9  mean +0.2   (baseline 9.0)
+  site VA RMS 15.0  mean -7.4   (baseline 15.4)
+  worst cell 39.1   censored violations 29.4% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 36.7 dB; runtime 6 s
+
+paired bootstrap: 301-bullington-phased vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +0.13 dB  (SD 0.20; 95% interval -0.17 to +0.55)  not distinguishable from zero
+  screened gain    -0.02 dB  (SD 0.19; 95% interval -0.28 to +0.43)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

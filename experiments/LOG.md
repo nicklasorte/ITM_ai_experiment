@@ -73,6 +73,15 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### B03 summary
+- Date: 2026-11-21. Kept: none. Best stays `000-baseline`.
+- After B01–B03 (eight structural runs): every change that lowers ITM's
+  diffraction loss enough to fix the R2 bias (mean +10.6 dB) also predicts
+  less loss than the measured bound on more no-signal results, mostly at
+  Virginia and R2. The one setting that passes every physics check (phased
+  Bullington) gains 0.13 dB. Diffraction edge choice alone doesn't clear
+  the gates.
+
 ### B03 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B03.md`.
 - New: `cfg.diffraction_region = "transhorizon_phased"`, linear phase-in
@@ -87,7 +96,11 @@ bottom.
 - Change: `cfg.diffraction = "bullington";` and `cfg.diffraction_region = "transhorizon_phased";`
 - Rationale: 104's single equivalent edge, made continuous at ITM's line-of-sight boundary, with less change on paths just beyond it.
 - Predicted (from B03.md, before the run): composite 15.75–16.0; screened 13.3–13.5; R2 RMS 26.5–28 (mean +9 to +10); R1, R3, VA within 0.5 dB of stock; censored 28.3–29.2 %; physics pass. Likely rejected on the 0.3 dB threshold or the paired check.
-- Result: pending
+- Result: composite 15.90 dB (stock 16.02; R02 15.93; 104 15.72); screened 13.42; Phase 2 cell 17.69; long-term level 24.86; shape 5.16. Site RMS R1 13.4 (mean +2.5), R2 26.5 (mean +8.9), R3 8.9 (mean +0.2), VA 15.0 (mean -7.4). Censored 29.4 %. Paired gain over stock +0.13 dB (95 % -0.17 to +0.55), screened -0.02 (-0.28 to +0.43).
+- Physics battery: PASS.
+- Decision: reject (gain under 0.3 dB and not distinguishable from zero; censored 29.4 % > 29.0 %). Not archived: 104 dominates it in the same cell.
+- Predictions: composite, screened, R2 RMS, other sites, and physics held; censored 29.4 % was just above the predicted 28.3–29.2 %. Rejection predicted.
+- Planner analysis: phasing removed the line-of-sight-boundary jump without changing the censored rate (29.4 %, the same as 104), so the extra violations come from paths well beyond d_3, not from paths near the boundary. Phasing also gave up most of 104's gain (long-term level 24.9 against 24.4).
 
 ### 201-ep-isolated-blocked
 - Date: 2026-11-21. Batch B02. Parent: 000-baseline (best). Tier 2.
