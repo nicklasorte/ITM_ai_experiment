@@ -27,6 +27,14 @@ cfg.version = 1;
 % profile-based loss at the path's own distance, on transhorizon paths
 % (multi_edge_diffraction_rev1; experiments/batches/B01.md).
 cfg.diffraction = "itm";
+%   "ep_isolated"       Epstein-Peterson; horizon obstacles merged unless
+%                       isolated (ITU-R P.526-16 section 2.5)
+%   "p526_double_edge"  ITU-R P.526-16 section 4.3 (with Lc where valid)
+% Where the profile-based loss applies (only when cfg.diffraction ~= "itm"):
+%   "transhorizon"   transhorizon paths only (batch B01)
+%   "blocked_paths"  also line-of-sight-region paths whose profile blocks
+%                    the direct ray; keeps the loss continuous at d_sML
+cfg.diffraction_region = "transhorizon";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights

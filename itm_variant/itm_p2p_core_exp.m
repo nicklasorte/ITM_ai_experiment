@@ -517,13 +517,19 @@ if isfield(cfg, 'ctx')
         % the effective heights say line of sight.
         los_region = false;
     end
-    if cfg.diffraction ~= "itm" && ~los_region
+    blocked_los = los_region && cfg.ctx.obstructed && isfield(cfg, 'diffraction_region') ...
+        && cfg.diffraction_region == "blocked_paths";
+    if cfg.diffraction ~= "itm" && (~los_region || blocked_los)
         % ITM: A_d = w A_se + (1 - w) A_k + A_fo, extrapolated along the line
         % through d_3 and d_4. Here the smooth-earth and clutter part keeps
         % that line, and the knife-edge part is replaced by the
         % profile-based loss at the path's own distance. The slope M_d is
         % kept, and the line is re-anchored to pass through the new value
         % at d, so the line-of-sight fit and the scatter crossover use it.
+        % With cfg.diffraction_region = "blocked_paths" the same is done for
+        % line-of-sight-region paths whose profile blocks the direct ray.
+        % ITM's line-of-sight fit passes through the diffraction line at
+        % d_sML, so the loss is continuous where such a path crosses d_sML.
         [~, B_3] = diffraction_loss(d_3, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg);
         [~, B_4] = diffraction_loss(d_4, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg);
         w_d = knife_weight(d_m, d_hzn_m, h_e_m, a_e, delta_h_m, h_m, theta_los, f_mhz, area, cfg);
@@ -657,6 +663,9 @@ function ctx = profile_context(pfl, h_m, a_e, f_mhz, cfg)
 %   A_knife_db   profile-based knife-edge loss at the path's own geometry
 %                (multi_edge_diffraction_rev1), or NaN when cfg.diffraction
 %                is "itm"
+if isfield(cfg, 'diffraction_region') && ~ismember(cfg.diffraction_region, ["transhorizon" "blocked_paths"])
+    error('itmexp:cfg', 'Unknown cfg.diffraction_region "%s".', cfg.diffraction_region);
+end
 if ~ismember(cfg.line_of_sight, ["itm" "profile_horizons"])
     error('itmexp:cfg', 'Unknown cfg.line_of_sight "%s".', cfg.line_of_sight);
 end

@@ -56,6 +56,36 @@ bottom.
 - Splits re-frozen with the full long-term set (hash `06d9f440607a`).
 - Decision: baseline
 
+### 201-ep-isolated-blocked
+- Date: 2026-11-21. Batch B02. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "ep_isolated";` and `cfg.diffraction_region = "blocked_paths";`
+- Rationale: 101's mechanism, with the sampling artifact removed and the loss continuous at ITM's line-of-sight boundary.
+- Predicted (from B02.md, before the run): the artifact removal adds loss back on ridge tops between samples, and the extension changes blocked line-of-sight-region paths (direction uncertain). Net: less gain than 101. Composite 15.4–15.9; R2 RMS 26–28 (mean +8 to +10); R1, R3, VA within 1.0 dB of stock; censored 28.5–31 %. Physics battery: pass. About even odds of clearing every gate; the censored gate and the 0.3 dB screened-gain threshold are the likely failures.
+- Result: pending
+
+### 202-p526-double-edge-blocked
+- Date: 2026-11-21. Batch B02. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "p526_double_edge";` and `cfg.diffraction_region = "blocked_paths";`
+- Rationale: the Recommendation's own two-edge method adds the separation correction Lc for strongly shadowed isolated edge pairs.
+- Predicted (from B02.md, before the run): same as 201 on most paths; slightly more loss on isolated pairs that both exceed 15 dB. Composite 0.0–0.3 dB above 201; censored 0–1 point below 201. Physics battery: pass.
+- Result: pending
+
+### B02 planned (planner note)
+- Date: 2026-11-21. Planner: Claude Opus 5.5.
+- Plan: `experiments/batches/B02.md`, experiments 201–202.
+- Diagnosis of 101: the continuity step sits at ITM's d_sML (mode 1 to 2);
+  37 of 42 new censored violations are at Virginia (median margin 1.3 dB);
+  Epstein-Peterson drops about 10 dB when a ridge top falls between two
+  samples, so part of 101's mountain gain may be a sampling artifact.
+- New code: `"ep_isolated"` (P.526-16 section 2.5 isolation criterion),
+  `"p526_double_edge"` (P.526-16 section 4.3), and
+  `cfg.diffraction_region = "blocked_paths"` (continuity at d_sML). Tests
+  12 of 12 pass; parity 6.8 × 10⁻¹³ dB; both scheduled settings pass the
+  physics battery (planner code check, no measurements read).
+- The first version of the new test expected Epstein-Peterson to add loss
+  on a split ridge top; it fails because the loss drops instead. Test and
+  documentation corrected before any run.
+
 ### B01 worker summary
 - Date: 2026-11-21. Worker run by Claude Opus 5.5 (the plan names Haiku;
   Nick had Opus selected). Experiments 101–105 run as planned; 106 not run.

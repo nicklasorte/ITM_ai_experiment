@@ -5,7 +5,8 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %   described by the profile, evaluated at the path's own geometry.
 %
 %   Inputs:
-%     method   "epstein_peterson" | "deygout" | "p526_cascaded" | "bullington"
+%     method   "epstein_peterson" | "ep_isolated" | "p526_double_edge" |
+%              "deygout" | "p526_cascaded" | "bullington"
 %     x_m      distance of each profile point from the transmitter (m),
 %              increasing, x_m(1) = 0, x_m(end) = path length
 %     z_m      height above sea level (m): z_m(1) and z_m(end) are the
@@ -32,6 +33,22 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %         two obstacles ITM's double knife edge represents. One shared
 %         horizon gives a single edge. With no obstruction the loss is J of
 %         the highest-nu point (sub-path clearance).
+%     "ep_isolated"  As "epstein_peterson", but the two horizon obstacles
+%         count as two edges only if they are isolated in the sense of
+%         ITU-R P.526-16 section 2.5: every profile point between them
+%         clears the line joining their tops by at least 0.6 of the first
+%         Fresnel zone radius (P.526-16 eq. (2), r1 = sqrt(lambda d1 d2 / d)).
+%         Otherwise they are one obstacle sampled twice (for example a
+%         ridge top that falls between two profile samples) and the loss is
+%         J of the highest-nu point over the whole path. Added in batch B02:
+%         on such a top, plain Epstein-Peterson sees two near-grazing edges
+%         and drops about 10 dB of the single steep edge's loss.
+%     "p526_double_edge"  ITU-R P.526-16 section 4.3, double isolated
+%         edges: L = L1 + L2 + Lc, eq. (40), with Lc =
+%         10 log10[(a + b)(b + c) / (b (a + b + c))], eq. (39), applied only
+%         where the Recommendation says it is valid (each of L1 and L2
+%         above about 15 dB); otherwise L1 + L2. Edges and the isolation
+%         test as in "ep_isolated".
 %     "deygout"  Principal edge over the whole path, plus one secondary edge
 %         on each side of it; losses summed. Deygout, IEEE Trans. Antennas
 %         Propag. 14(4), 1966; NTIA TR-26-580 section 3.3.3 (three major
@@ -86,6 +103,25 @@ switch method
             nu2 = nu_point(i2, i1, n, x_m, z_m, lambda, a_e_m);
             L_db = knife_J(nu1) + knife_J(nu2);
             D.edges = [i1 i2]; D.nu = [nu1 nu2];
+        end
+
+    case {"ep_isolated", "p526_double_edge"}
+        [i1, i2, blocked] = horizon_points(x_m, z_m, a_e_m);
+        two = blocked && i1 < i2 && isolated(i1, i2, x_m, z_m, lambda, a_e_m);
+        if ~two
+            [nu, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
+            L_db = knife_J(nu);
+            D.edges = p; D.nu = nu; D.isolated = false;
+        else
+            nu1 = nu_point(i1, 1, i2, x_m, z_m, lambda, a_e_m);
+            nu2 = nu_point(i2, i1, n, x_m, z_m, lambda, a_e_m);
+            L1 = knife_J(nu1); L2 = knife_J(nu2);
+            L_db = L1 + L2;
+            if method == "p526_double_edge" && L1 > 15 && L2 > 15
+                a = x_m(i1); b = x_m(i2) - x_m(i1); c = x_m(n) - x_m(i2);
+                L_db = L_db + 10 * log10((a + b) * (b + c) / (b * (a + b + c)));   % P.526-16 eq. (39), (40)
+            end
+            D.edges = [i1 i2]; D.nu = [nu1 nu2]; D.isolated = true;
         end
 
     case {"deygout", "p526_cascaded"}
@@ -197,4 +233,21 @@ if blocked && (i1 == n || i2 == 1)
     % Only one side found a horizon (numerical edge case): use that point for both
     if i1 == n, i1 = i2; else, i2 = i1; end
 end
+end
+
+function tf = isolated(i1, i2, x, z, lambda, a_e)
+% ITU-R P.526-16 section 2.5: path clearance between the obstacles of at
+% least 0.6 of the first Fresnel zone radius (eq. (2)) on the sub-path from
+% edge i1 to edge i2. Adjacent samples have nothing between them to show a
+% clearance, so they don't count as isolated.
+if i2 - i1 < 2
+    tf = false;
+    return
+end
+k = (i1 + 1:i2 - 1)';
+d_a = x(k) - x(i1); d_b = x(i2) - x(k); d_ab = x(i2) - x(i1);
+ray = (z(i1) * d_b + z(i2) * d_a) / d_ab;
+clearance = ray - (z(k) + d_a .* d_b / (2 * a_e));
+r1 = sqrt(lambda * d_a .* d_b / d_ab);
+tf = all(clearance >= 0.6 * r1);
 end

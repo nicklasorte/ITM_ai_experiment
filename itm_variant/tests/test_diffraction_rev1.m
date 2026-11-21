@@ -177,3 +177,48 @@ tc.verifyError(@() multi_edge_diffraction_rev1("nope", x, z, 1000, 8.5e6), 'itme
 z(5) = NaN;
 tc.verifyError(@() multi_edge_diffraction_rev1("deygout", x, z, 1000, 8.5e6), 'itmexp:multiedge');
 end
+
+function test_adjacent_tops_merge(tc)
+% A ridge top that falls between two samples: two equal adjacent points.
+% "epstein_peterson" treats them as two near-grazing edges (about 6 dB each)
+% and loses most of the single steep edge's loss; "ep_isolated" must count
+% one edge, close to the loss when the top is sampled once (B02 fix).
+d = 42000; h_ant = 10; f = tc.TestData.f; a = tc.TestData.flat;
+x = (0:30:d)'; z = zeros(size(x)); z(1) = h_ant; z(end) = h_ant;
+[~, i] = min(abs(x - 21000));
+one = z; one(i) = 150;
+two = z; two(i) = 150; two(i + 1) = 150;
+L_one = multi_edge_diffraction_rev1("ep_isolated", x, one, f, a);
+L_two = multi_edge_diffraction_rev1("ep_isolated", x, two, f, a);
+L_ep_two = multi_edge_diffraction_rev1("epstein_peterson", x, two, f, a);
+[~, D] = multi_edge_diffraction_rev1("ep_isolated", x, two, f, a);
+tc.verifyFalse(D.isolated);
+tc.verifyEqual(L_two, L_one, 'AbsTol', 0.1);
+tc.verifyGreaterThan(L_two - L_ep_two, 3);          % the loss Epstein-Peterson drops
+end
+
+function test_isolated_pair_matches_epstein_peterson(tc)
+% Two edges 15 km apart over flat ground: isolated, so "ep_isolated" equals
+% "epstein_peterson", and "p526_double_edge" adds Lc only if both > 15 dB
+d = 42000; h_ant = 5; f = tc.TestData.f; a = tc.TestData.flat;
+[x, z] = spike_profile(d, [10000 25000], [150 120], h_ant);
+ep = multi_edge_diffraction_rev1("epstein_peterson", x, z, f, a);
+[iso, D] = multi_edge_diffraction_rev1("ep_isolated", x, z, f, a);
+tc.verifyTrue(D.isolated);
+tc.verifyEqual(iso, ep, 'AbsTol', 1e-9);
+i1 = find(z == 150); i2 = find(z == 120);
+lam = tc.TestData.lambda; nuf = @(h, d1, d2) h * sqrt(2 * (d1 + d2) / (lam * d1 * d2));
+h1 = 150 - (h_ant + (120 - h_ant) * x(i1) / x(i2));
+h2 = 120 - (150 + (h_ant - 150) * (x(i2) - x(i1)) / (d - x(i1)));
+L1 = J_approx(nuf(h1, x(i1), x(i2) - x(i1))); L2 = J_approx(nuf(h2, x(i2) - x(i1), d - x(i2)));
+aa = x(i1); bb = x(i2) - x(i1); cc = d - x(i2);
+want = L1 + L2;
+if L1 > 15 && L2 > 15, want = want + 10 * log10((aa + bb) * (bb + cc) / (bb * (aa + bb + cc))); end
+tc.verifyEqual(multi_edge_diffraction_rev1("p526_double_edge", x, z, f, a), want, 'AbsTol', 1e-9);
+end
+
+function test_lc_formula_value(tc)
+% P.526-16 eq. (39) for a = 10, b = 15, c = 17 km: hand value
+aa = 10; bb = 15; cc = 17;
+tc.verifyEqual(10 * log10((aa + bb) * (bb + cc) / (bb * (aa + bb + cc))), 10 * log10(800 / 630), 'AbsTol', 1e-12);
+end
