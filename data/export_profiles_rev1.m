@@ -116,7 +116,9 @@ end
 function clear_tile_cache()
 % matlab_itm keeps loaded tiles in persistent variables; drop them after
 % tiles are deleted from disk so no stale entry points at a missing file
-clear('itm_terrain_elevation_rev1', 'itm_terrain_profile_rev1');
+% (tile interpolants in itm_terrain_elevation_rev1, and resolved tile paths
+% in the private itm_get_tile, which a named clear can't reach)
+clear('functions');
 end
 
 function d = itm_default_terrain_dir_public()
