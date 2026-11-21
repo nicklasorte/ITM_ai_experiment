@@ -56,18 +56,23 @@ for k = 1:n
     s = char(L(k));
     t = string(strsplit(strtrim(s)));
     q = str2double(t(end - 8:end));
-    base = t(end - 9);
-    if ~isempty(regexp(t(end - 10), '^[HVC]$', 'once'))
-        pol = t(end - 10); h = str2double(t(end - 14:end - 11));
-    else
-        pol = ""; h = str2double(t(end - 13:end - 10));
+    % Heights, gains, polarization, and base. The columns are fixed width
+    % and a receiver height of 100 m or more runs into the transmitter
+    % height ("11.90111.30"), so read them by pattern: heights and gains
+    % always have two decimals; no other field before them does.
+    m = regexp(s, '(\d*\.\d\d)\s*(\d*\.\d\d)\s+(-?\d*\.\d\d)\s+(-?\d*\.\d\d)\s+([HVC]?)\s*(FS|NM|CM)\s', 'tokens', 'once');
+    if isempty(m)
+        drop(end + 1, :) = [string(sprintf('%s_%04d', t(1), k)), "unparsed row"]; %#ok<AGROW>
+        continue
     end
+    h = str2double(string(m(1:2)));
+    pol = string(m{5}); base = string(m{6});
     path = t(1); dist = str2double(t(2)); f = str2double(t(3));
     id = sprintf('%s_%04d', path, k);
     ip = find(Pt.path_id == path, 1);
     why = "";
     if base ~= "FS", why = "base " + base;
-    elseif any(~(h(1:2) > 0)), why = "antenna height missing";
+    elseif any(~(h > 0)), why = "antenna height missing";
     elseif ~any(pol == ["H" "V"]), why = "polarization " + pol;
     elseif isempty(ip), why = "path not in ltpath";
     elseif any(Pt{ip, {'tx_lat', 'tx_lon', 'rx_lat', 'rx_lon'}} == 0) || any(isnan(Pt{ip, {'tx_lat', 'tx_lon', 'rx_lat', 'rx_lon'}}))
@@ -85,7 +90,7 @@ for k = 1:n
         continue
     end
     yr = ""; season = ""; len = "";
-    m = regexp(s, '^\S+\s+\S+\s+\S+\s+(\S*)\s+(\d+)\s+(hr|mo|yr|dy)\s+([WPSADN]*)', 'tokens', 'once');
+    m = regexp(s, '^\S+\s+\S+\s+\S+\s+(\S*)\s+(\d+)\s+(hr|mo|yr|da|wk)\s+([WPSADN]*)', 'tokens', 'once');
     if ~isempty(m), yr = string(m{1}); len = string(m{2}) + " " + string(m{3}); season = string(m{4}); end
     rows{k} = {string(id), path, dist, f, yr, len, season, h(1), h(2), pol, q};
 end

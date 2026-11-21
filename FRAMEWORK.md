@@ -241,9 +241,13 @@ OT/TRER 16, 1971): 1,131 measured time distributions of hourly-median
 attenuation at 0.01 % to 99.99 % of time, 40 MHz to 10 GHz, 10 to 1000 km.
 296 rows are at 1–10 GHz. After filtering (free-space reference only, both
 antenna heights known, H or V polarization, coordinates for both ends, not
-over sea, distance consistent with coordinates), the kept rows are listed in
-`data/links/longterm_links_rev1.csv` and the dropped rows, with reasons, in
-`longterm_dropped_rev1.csv`.
+over sea, distance consistent with coordinates), about 548 rows on 325
+paths remain, 106 of them at 1–10 GHz (count from a Python check of the
+filter rules; `data/build_links_rev1` writes the exact list to
+`data/links/longterm_links_rev1.csv` and the dropped rows, with reasons, to
+`longterm_dropped_rev1.csv`). The largest loss is 376 rows with no antenna
+heights in the archive; OT/TRER 16 may list them, which would recover
+data (TODO).
 
 The public archive has no profiles, so profiles come from matlab_itm's
 `itm_terrain_profile_rev1` at 30 m with its default source. That is the same
