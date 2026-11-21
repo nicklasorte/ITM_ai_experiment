@@ -19,13 +19,16 @@ the held-out score and pass the physics checks are kept.
 - Sibling repos the harness needs: `~/github/matlab_itm` at the pinned
   commit (see `eval/itm_exp_paths_rev1.m`), and, only for rebuilding data,
   `~/github/matlab_itu_p452` and `~/github/itu_p2001`.
-- Long jobs (data builds, full evaluations) go through `matlab -batch` in
-  the background with a log file, so the MCP session isn't blocked:
+- Long jobs (data builds, full evaluations) run as a MATLAB `batch` job, so
+  the MCP session stays free. Don't use `system()` or `!` from the MCP
+  session: shell calls there have hung. Use MATLAB's own `gitrepo`, `pull`,
+  and `commit` for git.
 
-  ```bash
-  cd ~/github/ITM_ai_experiment
-  nohup /Applications/MATLAB_R2025b.app/bin/matlab -batch \
-    "addpath eval; run_eval_rev1(Tag=\"001-short-name\")" > experiments/run.log 2>&1 &
+  ```matlab
+  root = fullfile(getenv('HOME'), 'github', 'ITM_ai_experiment');
+  j = batch(@run_eval_rev1, 1, {"Tag", "001-short-name"}, 'CurrentFolder', root, ...
+      'AdditionalPaths', {fullfile(root, 'eval')}, 'CaptureDiary', true, 'AutoAddClientPath', false);
+  % later: j.State, j.Tasks(1).Diary, fetchOutputs(j)
   ```
 
 ## Commands
