@@ -1,0 +1,18 @@
+experiment 102-deygout-three-edge   (matlab_itm 9bd6a4e, 21-Nov-2026 16:30:42)
+composite  16.8 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   17.9   (baseline 18.3)
+  long-term level RMS             27.2   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  14.4 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 13.5  mean +3.2   (baseline 13.3)
+  site R2 RMS 27.5  mean +10.0   (baseline 28.6)
+  site R3 RMS 8.9  mean +0.2   (baseline 9.0)
+  site VA RMS 14.8  mean -7.0   (baseline 15.4)
+  worst cell 39.5   censored violations 24.5% (baseline 28.0%)
+physics battery: FAIL
+max |variant - baseline| = 39.8 dB; runtime 6 s
+
+paired bootstrap: 102-deygout-three-edge vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   -0.74 dB  (SD 0.41; 95% interval -1.32 to +0.15)  not distinguishable from zero
+  screened gain    -0.97 dB  (SD 0.36; 95% interval -1.41 to -0.16)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

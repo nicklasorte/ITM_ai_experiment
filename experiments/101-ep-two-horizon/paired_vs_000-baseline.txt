@@ -1,0 +1,4 @@
+paired bootstrap: 101-ep-two-horizon vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +0.76 dB  (SD 0.23; 95% interval +0.29 to +1.13)  PASS
+  screened gain    +0.41 dB  (SD 0.13; 95% interval +0.18 to +0.66)  PASS
+  gain = best minus new; positive means the new run is better

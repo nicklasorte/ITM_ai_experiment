@@ -1,0 +1,4 @@
+paired bootstrap: 102-deygout-three-edge vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   -0.74 dB  (SD 0.41; 95% interval -1.32 to +0.15)  not distinguishable from zero
+  screened gain    -0.97 dB  (SD 0.36; 95% interval -1.41 to -0.16)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

@@ -1,0 +1,18 @@
+experiment 104-bullington   (matlab_itm 9bd6a4e, 21-Nov-2026 16:34:41)
+composite  15.7 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   17.6   (baseline 18.3)
+  long-term level RMS             24.4   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  13.5 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 13.4  mean +2.6   (baseline 13.3)
+  site R2 RMS 26.2  mean +8.7   (baseline 28.6)
+  site R3 RMS 8.9  mean +0.2   (baseline 9.0)
+  site VA RMS 14.9  mean -7.3   (baseline 15.4)
+  worst cell 38.9   censored violations 29.4% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 36.7 dB; runtime 6 s
+
+paired bootstrap: 104-bullington vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +0.31 dB  (SD 0.26; 95% interval -0.16 to +0.82)  not distinguishable from zero
+  screened gain    -0.06 dB  (SD 0.20; 95% interval -0.35 to +0.40)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

@@ -1,0 +1,18 @@
+experiment 101-ep-two-horizon   (matlab_itm 9bd6a4e, 21-Nov-2026 16:28:36)
+composite  15.3 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   17.7   (baseline 18.3)
+  long-term level RMS             23.0   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  13.0 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 13.2  mean +2.3   (baseline 13.3)
+  site R2 RMS 26.0  mean +8.9   (baseline 28.6)
+  site R3 RMS 8.9  mean +0.1   (baseline 9.0)
+  site VA RMS 15.5  mean -8.4   (baseline 15.4)
+  worst cell 39.5   censored violations 30.0% (baseline 28.0%)
+physics battery: FAIL
+max |variant - baseline| = 38.2 dB; runtime 7 s
+
+paired bootstrap: 101-ep-two-horizon vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +0.76 dB  (SD 0.23; 95% interval +0.29 to +1.13)  PASS
+  screened gain    +0.41 dB  (SD 0.13; 95% interval +0.18 to +0.66)  PASS
+  gain = best minus new; positive means the new run is better

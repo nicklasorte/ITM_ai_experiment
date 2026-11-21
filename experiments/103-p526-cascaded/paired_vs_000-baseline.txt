@@ -1,0 +1,4 @@
+paired bootstrap: 103-p526-cascaded vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   -3.01 dB  (SD 0.62; 95% interval -3.71 to -1.64)  not distinguishable from zero
+  screened gain    -3.09 dB  (SD 0.63; 95% interval -3.82 to -1.68)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

@@ -56,40 +56,70 @@ bottom.
 - Splits re-frozen with the full long-term set (hash `06d9f440607a`).
 - Decision: baseline
 
+### B01 worker summary
+- Date: 2026-11-21. Worker run by Claude Opus 5.5 (the plan names Haiku;
+  Nick had Opus selected). Experiments 101–105 run as planned; 106 not run.
+- Kept: none. Best stays `000-baseline`.
+- Stopped and handed back to the planner: 106's parent rule needs one of
+  101–103 to pass physics, and none did (B01.md stop condition).
+- Archive: `arc/104-bullington` (front, cell elite) and
+  `arc/105-profile-horizon-region` (front) kept as branches.
+- Harness note: `paired_gain_rev1` prints "not distinguishable from zero"
+  also when the whole interval is below zero (102, 103, 105). The decision
+  isn't affected, since the rule needs the interval above zero, but the
+  wording should say "worse" in that case. Not changed by the worker.
+
 ### 101-ep-two-horizon
 - Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "epstein_peterson";`
 - Rationale: the same two horizon obstacles ITM uses, but with each edge's own geometry at the path distance instead of a line extrapolated from 20 km or more beyond the horizons.
 - Predicted (from B01.md, before the run): R2 mean error falls from +10.6 to between +3 and +8 dB, R2 RMS to 24–27. R1, R3, and VA RMS move by less than 0.5 dB. Phase 2 cell 16.5–17.8. Long-term level 21–24, with the D01 Sutton Coldfield rows (LT2116) at least 20 dB lower. Shape within ±0.1. Composite 14.5–15.6. Censored violations rise to 30–40 %; this is the most likely reason for rejection. Continuity: possible step where a sweep crosses from the line-of-sight region to transhorizon.
-- Result: pending
+- Result: composite 15.27 dB (stock 16.02; R02 15.93); screened 12.99 (13.40); Phase 2 cell 17.70; long-term level 23.02; shape 5.16. Site RMS R1 13.2 (mean +2.3), R2 26.0 (mean +8.9), R3 8.9 (mean +0.1), VA 15.5 (mean -8.4). Censored 30.0 %. paired gain over stock +0.76 dB (95 % +0.29 to +1.13), screened +0.41 (+0.18 to +0.66).
+- Physics battery: FAIL. Distance-sweep continuity: ridge step 20.7 dB (stock 8.0), rough 35.7 dB (stock 33.0).
+- Decision: reject (physics; censored 30.0 % > 29.0 %). Not in the archive (physics fail).
+- Predictions: composite, Phase 2 cell, R2 RMS, long-term level, shape, the other sites, and censored all landed in their predicted ranges; R2 mean +8.9 was just above the +3 to +8 range. The predicted continuity risk happened.
+- Note for the planner: the largest gain in the batch, held back only by the step where a sweep enters the transhorizon region. The switch applies only to transhorizon paths, so the loss jumps at the region boundary.
 
 ### 102-deygout-three-edge
 - Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "deygout";`
 - Rationale: the principal obstruction and one edge on each side capture multi-ridge mountain paths that two horizon edges miss or double count.
 - Predicted (from B01.md, before the run): loss at or above 101 on multi-ridge paths, so R2 mean error between +4 and +9 dB and R2 RMS 24–27; other sites within 0.5 dB. Long-term level 21–24. Censored 29–38 %. Composite 14.6–15.7.
-- Result: pending
+- Result: composite 16.76 dB; screened 14.37; Phase 2 cell 17.86; long-term level 27.24; shape 5.16. Site RMS R1 13.5 (mean +3.2), R2 27.5 (mean +10.0), R3 8.9 (mean +0.2), VA 14.8 (mean -7.0). Censored 24.5 %. paired gain over stock -0.74 dB (95 % -1.32 to +0.15), screened -0.97 (-1.41 to -0.16).
+- Physics battery: FAIL (continuity, rough distance sweep).
+- Decision: reject (score worse; physics).
+- Predictions: wrong on long-term level (predicted 21–24, got 27.2) and censored (predicted 29–38 %, got 24.5 %); composite outside range. Deygout adds loss on long paths, where more than three edges contribute.
 
 ### 103-p526-cascaded
 - Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "p526_cascaded";`
 - Rationale: Deygout's three edges with the ITU-R empirical correction, which adds up to 10 + 0.04·D dB when the principal edge is strong.
 - Predicted (from B01.md, before the run): the highest loss of 101–103, so the smallest gain and the smallest censored increase: R2 mean error +7 to +11 dB, R2 RMS 26–29, censored 28–33 %, composite 15.2–16.1. The one most likely to pass the censored gate and the least likely to clear 0.3 dB.
-- Result: pending
+- Result: composite 19.04 dB; screened 16.49; Phase 2 cell 18.76; long-term level 33.22; shape 5.16. Site RMS R1 14.6 (mean +4.5), R2 30.2 (mean +12.0), R3 9.2 (mean +0.4), VA 14.5 (mean -5.3). Censored 21.2 %. paired gain over stock -3.01 dB (95 % -3.71 to -1.64), screened -3.09 (-3.82 to -1.68).
+- Physics battery: FAIL (continuity, rough distance sweep).
+- Decision: reject (score much worse; physics).
+- Predictions: direction right (highest loss, lowest censored) but the size far larger; composite predicted 15.2–16.1, got 19.0. The correction term (10 + 0.04 D dB) dominates on long paths.
 
 ### 104-bullington
 - Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "bullington";`
 - Rationale: a single equivalent edge is the low-loss end of the knife-edge family and the core of the P.452 and P.2001 diffraction models, so it shows how much of their Phase 2 advantage this substitution explains.
 - Predicted (from B01.md, before the run): R2 mean error between −2 and +5 dB; Phase 2 cell 15–17; censored above 40 %, failing the gate. If censored stays under 33 %, tell the planner: the references' optimism then comes from elsewhere.
-- Result: pending
+- Result: composite 15.72 dB; screened 13.46; Phase 2 cell 17.61; long-term level 24.42; shape 5.16. Site RMS R1 13.4 (mean +2.6), R2 26.2 (mean +8.7), R3 8.9 (mean +0.2), VA 14.9 (mean -7.3). Censored 29.4 %. paired gain over stock +0.31 dB (95 % -0.16 to +0.82), screened -0.06 (-0.35 to +0.40).
+- Physics battery: PASS.
+- Decision: reject (censored 29.4 % > 29.0 %; neither paired interval above zero; screened composite not improved). On the Pareto front and the elite of its cell, so kept as branch `arc/104-bullington`.
+- Predictions: wrong. R2 mean error predicted −2 to +5, got +8.7; censored predicted above 40 %, got 29.4 %.
+- Flag for the planner (B01.md asked for it): censored stayed under 33 %, so the references' optimism on dead paths doesn't come from single-edge diffraction; it comes from elsewhere in P.452 and P.2001.
 
 ### 105-profile-horizon-region
 - Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.line_of_sight = "profile_horizons";` (diffraction stays `"itm"`)
 - Rationale: a path whose terrain blocks the direct ray isn't a two-ray path, whatever the smooth-earth horizons of the effective heights say.
 - Predicted (from B01.md, before the run): affects only blocked paths that ITM places in its line-of-sight region. Composite within ±0.4 of stock; R2 and R3 move by less than 1.5 dB RMS in either direction; long-term nearly unchanged. Real chance of a continuity failure, because a path changes formula the moment terrain touches the ray. Not expected to be kept alone; it is here to price the region change before combining it.
-- Result: pending
+- Result: composite 16.57 dB; screened 13.95; Phase 2 cell 19.61; long-term level 24.89; shape 5.16. Site RMS R1 15.3 (mean +5.7), R2 30.3 (mean +15.6), R3 10.7 (mean +1.6), VA 15.7 (mean -6.8). Censored 26.6 %. paired gain over stock -0.54 dB (95 % -0.71 to -0.38), screened -0.55 (-0.73 to -0.38).
+- Physics battery: PASS.
+- Decision: reject (score worse; R1 and R3 worse by more than 0.5 dB). On the Pareto front (lowest censored rate), so kept as branch `arc/105-profile-horizon-region`.
+- Predictions: wrong in size. Predicted composite within ±0.4 and R2, R3 within 1.5 dB; got −0.5 composite, R2 +1.7, R3 +1.7, R1 +2.0. Moving blocked paths to ITM's transhorizon formulas adds loss everywhere; the predicted continuity failure didn't happen.
 
 ### B01 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Fable 5.2.

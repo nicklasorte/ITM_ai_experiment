@@ -1,0 +1,4 @@
+paired bootstrap: 104-bullington vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +0.31 dB  (SD 0.26; 95% interval -0.16 to +0.82)  not distinguishable from zero
+  screened gain    -0.06 dB  (SD 0.20; 95% interval -0.35 to +0.40)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better
