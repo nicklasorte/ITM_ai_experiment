@@ -2,3 +2,4 @@ batch	date_closed	n_experiments	n_kept	n_reverted_later	n_physics_fail	n_censor_
 B01	2026-11-21	5	0	0	3	2	0	15.3 (101, rejected)	-0.6	106 not run (no parent passed physics); 104 and 105 archived
 B02	2026-11-21	2	0	0	0	2	0	13.7 (201, rejected)	-2.2	continuity fixed but censored 56 %; 201 and 202 archived
 B03	2026-11-21	1	0	0	0	1	0	15.9 (301, rejected)	0.0	three of four phased settings failed the battery in the planner check
+B04	2026-11-21	2	0	0	0	2	0	11.5 (401, rejected)	-4.4	delta-Bullington reproduces the ITU censored pattern (97 % overlap with P.2001)

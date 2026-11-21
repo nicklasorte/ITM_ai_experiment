@@ -2,6 +2,7 @@ experiment archive (data version 06d9f440607a)
 objectives, all minimized: Phase 2 cell RMS | long-term level RMS | long-term shape RMS | censored violations %
 
 Pareto front (eligible runs no other run beats on all four):
+  401-delta-bullington-p452          composite  11.5 |  14.2  15.0   5.2  67.6%   cell: delta_bullington/itm/itm/itm/itm | 0
   201-ep-isolated-blocked            composite  13.7 |  15.2  20.9   5.2  56.0%   cell: ep_isolated/itm/itm/itm/itm | 0
   202-p526-double-edge-blocked       composite  13.8 |  15.2  20.9   5.2  56.0%   cell: p526_double_edge/itm/itm/itm/itm | 0
   104-bullington                     composite  15.7 |  17.6  24.4   5.2  29.4%   cell: bullington/itm/itm/itm/itm | 0
@@ -10,6 +11,8 @@ Pareto front (eligible runs no other run beats on all four):
   105-profile-horizon-region         composite  16.6 |  19.6  24.9   5.2  26.6%   cell: itm/profile_horizons/itm/itm/itm | 0
 
 MAP-Elites cells (structure | free parameters): elite by composite
+  delta_bullington/itm/itm/itm/itm | 0               401-delta-bullington-p452 (11.5)
+  delta_bullington_p526/itm/itm/itm/itm | 0          402-delta-bullington-p526 (11.5)
   ep_isolated/itm/itm/itm/itm | 0                    201-ep-isolated-blocked (13.7)
   p526_double_edge/itm/itm/itm/itm | 0               202-p526-double-edge-blocked (13.8)
   bullington/itm/itm/itm/itm | 0                     104-bullington (15.7)
@@ -17,7 +20,7 @@ MAP-Elites cells (structure | free parameters): elite by composite
   itm/itm/itm/itm/itm | 0                            000-baseline (16.0)
   itm/profile_horizons/itm/itm/itm | 0               105-profile-horizon-region (16.6)
 
-Reference models (from 301-bullington-phased):
+Reference models (from 402-delta-bullington-p526):
   baseline composite  16.0 |  18.3  24.6   5.2  28.0%   beaten on all four by: no front run
   p452     composite  14.2 |  14.1  18.5   9.9  65.6%   beaten on all four by: no front run
   p2001    composite  14.0 |  14.1  21.2   6.6  65.7%   beaten on all four by: no front run

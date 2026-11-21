@@ -73,6 +73,18 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### B04 summary
+- Date: 2026-11-21. Kept: none. Best stays `000-baseline`.
+- ITM with delta-Bullington reference attenuation beats every model so far
+  on the score (composite 11.5 dB against P.452 14.2 and P.2001 14.0) and
+  passes the physics battery, but predicts signal on 71 % of R2's no-signal
+  results, the same results the ITU models miss.
+- What the gate is now protecting: R2's 1,184 censored rows (no signal
+  received) against R2's measured rows. Any model that fits the measured
+  mountain rows by lowering loss lands on the dead ones too. The next
+  question is physical, not numerical: what makes those R2 paths dead when
+  every terrain model says they shouldn't be?
+
 ### B04 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B04.md`.
 - New: `"delta_bullington"` (P.452-18 eq. (38)–(40) form) and
@@ -90,14 +102,21 @@ bottom.
 - Change: `cfg.diffraction = "delta_bullington";`
 - Rationale: blocked paths get their obstruction loss from the actual profile, and smooth-earth loss only as an excess over the smooth-profile Bullington loss.
 - Predicted (from B04.md, before the run): R2 mean −2 to +6 dB, R2 RMS 20–26; R1, R3 move up to 2 dB; VA 0–2 dB worse; long-term level 19–24; composite 13.5–15.5; censored 30–45 % (likely rejection).
-- Result: pending
+- Result: composite 11.46 dB (stock 16.02; R02 15.93; P.452 14.18; P.2001 13.97); screened 10.19; Phase 2 cell 14.22; long-term level 14.98; shape 5.17. Site RMS R1 10.2 (mean -1.5), R2 19.5 (mean -11.3), R3 6.4 (mean -1.0), VA 15.2 (mean -9.3). Censored 67.6 %. Paired gain over stock +4.57 dB (95 % +2.70 to +5.62), screened +3.21 (+1.82 to +4.17).
+- Physics battery: PASS.
+- Decision: reject (censored 67.6 % > 29.0 %; R2 mean error now −11.3 dB). On the Pareto front and its cell's elite: kept as `arc/401-delta-bullington-p452`.
+- Predictions: direction right, size wrong. Composite predicted 13.5–15.5, got 11.5; long-term level predicted 19–24, got 15.0; censored predicted 30–45 %, got 67.6 %; R2 mean predicted −2 to +6, got −11.3.
+- Planner analysis (key finding): 401 reproduces the ITU models' censored failure pattern almost exactly. Censored violations by site: R2 71 % (P.452 67 %, P.2001 68 %, stock ITM 7 %), VA 83 % (83, 82, 78), R1 23 % (23, 23, 14); 97 % of 401's violations are also P.2001 violations; median margin 12.9 dB. With B01's 104 result (single-edge Bullington alone kept censored at 29.4 %), this places the ITU models' optimism on R2's dead paths in the delta construction itself: the obstruction-adjusted smooth surface lifts the effective antenna heights and shrinks the smooth-earth loss.
 
 ### 402-delta-bullington-p526
 - Date: 2026-11-21. Batch B04. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "delta_bullington_p526";`
 - Rationale: the Recommendation's own form, which lets a negative smooth-earth excess lower the obstruction loss.
 - Predicted (from B04.md, before the run): loss at or below 401 everywhere; composite similar or slightly lower; censored 1–5 points above 401.
-- Result: pending
+- Result: composite 11.52 dB (stock 16.02; R02 15.93; P.452 14.18; P.2001 13.97); screened 10.23; Phase 2 cell 14.29; long-term level 15.09; shape 5.17. Site RMS R1 10.3 (mean -1.6), R2 19.5 (mean -11.3), R3 6.5 (mean -1.1), VA 15.4 (mean -9.4). Censored 68.2 %. Paired gain over stock +4.51 dB (95 % +2.62 to +5.57), screened +3.17 (+1.78 to +4.10).
+- Physics battery: PASS.
+- Decision: reject (censored 68.2 %). Its cell's elite: kept as `arc/402-delta-bullington-p526`.
+- Predictions: loss at or below 401 and censored 1–5 points higher held at the low end (+0.6 points); composite equal.
 
 ### B03 summary
 - Date: 2026-11-21. Kept: none. Best stays `000-baseline`.

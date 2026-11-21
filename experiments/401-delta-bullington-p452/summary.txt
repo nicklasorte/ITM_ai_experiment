@@ -1,0 +1,18 @@
+experiment 401-delta-bullington-p452   (matlab_itm 9bd6a4e, 21-Nov-2026 17:40:34)
+composite  11.5 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   14.2   (baseline 18.3)
+  long-term level RMS             15.0   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  10.2 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 10.2  mean -1.5   (baseline 13.3)
+  site R2 RMS 19.5  mean -11.3   (baseline 28.6)
+  site R3 RMS 6.4  mean -1.0   (baseline 9.0)
+  site VA RMS 15.2  mean -9.3   (baseline 15.4)
+  worst cell 30.7   censored violations 67.6% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 97.8 dB; runtime 8 s
+
+paired bootstrap: 401-delta-bullington-p452 vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +4.57 dB  (SD 0.74; 95% interval +2.70 to +5.62)  PASS
+  screened gain    +3.21 dB  (SD 0.61; 95% interval +1.82 to +4.17)  PASS
+  gain = best minus new; positive means the new run is better

@@ -1,0 +1,4 @@
+paired bootstrap: 401-delta-bullington-p452 vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +4.57 dB  (SD 0.74; 95% interval +2.70 to +5.62)  PASS
+  screened gain    +3.21 dB  (SD 0.61; 95% interval +1.82 to +4.17)  PASS
+  gain = best minus new; positive means the new run is better
