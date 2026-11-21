@@ -5,6 +5,8 @@ Longley-Rice) against measured propagation loss. An AI agent proposes
 physically justified changes to a copy of the MATLAB ITM and keeps only the
 ones that reduce error on held-out measurement sites.
 
+- [docs/FLOW.md](docs/FLOW.md): flow diagrams of the system and of one
+  experiment.
 - [FRAMEWORK.md](FRAMEWORK.md): prior work, data, evaluation protocol,
   change catalog, experiment loop, guardrails, and roadmap.
 - [program.md](program.md): the agent's standing instructions.

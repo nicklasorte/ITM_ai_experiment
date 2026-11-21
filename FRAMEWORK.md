@@ -186,6 +186,7 @@ ITM_ai_experiment/
 ├── program.md            Instructions for the agent (human-owned)
 ├── CLAUDE.md             Rules and commands for any agent working here
 ├── docs/
+│   ├── FLOW.md                         Flow diagrams (Mermaid)
 │   ├── LITERATURE_REVIEW.md            Harness design and ITM replacement parts
 │   └── AGENT_OPTIMIZATION_LITERATURE.md How agent optimization loops are built and fail
 ├── data/                 Human-owned; read-only to the agent
@@ -496,6 +497,8 @@ mechanism. Its held-out score is the **ceiling** the physics changes are
 trying to approach. Report it, but don't ship it as an ITM change.
 
 ## Experiment loop
+
+Diagrams: [docs/FLOW.md](docs/FLOW.md).
 
 Each experiment follows these steps. `program.md` restates them as
 instructions to the agent.
