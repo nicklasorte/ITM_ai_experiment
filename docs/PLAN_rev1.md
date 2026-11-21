@@ -17,24 +17,26 @@ a write-up suitable for ISART or Radio Science
 | --- | --- | --- | --- |
 | Phase 2 cell-balanced RMS | ≤ 14.1 dB | 18.3 | 14.1 |
 | Censored-bound violations | ≤ 28 % | 28.0 % | 65.6 % |
-| Long-term shape RMS | ≤ stock ITM | 5.9 (interim) | 6.8 (interim) |
+| Long-term shape RMS | ≤ stock ITM | 5.2 | 9.9 |
 
 P.452 can't meet the censored target, so meeting all three is the headline.
 
 ## Where things stand (2026-11-21)
 
-- Worldwide long-term terrain extraction is running, one path at a time
-  (job 127).
-- Stock-ITM baseline reproduced exactly; the variant is bit-identical at
-  default settings.
-- Interim recalibration R01 (6 constants, cross-validated): composite
-  13.9 → 12.1 dB, but it fails the censored gate (55.6 % violations) and the
+- Stage 0 is done. All 840 profiles are stored as CSV; 325 long-term paths
+  (548 distributions) and 515 Phase 2 paths are rebuilt from them and the
+  splits are re-frozen.
+- Stock-ITM baseline on the full data: composite 16.0 dB (Phase 2 cell 18.3,
+  long-term level 24.6, shape 5.2). Parity with the stored baseline holds to
+  7 × 10⁻¹³ dB. P.452: 14.2; P.2001: 14.0.
+- Recalibration R01 (6 constants, cross-validated, full data): composite
+  12.4 dB, but it fails the censored gate (55.9 % violations) and the
   ridge-continuity check. Not a kept variant.
 - `guard` CI, `Agent-Role` trailers, the three-reviewer rule, stability
   log, shadow folder, and the experiment archive (Pareto front plus
   MAP-Elites cells) are in place. No agent experiments have run yet.
 
-## Stage 0: finish the data
+## Stage 0: finish the data (done 2026-11-21)
 
 1. When extraction finishes, write all profile CSVs and the index, rebuild
    both link tables from the CSVs, and re-freeze the splits.
@@ -45,6 +47,9 @@ P.452 can't meet the censored target, so meeting all three is the headline.
 
 ## Stage 1: define a real gain
 
+1. **Diagnose long-term level.** Stock ITM's level error is 24.6 dB on the
+   full set against 17.6 dB on the 132 US paths. Break it down by region,
+   distance, frequency, and time percentage before choosing batches.
 1. **Noise floor.** Bootstrap the composite and each objective over paths
    within site, and report the 95 % interval. Replace the 0.3 dB keep
    threshold (marked `TODO` in FRAMEWORK.md) with the measured value.

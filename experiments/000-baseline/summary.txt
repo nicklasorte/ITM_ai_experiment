@@ -1,12 +1,12 @@
-experiment 000-baseline   (matlab_itm 9bd6a4e, 21-Nov-2026 10:16:16)
-composite  18.3 dB   (baseline 18.3)
+experiment 000-baseline   (matlab_itm 9bd6a4e, 21-Nov-2026 14:46:08)
+composite  16.0 dB   (baseline 16.0)
   phase2 cell-balanced RMS @50%   18.3   (baseline 18.3)
-  long-term level RMS             NaN   (baseline NaN)
-  long-term shape RMS             NaN   (baseline NaN)
+  long-term level RMS             24.6   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
   site R1 RMS 13.3  mean +2.6   (baseline 13.3)
   site R2 RMS 28.6  mean +10.6   (baseline 28.6)
   site R3 RMS 9.0  mean +0.2   (baseline 9.0)
   site VA RMS 15.4  mean -8.1   (baseline 15.4)
   worst cell 39.6   censored violations 28.0% (baseline 28.0%)
 physics battery: PASS
-max |variant - baseline| = 6.25e-13 dB; runtime 5 s
+max |variant - baseline| = 6.82e-13 dB; runtime 6 s

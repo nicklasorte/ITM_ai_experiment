@@ -41,12 +41,42 @@ bottom.
     paths. A swap taken from them must not import that.
   - Variant vs stored baseline: 6.3 × 10⁻¹³ dB (parity passes)
 - Physics battery: pass
-- Long-term set: not yet scored. The full build was stopped because
-  worldwide 30 m terrain for 325 paths would exceed the Mac's free disk
-  (25 GB free; 14.9 GB downloaded in 20 minutes). Decision pending.
-- Splits note: `data/splits/folds_rev1.csv` currently holds 3 long-term test
-  paths from a trial build; it will be re-frozen with the full long-term set.
+- Rerun on the full data (2026-11-21, 840 profiles from CSV, 325 long-term
+  paths, 548 distributions; `Parity=true`, difference 6.8 × 10⁻¹³ dB):
+  - Composite 16.0 dB; Phase 2 cell 18.3; long-term level 24.6; long-term
+    shape 5.2 dB. Physics battery passes.
+  - P.452: composite 14.2 (Phase 2 14.1, level 18.5, shape 9.9). P.2001:
+    14.0 (14.1, 21.2, 6.6). Censored violations unchanged (ITM 28.0 %).
+  - Long-term level error rose from 17.6 dB on the 132 US paths to 24.6 dB
+    on all 325. To diagnose in Stage 1 (by region, distance, and frequency)
+    before any change targets it.
+- Terrain: profiles for every path are stored as CSV; terrain tiles were
+  sampled one path at a time and deleted after each profile (about 0.4 GB
+  per path).
+- Splits re-frozen with the full long-term set (hash `06d9f440607a`).
 - Decision: baseline
+
+### R01-recalibrated-itm
+- Date: 2026-11-21 (full data; supersedes the interim run below)
+- Tier: 1 (recalibration by a conventional optimizer; no agent)
+- Method: as R01i, on all 325 long-term paths (`cv_calibrate_rev1`, bayesopt,
+  40 evaluations per fold, 5 folds).
+- New free parameters: 6
+- Result (out-of-fold): composite 12.4 dB (stock ITM 16.0); Phase 2 cell
+  14.5 (18.3); long-term level 17.6 (24.6); long-term shape 5.0 (5.2). Site
+  RMS: R1 11.9 (13.3), R2 18.6 (28.6), R3 7.7 (9.0), VA 17.4 (15.4).
+- Median fitted constants: w_const 2.83 (ITM 25.1), afo_scale 1.78,
+  knife_scale 0.63, los_w_scale 46.9, time_minus_scale 0.98, time_plus_scale
+  0.79. Direction matches the interim run: much smaller smooth-earth weight
+  constant, a knife-edge term about 37 % smaller, and a narrower upper-side
+  time spread. The lower-side spread no longer shrinks.
+- Censored-bound violations: 55.9 % (stock ITM 28.0 %) — fails the gate.
+- Physics battery at the median constants: FAIL — single-ridge distance
+  sweep step 21.4 dB (stock ITM 8.0 dB).
+- Decision: not a kept variant. Retuning alone cuts the composite by 3.7 dB,
+  but censored violations double and VA gets worse (15.4 → 17.4), so part of
+  the gain comes from predicting less loss than the measured bound on dead
+  paths. R02 adds the censored and continuity gates to the objective.
 
 ### R01i-recalibrated-itm-interim
 - Date: 2026-11-21

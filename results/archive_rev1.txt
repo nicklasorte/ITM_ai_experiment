@@ -1,5 +1,14 @@
-experiment archive: not built yet
+experiment archive (data version 06d9f440607a)
+objectives, all minimized: Phase 2 cell RMS | long-term level RMS | long-term shape RMS | censored violations %
 
-eval/pareto_rev1.m writes this file after the first run on the re-frozen
-data (docs/PLAN_rev1.md, Stage 0). Every earlier run used an older data
-version, so none is eligible.
+Pareto front (eligible runs no other run beats on all four):
+  000-baseline                       composite  16.0 |  18.3  24.6   5.2  28.0%   cell: itm/itm/itm/itm/itm | 0
+
+MAP-Elites cells (structure | free parameters): elite by composite
+  itm/itm/itm/itm/itm | 0                            000-baseline (16.0)
+
+Reference models (from R01-recalibrated-itm):
+  baseline composite  16.0 |  18.3  24.6   5.2  28.0%   beaten on all four by: no front run
+
+Not eligible:
+  R01-recalibrated-itm               physics fail

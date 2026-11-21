@@ -1,0 +1,3 @@
+tag,status,composite,p2_cell,lt_level,lt_shape,censor_pct,physics,on_front,dominated_by,structure,n_free,cell,elite,data_version
+000-baseline,eligible,16.0248995455736,18.3155231486507,24.6041670364111,5.15500845165883,28.0195599022005,PASS,1,,itm/itm/itm/itm/itm,0,itm/itm/itm/itm/itm | 0,1,06d9f440607a1579f72a567ae40ecb7f5158d8e80c4d9fc318b527b655a7fb8c
+R01-recalibrated-itm,physics fail,12.3588289706251,14.4721148115386,17.6093270034107,4.99504509692592,55.9413202933985,FAIL,0,,itm/itm/itm/itm/itm +refit,6,itm/itm/itm/itm/itm +refit | 6+,0,06d9f440607a1579f72a567ae40ecb7f5158d8e80c4d9fc318b527b655a7fb8c

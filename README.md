@@ -87,11 +87,13 @@ mean of the other three):
 
 | Model | Composite | Phase 2 cell-balanced | Long-term level | Long-term shape |
 | --- | --- | --- | --- | --- |
-| ITM (baseline) | 13.9 | 18.3 | 17.6 | 5.9 |
-| P.452 | 11.0 | 14.1 | 12.2 | 6.8 |
-| P.2001 | 11.2 | 14.1 | 13.6 | 6.0 |
+| ITM (baseline) | 16.0 | 18.3 | 24.6 | 5.2 |
+| P.452 | 14.2 | 14.1 | 18.5 | 9.9 |
+| P.2001 | 14.0 | 14.1 | 21.2 | 6.6 |
+| ITM, constants refit in cross-validation (R01; fails physics and censored gates) | 12.4 | 14.5 | 17.6 | 5.0 |
 
-Phase 2 is 76–9190 MHz on 426 paths (ITM row RMS 16.7 dB). Long-term
-figures are interim, from the 132 US paths; the full set of 325 paths is
-being rebuilt. P.452 covers 0.001–50 % of time only, so its long-term
-scores use fewer percentages.
+Phase 2 is 76–9190 MHz on 426 paths (ITM row RMS 16.7 dB). Long-term is
+548 distributions on 325 paths worldwide, scored at the same 30 m terrain.
+P.452 covers 0.001–50 % of time only, so its long-term scores use fewer
+percentages. Censored-bound violations: ITM 28.0 %, R01 55.9 %, P.452 and
+P.2001 about 66 %.
