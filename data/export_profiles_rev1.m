@@ -57,8 +57,17 @@ if options.Extract
         if free_gb < options.MinFreeGB
             error('itmexp:disk', 'Only %.1f GB free; stopping before chunk at path %d.', free_gb, c0);
         end
-        [pfls, pinfo] = itm_terrain_profile_rev1(U.tx_lat(k), U.tx_lon(k), U.rx_lat(k), U.rx_lon(k), ...
-            spacing_m=S.profile_spacing_m);
+        try
+            [pfls, pinfo] = itm_terrain_profile_rev1(U.tx_lat(k), U.tx_lon(k), U.rx_lat(k), U.rx_lon(k), ...
+                spacing_m=S.profile_spacing_m);
+        catch e
+            % A tile deleted after an earlier path can still be listed in
+            % matlab_itm's in-memory tile cache; clear it and retry once
+            fprintf('  retrying path %d after: %s\n', c0, e.message);
+            clear_tile_cache();
+            [pfls, pinfo] = itm_terrain_profile_rev1(U.tx_lat(k), U.tx_lon(k), U.rx_lat(k), U.rx_lon(k), ...
+                spacing_m=S.profile_spacing_m);
+        end
         if ~iscell(pfls), pfls = {pfls}; end
         for i = 1:numel(k)
             r = U(k(i), :); pf = pfls{i}; mid = pinfo(i).midpoint_deg;
@@ -74,6 +83,7 @@ if options.Extract
         save(fullfile(here, 'cache', 'profiles_rev1.mat'), 'profiles', '-v7.3');
         if options.DeleteNewTiles
             [n, gb] = delete_new_tiles(tdir, cutoff);
+            if n > 0, clear_tile_cache(); end
             fprintf('  chunk %d-%d done; deleted %d new tiles (%.1f GB); %.1f GB free\n', c0, c0 + numel(k) - 1, n, gb, ...
                 java.io.File(char(tdir)).getUsableSpace / 1e9);
         end
@@ -101,6 +111,12 @@ I = cell2table(R, 'VariableNames', {'path_id', 'dataset', 'n_points', 'spacing_m
 I = sortrows(I, {'dataset', 'path_id'});
 writetable(I, fullfile(outdir, 'profiles_index_rev1.csv'));
 fprintf('Wrote %d profiles to %s\n', n, outdir);
+end
+
+function clear_tile_cache()
+% matlab_itm keeps loaded tiles in persistent variables; drop them after
+% tiles are deleted from disk so no stale entry points at a missing file
+clear('itm_terrain_elevation_rev1', 'itm_terrain_profile_rev1');
 end
 
 function d = itm_default_terrain_dir_public()
