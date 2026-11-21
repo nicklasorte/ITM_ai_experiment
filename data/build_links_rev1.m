@@ -16,7 +16,9 @@ function build_links_rev1(options)
 %   Terrain: Phase 2 uses the surveyed profiles in the data set, resampled
 %   linearly to 30 m. The long-term set has no profiles in the public
 %   archive, so its profiles come from itm_terrain_profile_rev1 at 30 m with
-%   its default source, the same source matlab_itm uses everywhere. The
+%   its default source, the same source matlab_itm uses everywhere. Only
+%   paths with both ends in the conterminous US are kept (Nick,
+%   2026-11-21), so that source is 30 m everywhere. The
 %   terrain source is fixed for this project and is never a variable.
 %
 %   Options:
@@ -178,6 +180,13 @@ function [T, prof, folds, drop] = build_longterm(here, S, options)
 tmp = fullfile(tempdir, 'itm_exp_longterm');
 if ~isfolder(fullfile(tmp, 'longterm')), unzip(fullfile(here, 'raw', 'longterm.zip'), tmp); end
 [T, drop] = lt_read(fullfile(tmp, 'longterm'));
+% Nick, 2026-11-21: US paths only, so every profile uses the same 30 m terrain
+% source as matlab_itm (worldwide 30 m tiles exceed the Mac's disk). Both
+% terminals must be inside the conterminous-US box.
+in_us = @(lat, lon) lat > 24 & lat < 50 & lon > -125 & lon < -66;
+keep = in_us(T.tx_lat, T.tx_lon) & in_us(T.rx_lat, T.rx_lon);
+drop = [drop; [T.link_id(~keep), repmat("outside conterminous US", nnz(~keep), 1)]];
+T = T(keep, :);
 up = unique(T.path_id, 'stable');
 if isfinite(options.MaxPaths), up = up(1:min(end, options.MaxPaths)); T = T(ismember(T.path_id, up), :); end
 first = arrayfun(@(p) find(T.path_id == p, 1), up);

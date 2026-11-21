@@ -247,9 +247,11 @@ OT/TRER 16, 1971): 1,131 measured time distributions of hourly-median
 attenuation at 0.01 % to 99.99 % of time, 40 MHz to 10 GHz, 10 to 1000 km.
 296 rows are at 1–10 GHz. After filtering (free-space reference only, both
 antenna heights known, H or V polarization, coordinates for both ends, not
-over sea, distance consistent with coordinates), about 548 rows on 325
-paths remain, 106 of them at 1–10 GHz (count from a Python check of the
-filter rules; `data/build_links_rev1` writes the exact list to
+over sea, distance consistent with coordinates), 548 rows on 325 paths
+remain. Only paths with both ends in the conterminous US are used (Nick,
+2026-11-21), so every profile has the same 30 m terrain: 253 rows on 132
+paths, 39 of them at 1–10 GHz. Worldwide 30 m tiles for the other 193 paths
+would exceed the Mac's disk (`data/build_links_rev1` writes the exact list; `data/build_links_rev1` writes the exact list to
 `data/links/longterm_links_rev1.csv` and the dropped rows, with reasons, to
 `longterm_dropped_rev1.csv`). The largest loss is 376 rows with no antenna
 heights in the archive; OT/TRER 16 may list them, which would recover
