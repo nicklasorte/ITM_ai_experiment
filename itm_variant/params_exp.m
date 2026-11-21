@@ -38,6 +38,11 @@ cfg.diffraction = "itm";
 %   "delta_ep_isolated"      the delta construction with a multi-edge
 %                            obstruction loss in place of Bullington (B05)
 %   "delta_bullington_afo"   "delta_bullington" plus ITM's clutter term A_fo (B05 control)
+%   "delta_cascaded_isolated" | "delta_cascaded_isolated_afo"
+%                            the delta construction with ITU-R P.526-11
+%                            section 4.4.2 and isolation-weighted secondary
+%                            edges (ITU-R P.526-16 section 2.5), without and
+%                            with A_fo (B06)
 % Where the profile-based loss applies (only when cfg.diffraction ~= "itm"):
 %   "transhorizon"   transhorizon paths only (batch B01)
 %   "blocked_paths"  also line-of-sight-region paths whose profile blocks
@@ -46,6 +51,15 @@ cfg.diffraction = "itm";
 %   "transhorizon_phased"  transhorizon paths only, phased in linearly from
 %                    ITM's value at d_sML to the full value at d_3 (B03)
 cfg.diffraction_region = "transhorizon";
+% Upper bound on the delta forms (only when cfg.diffraction starts with "delta_"):
+%   "none"              no bound
+%   "itm_troposcatter"       where ITM v1.4 finds the path in its
+%                            troposcatter region, the loss can't exceed
+%                            ITM's reference attenuation (B06; steps where
+%                            ITM changes region)
+%   "itm_troposcatter_line"  on every transhorizon path, the loss can't
+%                            exceed ITM's troposcatter line at d (B06)
+cfg.diffraction_bound = "none";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights

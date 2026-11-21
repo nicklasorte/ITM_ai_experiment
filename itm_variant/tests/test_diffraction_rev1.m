@@ -370,3 +370,103 @@ c1 = params_exp(); c1.diffraction = "delta_bullington"; c2 = c1; c2.diffraction 
 dA = itm_ref(pfl, 12, 3, 450, c2) - itm_ref(pfl, 12, 3, 450, c1);
 tc.verifyGreaterThanOrEqual(dA, 0); tc.verifyLessThanOrEqual(dA, 15);
 end
+
+function test_cascaded_isolated_single_edge(tc)
+% One spike on flat ground: no secondary edge, so L = J + T C with
+% C = 10 + 0.04 D (P.526-11 eq. (50a), (51), (52)), computed here separately.
+[x, z] = spike_profile(30000, 12000, 80, 10);
+[L, D] = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z, tc.TestData.f, tc.TestData.flat);
+h = 80 - 10; nu = h * sqrt(2 * 30000 / (tc.TestData.lambda * 12000 * 18000));
+J = J_approx(nu);
+tc.verifyEqual(L, J + (1 - exp(-J / 6)) * (10 + 0.04 * 30), 'AbsTol', 1e-9);
+tc.verifyEqual(D.weight, [0 1 0]);
+end
+
+function test_cascaded_isolated_two_separated_edges(tc)
+% Two spikes 9 km apart with flat ground between: the valley is far deeper
+% than 0.6 F1, so the second spike counts in full (weight 1), as in Deygout.
+[x, z] = spike_profile(30000, [9000 18000], [60 120], 10);
+[L, D] = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z, tc.TestData.f, tc.TestData.flat);
+lam = tc.TestData.lambda;
+nu_p = (120 - 10) * sqrt(2 * 30000 / (lam * 18000 * 12000));
+h_t = 60 - (10 + (120 - 10) * 9000 / 18000);
+nu_t = h_t * sqrt(2 * 18000 / (lam * 9000 * 9000));
+Jp = J_approx(nu_p);
+tc.verifyEqual(L, Jp + (1 - exp(-Jp / 6)) * (J_approx(nu_t) + 10 + 0.04 * 30), 'AbsTol', 1e-9);
+tc.verifyEqual(D.weight, [1 1 0]);
+end
+
+function test_cascaded_isolated_split_top_and_flank(tc)
+% A top on two neighboring samples, and a triangular ridge: neither has a
+% valley before the principal edge, so no secondary edge is counted. Plain
+% P.526-11 counts the neighbor or the flank and gives more.
+[x, z] = spike_profile(30000, [15000 15030], [100 100], 10);
+[L, D] = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z, tc.TestData.f, tc.TestData.flat);
+tc.verifyEqual(D.weight([1 3]), [0 0]);
+tc.verifyLessThan(L, multi_edge_diffraction_rev1("p526_cascaded", x, z, tc.TestData.f, tc.TestData.flat) - 3);    % plain counts the neighboring sample as a grazing edge (about 6 dB)
+x = (0:30:30000)'; z = 150 * max(0, 1 - abs(x - 15000) / 1500); z(1) = 10; z(end) = 10;
+[L, D] = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z, tc.TestData.f, tc.TestData.flat);
+tc.verifyEqual(D.weight([1 3]), [0 0]);
+tc.verifyLessThanOrEqual(L, multi_edge_diffraction_rev1("p526_cascaded", x, z, tc.TestData.f, tc.TestData.flat) + 1e-9);
+end
+
+function test_cascaded_isolated_grows_from_zero(tc)
+% Two hills joined by a saddle. As the saddle deepens from 0, the second
+% hill's weight rises from 0 to 1 and the loss rises without a step.
+x = (0:30:30000)';
+depth = 0:0.5:30;
+L = zeros(size(depth)); w = L;
+for i = 1:numel(depth)
+    z = zeros(size(x));
+    k = x >= 12000 & x <= 18000;
+    z(k) = 100 - depth(i) * sin(pi * (x(k) - 12000) / 6000);
+    z(x == 18000) = 100.5;                     % the principal edge, a little higher
+    z(1) = 10; z(end) = 10;
+    [L(i), D] = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z, tc.TestData.f, tc.TestData.flat);
+    w(i) = D.weight(1);
+end
+tc.verifyEqual(w(1), 0);
+tc.verifyEqual(w(end), 1);
+tc.verifyGreaterThanOrEqual(min(diff(w)), -1e-12);
+tc.verifyLessThan(max(abs(diff(L))), 1.5);     % no step; each 0.5 m of depth adds little
+tc.verifyGreaterThan(L(end) - L(1), 3);
+end
+
+function test_cascaded_isolated_reciprocity_and_smooth_earth(tc)
+x = (0:30:60000)';
+g = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+z = g; z(1) = z(1) + 12; z(end) = z(end) + 3;
+a = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z, 450, 8.5e6);
+b = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, flipud(z), 450, 8.5e6);
+tc.verifyEqual(a, b, 'AbsTol', 1e-6);
+% Smooth Earth beyond the horizon: no valleys, so no secondary edges
+z0 = zeros(size(x)); z0(1) = 10; z0(end) = 10;
+[~, D] = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z0, 450, 8.5e6);
+tc.verifyEqual(D.weight([1 3]), [0 0]);
+end
+
+function test_delta_b06_forms_and_bound(tc)
+% B06 delta forms: finite, reciprocal within ITM's class, A_fo adds 0 to
+% 15 dB. The troposcatter bound never raises the loss, and on a long
+% smooth path in ITM's scatter region the bounded value is at most ITM's own.
+x = (0:30:60000)';
+g = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+pfl = [numel(x) - 1; 30; g]; pflr = [numel(x) - 1; 30; flipud(g)];
+c1 = params_exp(); c1.diffraction = "delta_cascaded_isolated"; c2 = c1; c2.diffraction = "delta_cascaded_isolated_afo";
+a = itm_ref(pfl, 12, 3, 450, c1); b = itm_ref(pflr, 3, 12, 450, c1);
+tc.verifyTrue(isfinite(a) && a >= 0);
+tc.verifyEqual(a, b, 'AbsTol', 0.5);
+dA = itm_ref(pfl, 12, 3, 450, c2) - a;
+tc.verifyGreaterThanOrEqual(dA, 0); tc.verifyLessThanOrEqual(dA, 15);
+xl = (0:100:400000)'; pl = [numel(xl) - 1; 100; zeros(size(xl))];
+c0 = params_exp();
+for m = ["delta_bullington_afo" "delta_cascaded_isolated_afo" "delta_p526_cascaded"]
+    for bd = ["itm_troposcatter" "itm_troposcatter_line"]
+        cu = params_exp(); cu.diffraction = m; cb = cu; cb.diffraction_bound = bd;
+        tc.verifyLessThanOrEqual(itm_ref(pfl, 12, 3, 450, cb), itm_ref(pfl, 12, 3, 450, cu) + 1e-9, "never raises " + m);
+        tc.verifyLessThanOrEqual(itm_ref(pl, 10, 10, 1000, cb), itm_ref(pl, 10, 10, 1000, c0) + 1e-9, "scatter region " + m);
+    end
+end
+cx = params_exp(); cx.diffraction = "delta_bullington"; cx.diffraction_bound = "nonsense";
+tc.verifyError(@() itm_ref(pfl, 12, 3, 450, cx), 'itmexp:cfg');
+end

@@ -98,7 +98,35 @@ if delta
     if area
         error('itmexp:cfg', 'Delta-Bullington needs a terrain profile; area mode has none.');
     end
+    A_itm_db = A_ref_db;
     A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m);
+    if isfield(cfg, 'diffraction_bound') && cfg.diffraction_bound ~= "none"
+        % Batch B06. Beyond the horizon the troposcatter field is present
+        % whatever the terrain does to the diffracted field, so the scatter
+        % loss bounds a profile-based diffraction loss. This bounds the
+        % multi-edge sums on paths of hundreds of km. No new constant.
+        %   "itm_troposcatter"       applies where ITM v1.4 itself puts the
+        %       actual path in its troposcatter region (d beyond d_x):
+        %       the loss can't exceed ITM's reference attenuation. Steps
+        %       where ITM changes region (planner battery check, B06).
+        %   "itm_troposcatter_line"  applies on every transhorizon path:
+        %       the loss can't exceed ITM's troposcatter line through
+        %       (d_5, A_5) and (d_6, A_6) evaluated at d. ITM uses that
+        %       line only beyond d_x; using it at shorter transhorizon
+        %       distances as an upper bound is a design choice.
+        switch cfg.diffraction_bound
+            case "itm_troposcatter"
+                if propmode == 3
+                    A_ref_db = min(A_ref_db, A_itm_db);
+                end
+            case "itm_troposcatter_line"
+                if propmode ~= 1 && lines.A_5_db < 1000.0
+                    A_ref_db = min(A_ref_db, max(lines.A_5_db + lines.M_s * (d_m - lines.d_5_m), 0.0));
+                end
+            otherwise
+                error('itmexp:cfg', 'Unknown cfg.diffraction_bound "%s".', cfg.diffraction_bound);
+        end
+    end
 end
 
 A_fs_db = free_space_loss(d_m, f_mhz);
@@ -704,6 +732,10 @@ function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, 
 %       A_fo of the actual path (DiffractionLoss, ITM v1.4), which the
 %       smooth-path ITM call drops because its terrain irregularity is zero
 %       (control named by the B04 reviewers)
+% Batch B06 forms:
+%   "delta_cascaded_isolated"      ITU-R P.526-11 section 4.4.2 with secondary
+%       edges weighted by isolation ("p526_cascaded_isolated")
+%   "delta_cascaded_isolated_afo"  the same plus ITM's A_fo
 np = fix(pfl(1));
 xi = pfl(2);
 x = (0:np)' * xi;
@@ -743,6 +775,8 @@ switch cfg.diffraction
         method = "deygout";
     case "delta_ep_isolated"
         method = "ep_isolated";
+    case {"delta_cascaded_isolated", "delta_cascaded_isolated_afo"}
+        method = "p526_cascaded_isolated";
     otherwise
         error('itmexp:cfg', 'Unknown delta form "%s".', cfg.diffraction);
 end
@@ -761,7 +795,7 @@ if cfg.diffraction == "delta_bullington_p526"
 else
     A_ref = L_ba + max(A_s - L_bs, 0);
 end
-if cfg.diffraction == "delta_bullington_afo"
+if endsWith(cfg.diffraction, "_afo")
     % ITM's A_fo for the actual path, exactly as in diffraction_loss
     d_sML = sqrt(2.0 * h_e_m(1) * a_e) + sqrt(2.0 * h_e_m(2) * a_e);
     sigma_h_d = sigma_h_function(terrain_roughness(d_sML, delta_h_m));

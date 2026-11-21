@@ -73,6 +73,16 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### B06 planned (planner note)
+- Date: 2026-11-21. Planner: Claude Fable 5.2. Plan: `experiments/batches/B06.md`. No scored run yet.
+- 501's blow-up: unbounded stacking of grazing edges, not a code defect. On LT_LT1804 (1,028 km, 417 MHz) `string_ep` finds 56 obstructions, 40 of them under 8 dB each (median ν 0.14), and sums 472 dB; Bullington gives 83, Deygout 123, P.526-11 cascaded 174. Every delta form also lacks a troposcatter limit on L_a.
+- 503 and 504's battery steps traced to two artifacts, both from points with no valley before the principal edge: the neighboring sample of a split top (18.5 dB step) and the ground beside the principal edge (11.9 dB step on flat terrain).
+- New code, no free parameters: `"p526_cascaded_isolated"` (P.526-11 section 4.4.2 with secondary edges weighted by isolation, P.526-16 section 2.5); `cfg.diffraction_bound` (`"itm_troposcatter_line"`, `"itm_troposcatter"`); delta forms `"delta_cascaded_isolated"` and `"delta_cascaded_isolated_afo"`. Tests 27 of 27. Parity at defaults 5.0e-13 dB (548 long-term links). `params_exp.m` default MD5 is now e9b334fa5d68c11e0159ace40f027ae4 (one new switch line).
+- Battery (code only): the new edge term passes with and without A_fo and with the line bound; the region form of the bound steps 15 dB on the frequency sweep and isn't scheduled.
+- Smoke (model against stock ITM, no measurements): without the bound, 52 long-term links are more than 50 dB above stock with the new edge term; with the line bound, none.
+- Plan updates that would go in docs/PLAN_rev1.md (the guard blocks planner edits there): Stage 2 structural search continues with B06; the reviewer pass on 502's A_fo (possible double counting with L_a) is requested and must finish before any `_afo` run is merged; the rounded-obstacle term (P.526-16 section 4.2) stays unbuilt until the equations are read from the Recommendation.
+- Control "A_fo added to 506" can't be run as asked: 506 already contains A_fo (the non-delta switches keep ITM's `w A_se + A_fo`).
+
 ### B05 worker summary
 - Date: 2026-11-21. Six runs (501-506), none kept. Four failed the physics battery as the plan listed (501, 503, 504, 506); two passed the battery and failed the censored gate (502 at 47.2 %, 505 at 91.3 %). 502 and 505 are new Pareto-front members, kept as `arc/` branches. No infra retries. Parameters file on the Mac restored to the defaults; MD5 c494457ec3b988caaf9d4a7666f5e2da matches the repo.
 - Main results for the planner:

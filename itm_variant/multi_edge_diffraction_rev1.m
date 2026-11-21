@@ -6,7 +6,7 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %
 %   Inputs:
 %     method   "epstein_peterson" | "ep_isolated" | "p526_double_edge" | "string_ep" |
-%              "deygout" | "p526_cascaded" | "bullington"
+%              "deygout" | "p526_cascaded" | "p526_cascaded_isolated" | "bullington"
 %     x_m      distance of each profile point from the transmitter (m),
 %              increasing, x_m(1) = 0, x_m(end) = path length
 %     z_m      height above sea level (m): z_m(1) and z_m(end) are the
@@ -73,6 +73,27 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %         L = J(nu_p) + T [J(nu_t) + J(nu_r) + C], C = 10.0 + 0.04 D (D in
 %         km), T = 1.0 - exp(-J(nu_p)/6.0): ITU-R P.526-11 section 4.4.2,
 %         eq. (50a), (50b), (51), (52).
+%     "p526_cascaded_isolated"  "p526_cascaded" with each secondary edge
+%         weighted by how isolated it is from the principal edge (batch
+%         B06). On each side of the principal edge p, a candidate point k
+%         gets the weight w_k = min(1, c_k / (0.6 r1)), where c_k is the
+%         depth of the deepest point between k and p below k (heights
+%         measured from the line joining the antennas, Earth bulge
+%         included) and r1 is the first Fresnel zone radius at that deepest
+%         point on the sub-path from k to p (ITU-R P.526-16 eq. (2)). 0.6 of
+%         the first Fresnel zone is the clearance that makes two obstacles
+%         isolated in ITU-R P.526-16 section 2.5; the linear ramp from 0 to
+%         that clearance is a design choice with no new constant. The
+%         secondary edge on each side is the point of largest w_k J(nu_k),
+%         with nu_k as in "deygout", and contributes w_k J(nu_k). A point on
+%         the principal obstacle's own flank, or the neighboring sample of
+%         a top that falls between two samples, has no valley before p, so
+%         its weight is 0: this removes the 6 dB that plain Deygout adds on
+%         each side of every edge (the reason for eq. (52)'s T) and the
+%         split-top sampling artifact (B02), and the loss of a second ridge
+%         grows from zero as its valley opens. At most three edges are
+%         counted, as in the Recommendation. On a smooth Earth the weights
+%         are 0 and the loss is J(nu_p) + T C.
 %     "bullington"  Single equivalent edge at the intersection of the two
 %         horizon rays: ITU-R P.526-16 section 4.5.1, eq. (49)-(57),
 %         including the correction [1 - exp(-L_uc/6)] (10 + 0.02 d).
@@ -142,6 +163,21 @@ switch method
 
     case "string_ep"
         [L_db, D.edges, D.nu] = string_ep(x_m, z_m, lambda, a_e_m);
+
+    case "p526_cascaded_isolated"
+        [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
+        if nu_p > -0.78
+            Jp = knife_J(nu_p);
+            [L_t, t, nu_t, w_t] = isolated_secondary(1, p, p, x_m, z_m, lambda, a_e_m);
+            [L_r, r, nu_r, w_r] = isolated_secondary(p, n, p, x_m, z_m, lambda, a_e_m);
+            C = 10.0 + 0.04 * (x_m(n) / 1000);               % P.526-11 eq. (51), D in km
+            T = 1.0 - exp(-Jp / 6.0);                        % P.526-11 eq. (52)
+            L_db = Jp + T * (L_t + L_r + C);                 % eq. (50a) with weighted secondary edges
+            D.edges = [t p r]; D.nu = [nu_t nu_p nu_r]; D.weight = [w_t 1 w_r];
+        else
+            L_db = 0;                                        % P.526-11 eq. (50b)
+            D.edges = p; D.nu = nu_p; D.weight = 1;
+        end
 
     case {"deygout", "p526_cascaded"}
         [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
@@ -228,6 +264,48 @@ d_an = x(i) - x(a); d_nb = x(b) - x(i); d_ab = x(b) - x(a);
 h = z(i) + d_an .* d_nb / (2 * a_e) - (z(a) * d_nb + z(b) * d_an) / d_ab;
 [nu, j] = max(h .* sqrt(2 * d_ab ./ (lambda * d_an .* d_nb)));
 k = i(j);
+end
+
+function [L, k_best, nu_best, w_best] = isolated_secondary(a, b, p, x, z, lambda, a_e)
+% Secondary edge between ends a and b (one of them the principal edge p),
+% weighted by its isolation from p. See "p526_cascaded_isolated" in the header.
+L = 0; k_best = p; nu_best = -Inf; w_best = 0;
+if b - a < 3
+    return
+end
+n = numel(x);
+k = (a + 1:b - 1)';
+% Deygout diffraction parameter on the sub-path a..b, P.526-11 eq. (49), (49a)
+d_an = x(k) - x(a); d_nb = x(b) - x(k); d_ab = x(b) - x(a);
+h = z(k) + d_an .* d_nb / (2 * a_e) - (z(a) * d_nb + z(b) * d_an) / d_ab;
+nu = h .* sqrt(2 * d_ab ./ (lambda * d_an .* d_nb));
+% Height above the line joining the antennas, Earth bulge included
+H = z(k) + x(k) .* (x(n) - x(k)) / (2 * a_e) - (z(1) * (x(n) - x(k)) + z(n) * x(k)) / x(n);
+% Order the candidates outward from p, so entry j has p's nearer neighbors before it
+if p == b
+    H = flipud(H); nu = flipud(nu); xk = flipud(x(k));
+else
+    xk = x(k);
+end
+m = numel(H);
+run_min = cummin(H);
+at_min = cummax((H == run_min) .* (1:m)');           % index of the running minimum
+% Deepest point strictly between candidate j and p: running minimum up to j - 1
+c = [0; H(2:end) - run_min(1:end - 1)];
+iv = [1; at_min(1:end - 1)];
+d1 = abs(xk - xk(iv)); d2 = abs(xk(iv) - x(p));
+r1 = sqrt(lambda * d1 .* d2 ./ max(d1 + d2, eps));   % P.526-16 eq. (2)
+w = zeros(m, 1);
+ok = c > 0 & r1 > 0;
+w(ok) = min(1, c(ok) ./ (0.6 * r1(ok)));             % 0.6 F1: P.526-16 section 2.5
+J = zeros(m, 1);
+on = nu > -0.78;
+J(on) = 6.9 + 20 * log10(sqrt((nu(on) - 0.1).^2 + 1) + nu(on) - 0.1);   % P.526-16 eq. (31)
+[L, j] = max(w .* J);
+if L > 0
+    nu_best = nu(j); w_best = w(j);
+    if p == b, k_best = k(m + 1 - j); else, k_best = k(j); end
+end
 end
 
 function [i1, i2, blocked] = horizon_points(x, z, a_e)
