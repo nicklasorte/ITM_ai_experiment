@@ -265,5 +265,18 @@ ports used only as numerical checks.
 | 7 | P.2001 clear-air fading and enhancement on the ITM median | `variability` | P.2001 Att. B | Long-term shape error | 0 |
 | 8 | Refit ITM time-variability constants | `variability`, `curve` | TN101 form, refit | Long-term shape error | 3–6 |
 
+### More public-source submodels
+
+These extend the list with standard physics that other terrain models use.
+Each is implemented only from the public text cited.
+
+| Rank | Candidate | ITM function | Public source | Target error | New parameters |
+| --- | --- | --- | --- | --- | --- |
+| 9 | Line-of-sight loss gated by first-Fresnel-zone clearance along the profile, with a two-ray term only where terrain enters the zone | `line_of_sight_loss` | Fresnel ellipsoids, [ITU-R P.526-16 §2.1](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.526-16-202511-I!!TOC-HTM-E.htm) | Line of sight, R1 and VA | 0–1 (clearance threshold) |
+| 10 | Rough-surface reflection factor `exp(−2(2πσ sinψ/λ)²)` for the reflected ray, σ from the profile | `line_of_sight_loss` | [Ament (1953), Proc. IRE 41(1)](https://manuscript.isc.ac/Inventory/49/929830.htm); Bessel-corrected form in [NRL report ADA158195](https://apps.dtic.mil/sti/pdfs/ADA158195.pdf) | Line of sight above 3 GHz | 0 |
+| 11 | Rounded-obstacle correction to knife-edge loss, from the obstacle's radius of curvature on the profile | `knife_edge_diffraction` | [ITU-R P.526-16](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.526-16-202511-I!!TOC-HTM-E.htm), single rounded obstacle | R2, diffraction mode | 0 |
+| 12 | Spherical-earth diffraction for smooth paths | `smooth_earth_diffraction` | [ITU-R P.526-16 §3](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.526-16-202511-I!!TOC-HTM-E.htm) | Smooth-path diffraction | 0 |
+| 13 | Wedge diffraction with finite conductivity (UTD) at the dominant edges | `knife_edge_diffraction` | [Kouyoumjian and Pathak (1974), Proc. IEEE 62(11):1448–1461](https://scilit.com/publications/a5d3efd185db427b4ecaad4ec922eeeb); P.526-16 §6 | R2 above 3 GHz | 0–1 (wedge angle rule) |
+
 Write-up rule: name each part by its physics and its public source. Don't
 attribute a change to an unpublished or restricted model.

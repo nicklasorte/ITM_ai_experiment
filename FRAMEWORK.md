@@ -580,6 +580,10 @@ id  date  branch  tier  function  n_new_params  composite  delta_vs_best  p2_cel
   touch them.
 - **The agent never sees the lockbox.** Lockbox data is outside the agent's
   working tree until a human runs the final check.
+- **Public provenance only.** Code in this repository comes from the
+  public sources it cites. A private comparison run that isn't distributed
+  may inform which hypotheses the planner chooses, but its code, equations,
+  and outputs never enter this repository.
 - **Every gain must be explainable.** If the agent can't state the physical
   mechanism, the change isn't kept, even if it scores.
 - **No silent failures.** NaN loss, complex loss, or an ITM error code on a
