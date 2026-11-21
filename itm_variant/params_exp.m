@@ -26,7 +26,7 @@ cfg.version = 1;
 % The last four replace the knife-edge part of ITM's diffraction loss with a
 % profile-based loss at the path's own distance, on transhorizon paths
 % (multi_edge_diffraction_rev1; experiments/batches/B01.md).
-cfg.diffraction = "itm";
+cfg.diffraction = "bullington";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights
