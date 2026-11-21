@@ -70,6 +70,11 @@ ITM error by subset:
 | ITM mode near 3 GHz: diffraction | 1,402 | +3.1 | 21.3 |
 | ITM mode near 3 GHz: troposcatter | 234 | +19.1 | 33.7 |
 
+These first numbers came from a Python pass over the CSV. The harness's own
+numbers (path weights, cells, and worst cell as `eval/score_rev1.m` defines
+them) are in experiment 000-baseline and supersede the last two columns:
+path-weighted RMS 16.2 dB, worst cell 39.6 dB.
+
 What this tells us:
 
 - **ITM has little overall bias but a large spread.** A constant offset fitted
