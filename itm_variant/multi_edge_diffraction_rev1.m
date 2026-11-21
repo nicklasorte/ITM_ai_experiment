@@ -5,7 +5,7 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %   described by the profile, evaluated at the path's own geometry.
 %
 %   Inputs:
-%     method   "epstein_peterson" | "ep_isolated" | "p526_double_edge" |
+%     method   "epstein_peterson" | "ep_isolated" | "p526_double_edge" | "string_ep" |
 %              "deygout" | "p526_cascaded" | "bullington"
 %     x_m      distance of each profile point from the transmitter (m),
 %              increasing, x_m(1) = 0, x_m(end) = path length
@@ -49,6 +49,22 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %         where the Recommendation says it is valid (each of L1 and L2
 %         above about 15 dB); otherwise L1 + L2. Edges and the isolation
 %         test as in "ep_isolated".
+%     "string_ep"  Obstructions found with the stretched string of ITU-R
+%         P.526-16 section 4.4, eq. (44): from each string point, the next
+%         is the sample of highest elevation on the effective Earth. String
+%         points on consecutive samples form one obstruction (the
+%         Recommendation's rule for sample spacings of 250 m or less).
+%         Neighboring obstructions are merged unless the valley between
+%         them opens to at least 0.6 of the first Fresnel zone radius
+%         somewhere (the planner's reading of the isolation criterion in
+%         section 2.5, with eq. (2) for the radius; a design choice, B05).
+%         Each obstruction is one knife edge at its vertex, the
+%         intersection of the rays from the neighboring obstructions (or
+%         terminals) over its two ends, and the losses are summed as in
+%         Epstein-Peterson. The cylinder, sub-path, and C_N terms of
+%         section 4.4 are not included (their equations weren't verified).
+%         On a smooth Earth the string touches consecutive samples, so the
+%         result is the single Bullington-point knife edge (tested).
 %     "deygout"  Principal edge over the whole path, plus one secondary edge
 %         on each side of it; losses summed. Deygout, IEEE Trans. Antennas
 %         Propag. 14(4), 1966; NTIA TR-26-580 section 3.3.3 (three major
@@ -123,6 +139,9 @@ switch method
             end
             D.edges = [i1 i2]; D.nu = [nu1 nu2]; D.isolated = true;
         end
+
+    case "string_ep"
+        [L_db, D.edges, D.nu] = string_ep(x_m, z_m, lambda, a_e_m);
 
     case {"deygout", "p526_cascaded"}
         [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
@@ -250,4 +269,73 @@ ray = (z(i1) * d_b + z(i2) * d_a) / d_ab;
 clearance = ray - (z(k) + d_a .* d_b / (2 * a_e));
 r1 = sqrt(lambda * d_a .* d_b / d_ab);
 tf = all(clearance >= 0.6 * r1);
+end
+
+function [L, obs, nus] = string_ep(x, z, lambda, a_e)
+% Epstein-Peterson over stretched-string obstructions (see the header).
+n = numel(x);
+% Stretched string, P.526-16 eq. (44)
+pts = 1; s = 1;
+while s < n
+    i = (s + 1:n)';
+    dsi = x(i) - x(s);
+    [~, j] = max((z(i) - z(s)) ./ dsi - dsi / (2 * a_e));
+    s = i(j);
+    pts(end + 1) = s; %#ok<AGROW>
+end
+mid = pts(2:end - 1);
+if isempty(mid)
+    % Clear path: sub-path clearance loss of the highest-nu point
+    [nus, obs] = principal(1, n, x, z, lambda, a_e);
+    L = knife_J(nus);
+    return
+end
+% Consecutive samples form one obstruction: rows [first last]
+brk = [true, diff(mid) > 1];
+first = mid(brk);
+last = mid([brk(2:end), true]);
+% Merge neighbors whose valley doesn't open to 0.6 of the first Fresnel zone
+k = 1;
+while k < numel(first)
+    if valley_open(last(k), first(k + 1), x, z, lambda, a_e)
+        k = k + 1;
+    else
+        last(k) = last(k + 1);
+        first(k + 1) = []; last(k + 1) = [];
+    end
+end
+m = numel(first);
+L = 0; nus = zeros(1, m);
+for k = 1:m
+    if k == 1, w = 1; else, w = last(k - 1); end
+    if k == m, q = n; else, q = first(k + 1); end
+    D = x(q) - x(w);
+    hgt = @(p) z(p) + (x(p) - x(w)) * (x(q) - x(p)) / (2 * a_e) ...
+        - (z(w) * (x(q) - x(p)) + z(q) * (x(p) - x(w))) / D;
+    if first(k) == last(k)
+        sv = x(first(k)) - x(w);
+        hv = hgt(first(k));
+    else
+        a = hgt(first(k)) / (x(first(k)) - x(w));      % ray from w over the near end
+        b = hgt(last(k)) / (x(q) - x(last(k)));        % ray from q over the far end
+        sv = D * b / (a + b);
+        hv = a * sv;
+    end
+    nus(k) = hv * sqrt(2 * D / (lambda * sv * (D - sv)));
+    L = L + knife_J(nus(k));
+end
+obs = [first(:), last(:)];
+end
+
+function tf = valley_open(i1, i2, x, z, lambda, a_e)
+% True when some point between i1 and i2 lies at least 0.6 of the first
+% Fresnel zone radius (P.526-16 eq. (2)) below the line joining them.
+if i2 - i1 < 2
+    tf = false;
+    return
+end
+k = (i1 + 1:i2 - 1)';
+d_a = x(k) - x(i1); d_b = x(i2) - x(k); d_ab = x(i2) - x(i1);
+clearance = (z(i1) * d_b + z(i2) * d_a) / d_ab - (z(k) + d_a .* d_b / (2 * a_e));
+tf = any(clearance >= 0.6 * sqrt(lambda * d_a .* d_b / d_ab));
 end

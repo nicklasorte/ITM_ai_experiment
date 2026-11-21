@@ -73,6 +73,25 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### B05 planned (planner note)
+- Date: 2026-11-21. Planner: Claude Fable 5.2. Plan: `experiments/batches/B05.md`,
+  experiments 501–506.
+- New: `"string_ep"` (stretched-string obstructions, P.526-16 section 4.4
+  eq. (44), merged by a Fresnel-clearance test; Epstein-Peterson sum), the
+  delta construction with any obstruction method, and the
+  `"delta_bullington_afo"` control. Tests 21 of 21 pass; parity
+  6.8 × 10⁻¹³ dB.
+- Battery code check: `delta_ep_isolated` and `delta_bullington_afo` pass;
+  the three multi-edge delta settings and Bullington with `blocked_paths`
+  fail continuity, because each counted edge adds at least 6 dB. They're
+  scheduled as mechanism tests and can't be kept.
+- By-edge-count evidence from existing runs: 401 is too low on R2's measured
+  rows at every edge count (−15.6 dB on 0–1 edge rows, −9.9 dB on 4+), so
+  edge counting is one of two candidate mechanisms; the other is a loss
+  term common to all R2 paths (502 tests ITM's A_fo).
+- Not built: the rounded-obstacle term of P.526-16 section 4.2 (the
+  extraction of eq. (34)–(36) was inconsistent; needs the PDF).
+
 ### D03-r2-dead-paths (diagnostic, no model change)
 - Date: 2026-11-21.
 - Question: what separates R2's 1,184 no-signal rows from its 2,560 measured

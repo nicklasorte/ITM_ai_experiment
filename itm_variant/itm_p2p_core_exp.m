@@ -87,7 +87,7 @@ elev_deg = rad2deg(theta_geo);
 
 % Profile context for the profile-based submodels (batch B01). Built only
 % when a switch leaves its ITM value, so the default path is unchanged.
-delta = startsWith(cfg.diffraction, "delta_bullington");
+delta = startsWith(cfg.diffraction, "delta_");
 if ~area && ((cfg.diffraction ~= "itm" && ~delta) || cfg.line_of_sight ~= "itm")
     cfg.ctx = profile_context(pfl, h_m, 1 / gamma_e, f_mhz, cfg);
 end
@@ -98,7 +98,7 @@ if delta
     if area
         error('itmexp:cfg', 'Delta-Bullington needs a terrain profile; area mode has none.');
     end
-    A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg);
+    A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m);
 end
 
 A_fs_db = free_space_loss(d_m, f_mhz);
@@ -677,7 +677,7 @@ q = (term1 + (-theta_los * a_e + d_ML) / d_m) * c_min(delta_h_d * f_mhz / 47.7, 
 w = cfg.cal.w_const / (cfg.cal.w_const + c_sqrt(q));
 end
 
-function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg)
+function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m)
 % Reference attenuation by the delta-Bullington construction (batch B04).
 %   L_ba  Bullington loss of the actual profile with the actual antennas
 %   L_bs  Bullington loss of a zero-height profile with the antennas at
@@ -694,6 +694,16 @@ function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, 
 %   "delta_bullington_p526"  max(L_ba + A_s - L_bs, 0)   P.526-16 eq. (66)
 % On a straight-line terrain L_ba = L_bs and the smooth path is the actual
 % path, so the P.526 form returns ITM's own A_ref exactly (tested).
+% Batch B05 forms, all L_a + max(A_s - L_s, 0) with the same obstruction
+% method on the actual and the zero-height profile:
+%   "delta_string_ep"      obstructions from the stretched string
+%   "delta_p526_cascaded"  ITU-R P.526-11 section 4.4.2
+%   "delta_deygout"        Deygout three-edge
+%   "delta_ep_isolated"    Epstein-Peterson over isolated horizon obstacles
+%   "delta_bullington_afo" "delta_bullington" plus ITM's own clutter term
+%       A_fo of the actual path (DiffractionLoss, ITM v1.4), which the
+%       smooth-path ITM call drops because its terrain irregularity is zero
+%       (control named by the B04 reviewers)
 np = fix(pfl(1));
 xi = pfl(2);
 x = (0:np)' * xi;
@@ -722,9 +732,23 @@ hsr = min(hsr, g(end));                                                         
 hp = [hts - hst, hrs - hsr];                                                          % heights above the smooth surface
 a_e = 1 / gamma_e;
 z = g; z(1) = hts; z(end) = hrs;
-L_ba = multi_edge_diffraction_rev1("bullington", x, z, f_mhz, a_e);
+switch cfg.diffraction
+    case {"delta_bullington", "delta_bullington_p526", "delta_bullington_afo"}
+        method = "bullington";
+    case "delta_string_ep"
+        method = "string_ep";
+    case "delta_p526_cascaded"
+        method = "p526_cascaded";
+    case "delta_deygout"
+        method = "deygout";
+    case "delta_ep_isolated"
+        method = "ep_isolated";
+    otherwise
+        error('itmexp:cfg', 'Unknown delta form "%s".', cfg.diffraction);
+end
+L_ba = multi_edge_diffraction_rev1(method, x, z, f_mhz, a_e);
 z0 = zeros(size(g)); z0(1) = hp(1); z0(end) = hp(2);
-L_bs = multi_edge_diffraction_rev1("bullington", x, z0, f_mhz, a_e);
+L_bs = multi_edge_diffraction_rev1(method, x, z0, f_mhz, a_e);
 % ITM on the smooth-earth equivalent path, every switch at "itm"
 pfl_s = [pfl(1); pfl(2); hst + (hsr - hst) * x / d];
 c0 = cfg;
@@ -732,13 +756,16 @@ c0.diffraction = "itm"; c0.line_of_sight = "itm";
 if isfield(c0, 'ctx'), c0 = rmfield(c0, 'ctx'); end
 [th_s, dh_s, he_s, delta_h_s, d_s] = quick_pfl(pfl_s, gamma_e, hp);
 A_s = longley_rice(th_s, f_mhz, Z_g, dh_s, he_s, gamma_e, N_s, delta_h_s, hp, d_s, uint32(0), false, c0);
-switch cfg.diffraction
-    case "delta_bullington"
-        A_ref = L_ba + max(A_s - L_bs, 0);
-    case "delta_bullington_p526"
-        A_ref = max(L_ba + A_s - L_bs, 0);
-    otherwise
-        error('itmexp:cfg', 'Unknown delta form "%s".', cfg.diffraction);
+if cfg.diffraction == "delta_bullington_p526"
+    A_ref = max(L_ba + A_s - L_bs, 0);
+else
+    A_ref = L_ba + max(A_s - L_bs, 0);
+end
+if cfg.diffraction == "delta_bullington_afo"
+    % ITM's A_fo for the actual path, exactly as in diffraction_loss
+    d_sML = sqrt(2.0 * h_e_m(1) * a_e) + sqrt(2.0 * h_e_m(2) * a_e);
+    sigma_h_d = sigma_h_function(terrain_roughness(d_sML, delta_h_m));
+    A_ref = A_ref + cfg.cal.afo_scale * c_min(15.0, 5 * log10(1.0 + 1e-5 * h_m(1) * h_m(2) * f_mhz * sigma_h_d));
 end
 if ~isfinite(A_ref) || ~isreal(A_ref)
     error('itmexp:delta', 'Non-finite delta-Bullington reference attenuation.');

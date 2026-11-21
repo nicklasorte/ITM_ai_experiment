@@ -34,6 +34,10 @@ cfg.diffraction = "itm";
 %                            ITU-R P.452-18 eq. (38)-(40), with ITM's own
 %                            smooth-earth reference A_s in place of L_sph (B04)
 %   "delta_bullington_p526"  max(L_ba + A_s - L_bs, 0), ITU-R P.526-16 eq. (66)
+%   "delta_string_ep" | "delta_p526_cascaded" | "delta_deygout" |
+%   "delta_ep_isolated"      the delta construction with a multi-edge
+%                            obstruction loss in place of Bullington (B05)
+%   "delta_bullington_afo"   "delta_bullington" plus ITM's clutter term A_fo (B05 control)
 % Where the profile-based loss applies (only when cfg.diffraction ~= "itm"):
 %   "transhorizon"   transhorizon paths only (batch B01)
 %   "blocked_paths"  also line-of-sight-region paths whose profile blocks

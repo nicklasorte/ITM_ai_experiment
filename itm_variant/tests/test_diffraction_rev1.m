@@ -269,3 +269,104 @@ a1 = itm_ref(pr, 10, 10, 1000, c1); a2 = itm_ref(pr, 10, 10, 1000, c2);
 tc.verifyGreaterThan(a1, 35);
 tc.verifyGreaterThanOrEqual(a1, a2 - 1e-9);
 end
+
+function test_string_ep_single_and_two_edges(tc)
+% One spike: the single knife edge. Two spikes 15 km apart: the
+% Epstein-Peterson value written out by hand.
+f = tc.TestData.f; a = tc.TestData.flat; lam = tc.TestData.lambda;
+nuf = @(h, d1, d2) h * sqrt(2 * (d1 + d2) / (lam * d1 * d2));
+[x, z] = spike_profile(30000, 15000, 100, 10);
+i = find(z == 100);
+tc.verifyEqual(multi_edge_diffraction_rev1("string_ep", x, z, f, a), J_approx(nuf(90, x(i), 30000 - x(i))), 'AbsTol', 1e-6);
+d = 42000; h_ant = 5;
+[x, z] = spike_profile(d, [10000 25000], [150 120], h_ant);
+i1 = find(z == 150); i2 = find(z == 120);
+h1 = 150 - (h_ant + (120 - h_ant) * x(i1) / x(i2));
+h2 = 120 - (150 + (h_ant - 150) * (x(i2) - x(i1)) / (d - x(i1)));
+want = J_approx(nuf(h1, x(i1), x(i2) - x(i1))) + J_approx(nuf(h2, x(i2) - x(i1), d - x(i2)));
+[L, D] = multi_edge_diffraction_rev1("string_ep", x, z, f, a);
+tc.verifyEqual(L, want, 'AbsTol', 1e-6);
+tc.verifyEqual(size(D.edges, 1), 2);
+end
+
+function test_string_ep_four_ridges(tc)
+% Four separated spikes: each edge against its neighbors, summed by hand
+f = tc.TestData.f; a = tc.TestData.flat; lam = tc.TestData.lambda; d = 60000; h_ant = 5;
+xs = [9000 21000 36000 48000]; hs = [200 260 240 180];
+[x, z] = spike_profile(d, xs, hs, h_ant);
+px = [0 xs d]; pz = [h_ant hs h_ant];
+want = 0;
+for k = 2:5
+    d1 = px(k) - px(k - 1); d2 = px(k + 1) - px(k);
+    h = pz(k) - (pz(k - 1) * d2 + pz(k + 1) * d1) / (d1 + d2);
+    tc.assertGreaterThan(h, 0);                 % every spike is on the string
+    nu = h * sqrt(2 * (d1 + d2) / (lam * d1 * d2));
+    want = want + J_approx(nu);
+end
+[L, D] = multi_edge_diffraction_rev1("string_ep", x, z, f, a);
+tc.verifyEqual(size(D.edges, 1), 4);
+tc.verifyEqual(L, want, 'AbsTol', 1e-6);
+% Bullington's single edge gives less on four ridges, before and after its correction
+tc.verifyGreaterThan(L, multi_edge_diffraction_rev1("bullington", x, z, f, a));
+end
+
+function test_string_ep_split_top_is_one_obstruction(tc)
+% A top on two adjacent samples: one obstruction, within 0.1 dB of one sample
+d = 42000; h_ant = 10; f = tc.TestData.f; a = tc.TestData.flat;
+x = (0:30:d)'; z = zeros(size(x)); z(1) = h_ant; z(end) = h_ant;
+[~, i] = min(abs(x - 21000));
+one = z; one(i) = 150; two = one; two(i + 1) = 150;
+[L2, D] = multi_edge_diffraction_rev1("string_ep", x, two, f, a);
+tc.verifyEqual(size(D.edges, 1), 1);
+tc.verifyEqual(L2, multi_edge_diffraction_rev1("string_ep", x, one, f, a), 'AbsTol', 0.1);
+end
+
+function test_string_ep_smooth_earth_is_bullington_point(tc)
+% Smooth Earth beyond the horizon: one obstruction whose vertex is the
+% Bullington point, so the loss is J(nu_b), P.526-16 eq. (55), (56),
+% written here in the Recommendation's km and m units
+d = 60000; a_e = 8.5e6; h_ant = 10; lam = tc.TestData.lambda;
+x = (0:30:d)'; z = zeros(size(x)); z(1) = h_ant; z(end) = h_ant;
+Ce = 1 / (a_e / 1000); dk = x(2:end - 1) / 1000; D = d / 1000;
+Stim = max((500 * Ce * dk .* (D - dk) - h_ant) ./ dk);
+Srim = max((500 * Ce * dk .* (D - dk) - h_ant) ./ (D - dk));
+db = (Srim * D) / (Stim + Srim);
+nub = (h_ant + Stim * db - h_ant) * sqrt(0.002 * D / (lam * db * (D - db)));
+[L, Dg] = multi_edge_diffraction_rev1("string_ep", x, z, tc.TestData.f, a_e);
+tc.verifyEqual(size(Dg.edges, 1), 1);
+tc.verifyEqual(L, J_approx(nub), 'AbsTol', 0.05);
+end
+
+function test_string_ep_reciprocity_and_clear_path(tc)
+d = 60000; a_e = 8.5e6;
+x = (0:30:d)';
+z = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+z(1) = z(1) + 12; z(end) = z(end) + 3;
+a = multi_edge_diffraction_rev1("string_ep", x, z, 450, a_e);
+b = multi_edge_diffraction_rev1("string_ep", x, flipud(z), 450, a_e);
+tc.verifyEqual(a, b, 'AbsTol', 1e-6);
+[x, z] = spike_profile(21000, 10500, 0, 200);
+tc.verifyEqual(multi_edge_diffraction_rev1("string_ep", x, z, tc.TestData.f, a_e), 0, 'AbsTol', 1e-12);
+end
+
+function test_delta_b05_forms(tc)
+% Every B05 delta form: finite, reciprocal within ITM's own class, and at
+% least its obstruction loss L_a (the form is L_a + max(A_s - L_s, 0)).
+% The A_fo control adds between 0 and 15 dB to "delta_bullington".
+x = (0:30:60000)';
+g = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+pfl = [numel(x) - 1; 30; g]; pflr = [numel(x) - 1; 30; flipud(g)];
+zz = g; zz(1) = zz(1) + 12; zz(end) = zz(end) + 3;
+a_e = 8.5e6;                                   % only for the lower-bound check below
+M = ["string_ep" "p526_cascaded" "deygout" "ep_isolated"];
+for m = M
+    c = params_exp(); c.diffraction = "delta_" + m;
+    a = itm_ref(pfl, 12, 3, 450, c); b = itm_ref(pflr, 3, 12, 450, c);
+    tc.verifyTrue(isfinite(a) && a >= 0, "finite " + m);
+    tc.verifyEqual(a, b, 'AbsTol', 0.5, "reciprocity " + m);
+    tc.verifyGreaterThan(a, 0.8 * multi_edge_diffraction_rev1(m, x, zz, 450, a_e), "lower bound " + m);
+end
+c1 = params_exp(); c1.diffraction = "delta_bullington"; c2 = c1; c2.diffraction = "delta_bullington_afo";
+dA = itm_ref(pfl, 12, 3, 450, c2) - itm_ref(pfl, 12, 3, 450, c1);
+tc.verifyGreaterThanOrEqual(dA, 0); tc.verifyLessThanOrEqual(dA, 15);
+end
