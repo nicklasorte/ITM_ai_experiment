@@ -73,6 +73,22 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### B03 planned (planner note)
+- Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B03.md`.
+- New: `cfg.diffraction_region = "transhorizon_phased"`, linear phase-in
+  between ITM's own d_sML and d_3 (no new constant). Parity at defaults
+  unchanged (the default value is `"transhorizon"`).
+- Battery code check: only Bullington passes with phasing; the
+  Epstein-Peterson variants fail the rough-terrain sweep by 2.7–9.8 dB
+  beyond the 1 dB margin, next to ITM's own region flips on that profile.
+
+### 301-bullington-phased
+- Date: 2026-11-21. Batch B03. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "bullington";` and `cfg.diffraction_region = "transhorizon_phased";`
+- Rationale: 104's single equivalent edge, made continuous at ITM's line-of-sight boundary, with less change on paths just beyond it.
+- Predicted (from B03.md, before the run): composite 15.75–16.0; screened 13.3–13.5; R2 RMS 26.5–28 (mean +9 to +10); R1, R3, VA within 0.5 dB of stock; censored 28.3–29.2 %; physics pass. Likely rejected on the 0.3 dB threshold or the paired check.
+- Result: pending
+
 ### 201-ep-isolated-blocked
 - Date: 2026-11-21. Batch B02. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "ep_isolated";` and `cfg.diffraction_region = "blocked_paths";`

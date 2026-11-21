@@ -535,6 +535,20 @@ if isfield(cfg, 'ctx')
         w_d = knife_weight(d_m, d_hzn_m, h_e_m, a_e, delta_h_m, h_m, theta_los, f_mhz, area, cfg);
         A_var = B_3 + (B_4 - B_3) / (d_4 - d_3) * (d_m - d_3) ...
             + (1.0 - w_d) * cfg.cal.knife_scale * cfg.ctx.A_knife_db;
+        if ~los_region && isfield(cfg, 'diffraction_region') && cfg.diffraction_region == "transhorizon_phased"
+            % Phase the profile-based value in across ITM's own anchor
+            % distances: ITM's line at d_sML (where its line-of-sight fit
+            % joins, so the loss stays continuous), the full profile-based
+            % value from d_3 (where ITM itself evaluates diffraction).
+            % Linear in distance; no new constant (batch B03).
+            A_itm = M_d * d_m + A_d0;
+            if d_3 > d_sML
+                t = min(max((d_m - d_sML) / (d_3 - d_sML), 0.0), 1.0);
+            else
+                t = 1.0;
+            end
+            A_var = A_itm + t * (A_var - A_itm);
+        end
         A_d0 = A_var - M_d * d_m;
         lines.A_d0_db = A_d0;
     end
@@ -663,7 +677,7 @@ function ctx = profile_context(pfl, h_m, a_e, f_mhz, cfg)
 %   A_knife_db   profile-based knife-edge loss at the path's own geometry
 %                (multi_edge_diffraction_rev1), or NaN when cfg.diffraction
 %                is "itm"
-if isfield(cfg, 'diffraction_region') && ~ismember(cfg.diffraction_region, ["transhorizon" "blocked_paths"])
+if isfield(cfg, 'diffraction_region') && ~ismember(cfg.diffraction_region, ["transhorizon" "blocked_paths" "transhorizon_phased"])
     error('itmexp:cfg', 'Unknown cfg.diffraction_region "%s".', cfg.diffraction_region);
 end
 if ~ismember(cfg.line_of_sight, ["itm" "profile_horizons"])

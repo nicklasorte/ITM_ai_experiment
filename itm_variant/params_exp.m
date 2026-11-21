@@ -34,6 +34,9 @@ cfg.diffraction = "itm";
 %   "transhorizon"   transhorizon paths only (batch B01)
 %   "blocked_paths"  also line-of-sight-region paths whose profile blocks
 %                    the direct ray; keeps the loss continuous at d_sML
+%                    (B02: lowered half of Phase 2 rows by about 10 dB)
+%   "transhorizon_phased"  transhorizon paths only, phased in linearly from
+%                    ITM's value at d_sML to the full value at d_3 (B03)
 cfg.diffraction_region = "transhorizon";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
