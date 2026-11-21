@@ -102,17 +102,51 @@ bottom.
 - Caveat: edge count is confounded with distance and frequency; the binned
   comparison controls for predicted loss, not for every covariate.
 
-### B04 summary
+### B04 summary (corrected after the reviewer pass)
 - Date: 2026-11-21. Kept: none. Best stays `000-baseline`.
-- ITM with delta-Bullington reference attenuation beats every model so far
-  on the score (composite 11.5 dB against P.452 14.2 and P.2001 14.0) and
-  passes the physics battery, but predicts signal on 71 % of R2's no-signal
-  results, the same results the ITU models miss.
-- What the gate is now protecting: R2's 1,184 censored rows (no signal
-  received) against R2's measured rows. Any model that fits the measured
-  mountain rows by lowering loss lands on the dead ones too. The next
-  question is physical, not numerical: what makes those R2 paths dead when
-  every terrain model says they shouldn't be?
+- ITM with delta-Bullington reference attenuation (401) has composite
+  11.5 dB against P.452 14.2 and P.2001 14.0, and passes the physics
+  battery. The edge is in the long-term terms (level 15.0 against 18.5 and
+  21.2; shape 5.2 against 9.9 and 6.6). On Phase 2 it does not beat the ITU
+  models (cell 14.2 against 14.1 for both). The recalibrated ITM R01, which
+  fails the gates, scores 12.4.
+- It predicts signal on 71 % of R2's no-signal rows (P.452 67 %, P.2001
+  68 %, stock ITM 7 %). On censored rows its predictions correlate with
+  P.2001 at r = 0.995 (stock ITM 0.80).
+- Cause, as corrected: Bullington used as the entire reference attenuation.
+  On the rows where 401 fails, the smooth-earth term max(A_s − L_bs, 0) is
+  about zero (77 % within ±1 dB of free space plus L_ba), and free space plus
+  L_ba alone reproduces the failure (74 % censored, R2 mean −11.4 dB). The
+  first version of this entry attributed the optimism to the smooth-earth
+  step; that was wrong (see the reviewer pass below).
+- Together with D03, this places the R2 dead paths where a single equivalent
+  edge underweights several separated ridges.
+
+### B04 reviewer pass (three independent reviewers, 2-of-3 rule)
+- Date: 2026-11-21. Reviewers: fresh agent sessions with no planner
+  context, read-only, Python on the stored files.
+- Agreed by at least two (acted on):
+  - The headline numbers (composite, censored rates by site, 96.5 %
+    overlap, 12.9 dB median margin) recompute exactly from the raw files.
+  - The 96.5 % overlap is weak evidence: stock ITM's violations already sit
+    94 % inside P.2001's, and naive models (site-shifted ITM, random picks)
+    give 71–95 %. The row-level correlation (r = 0.995) is the real evidence.
+  - 104 is not a fair control for "Bullington alone": it replaced only the
+    (1 − w) knife-edge share, only on transhorizon paths, and left 57 % of
+    censored rows unchanged. The smooth-surface attribution was refuted.
+  - The reading of censored rows as lower bounds is correct (the stored
+    value is free space plus the median of exact values and lower bounds).
+  - No transcription bug in `delta_bullington_reference` (eq. (161)–(167),
+    both forms, the heights passed to the smooth ITM call).
+- Noted by one (logged, not acted on):
+  - The smooth-path ITM call drops ITM's terrain terms (A_fo up to 15 dB,
+    roughness), a further untested difference.
+  - `delta_bullington_reference` ignores `cfg.diffraction_region`; the cfg
+    doesn't record that.
+  - 39 censored rows on clear-path profiles are violated by every model,
+    which points to a terrain or data limit.
+  - Ablations not run: delta without eq. (166), A_s with the actual Δh, and
+    delta only beyond the horizon.
 
 ### B04 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B04.md`.
