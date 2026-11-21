@@ -496,6 +496,30 @@ importance and partial-dependence plots to point Tiers 1 and 2 at the right
 mechanism. Its held-out score is the **ceiling** the physics changes are
 trying to approach. Report it, but don't ship it as an ITM change.
 
+## Agent roles
+
+The work splits by how much judgment each step needs. This is the same split
+AlphaEvolve uses: a fast model for breadth and a strong model for depth.
+
+| Role | Model | Does | Doesn't |
+| --- | --- | --- | --- |
+| Planner | Claude Opus 5.5 or Claude Fable 5.2 | Reads results, the log, and the error breakdown; writes a batch plan of 5–10 experiments in `experiments/batches/BNN.md`, each with the exact change, its public source (section and equation numbers), and its predicted effect; writes any new submodel code that transcribes equations (for example delta-Bullington); analyzes the batch afterward and plans the next | Run the routine loop |
+| Worker | Claude Haiku 5.5 | Runs each planned experiment: branch, apply the specified edit or parameter value, launch the evaluation, read `summary.txt`, apply the acceptance rule, merge or revert, log; runs parameter sweeps | Invent experiments, change the plan, or write new physics; it stops and hands back on any error or ambiguity |
+| Reviewer | A fresh Opus or Fable session with no planner context | Every 10 kept changes or at the end of a batch, tries to break the current best: one-site gains, parameters at bounds, battery gaps, code that disagrees with its cited source | Propose new experiments |
+
+Why this split works here:
+
+- **Wall time is MATLAB time.** Each evaluation takes minutes, so the worker
+  spends most of its time waiting; a cheap model is the right fit.
+- **The hard part is transcription and choice.** Picking the next mechanism
+  and writing P.526 or P.2001 equations correctly into MATLAB is where a
+  weaker model makes silent errors, so the planner does those once per
+  batch, and the worker only switches them on.
+- **The judge is code, not a model.** Scores, the physics battery, and the
+  parity check are deterministic, so a cheap worker can't talk its way past
+  them. Planned improvement: compute the keep or revert decision in `eval/`
+  too, so the worker only reads it.
+
 ## Experiment loop
 
 Diagrams: [docs/FLOW.md](docs/FLOW.md).
@@ -521,8 +545,9 @@ instructions to the agent.
 1. **Every 10 accepted changes,** a separate reviewer agent, which hasn't
    seen the reasoning behind them, tries to break the current best: it looks
    for parameter values that sit at their bounds, gains that come from one
-   site, and physics battery gaps. A human reviews its findings before the
-   loop continues.
+   site, and physics battery gaps. The loop continues once its findings are
+   fixed or the affected changes are reverted. (Nick, 2026-11-21: no human
+   review step inside the loop.)
 
 `results/results.tsv` columns:
 
@@ -545,8 +570,9 @@ id  date  branch  tier  function  n_new_params  composite  delta_vs_best  p2_cel
   reproduce the baseline score exactly, the run stops.
 - **Reproducibility.** Every result row records the commit, data hashes,
   and MATLAB release. Any fitted parameter uses `opts.seed`.
-- **Human gate.** No result leaves the repository, and nothing merges to
-  `main`, without Nick's review.
+- **Gate before results leave the repo.** The loop runs without a human
+  review step. Results that go into a briefing or filing outside this
+  repository get Nick's read first.
 
 ## Roadmap
 

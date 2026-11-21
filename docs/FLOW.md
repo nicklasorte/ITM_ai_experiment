@@ -18,7 +18,9 @@ flowchart TB
     end
 
     subgraph AGENT["Agent loop (runs in MATLAB R2025b on Nick's Mac)"]
-        PICK["Pick hypothesis<br/>ranked swap, worst cell first"]
+        PLAN["Planner (Opus or Fable)<br/>writes batch plan BNN.md"]
+        PICK["Worker (Haiku) takes next<br/>planned experiment"]
+        PLAN --> PICK
         EDIT["Edit itm_variant/<br/>itm_p2p_core_exp · params_exp"]
         RUN["run_eval_rev1(Tag=...)"]
         DEC{"Keep?"}
@@ -29,14 +31,15 @@ flowchart TB
         DEC -- "yes" --> KEEP --> LOG
         DEC -- "no" --> REV --> LOG
         LOG --> PICK
+        LOG -. "batch done" .-> PLAN
     end
 
-    PROG --> PICK
+    PROG --> PLAN
     BASE --> RUN
     EVAL --> RUN
 
-    subgraph GATE["Human gates"]
-        REVIEW["Every 10 keeps:<br/>independent reviewer + Nick"]
+    subgraph GATE["Checks outside the loop"]
+        REVIEW["Every 10 keeps:<br/>independent reviewer agent"]
         LOCK["Lockbox, once per candidate:<br/>ITS Phase 1 · low antenna · DBSG3"]
     end
     KEEP -. "10 kept" .-> REVIEW

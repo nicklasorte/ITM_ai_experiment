@@ -27,7 +27,7 @@ the held-out score and pass the physics checks are kept.
   ```matlab
   root = fullfile(getenv('HOME'), 'github', 'ITM_ai_experiment');
   j = batch(@run_eval_rev1, 1, {"Tag", "001-short-name"}, 'CurrentFolder', root, ...
-      'AdditionalPaths', {fullfile(root, 'eval')}, 'CaptureDiary', true, 'AutoAddClientPath', false);
+      'AdditionalPaths', {fullfile(root, 'eval')}, 'CaptureDiary', true, 'AutoAddClientPath', false, 'AutoAttachFiles', false);
   % later: j.State, j.Tasks(1).Diary, fetchOutputs(j)
   ```
 
@@ -56,7 +56,11 @@ addpath data; build_links_rev1(ProfilesOnly=true);
 - No invented constants: cite the source in a comment or mark it `TODO`.
 - Fail loud with `error()`; never return NaN or skip rows silently.
 - Version-suffixed file names (`_rev1`, `_rev2`).
-- Commit messages say what changed and the score delta. Nick reviews every
-  10 kept changes, and anything leaving the repo.
+- Commit messages say what changed and the score delta. No human review step
+  runs inside the loop; an independent reviewer agent checks every 10 kept
+  changes. Results that leave the repo get Nick's read first.
+- Roles (FRAMEWORK.md, Agent roles): a planner (Opus or Fable) writes batch
+  plans in `experiments/batches/`; a worker (Haiku) executes them exactly and
+  hands back on any error or ambiguity.
 - Write in plain technical English following the Google developer
   documentation style guide.

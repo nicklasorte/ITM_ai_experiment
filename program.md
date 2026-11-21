@@ -52,5 +52,8 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
 - Fail loud: use `error()` for unexpected conditions, never silent NaN.
 - Stop and report when three tiers in a row produce no accepted change, or
   when every cell is within 1 dB of the noise floor.
-- After every 10 accepted changes, stop for the independent review and
-  Nick's sign-off.
+- After every 10 accepted changes, stop for the independent reviewer agent
+  (FRAMEWORK.md, Agent roles). Fix or revert what it finds before going on.
+- Worker agents follow the current batch plan in `experiments/batches/`
+  exactly. If a step fails, a spec is ambiguous, or the code needs more than
+  the plan says, stop and hand back to the planner instead of improvising.

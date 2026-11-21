@@ -76,6 +76,12 @@ already works, one small validated change at a time, is far more reliable
 for an LLM than writing a solution from scratch
 ([Lectures on AI for Mathematics](https://arxiv.org/pdf/2604.11504)).
 
+**Mixing models.** AlphaEvolve uses an ensemble: Gemini Flash, the fastest
+model, maximizes the breadth of ideas, while Gemini Pro adds depth
+([DeepMind](https://deepmind.google/en/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/)).
+Flash generated ideas quickly and Pro gave slower, higher-quality
+suggestions ([The Batch](https://www.deeplearning.ai/the-batch/googles-alphaevolve-uses-llms-and-evolutionary-code-to-solve-complex-math-and-speed-up-gemini-training)).
+
 ### 3. Quality diversity: keep the best candidate in each niche
 
 **MAP-Elites** keeps an archive with one cell per combination of features
@@ -216,7 +222,8 @@ baseline model was originally built from.
 | Limit reuse of the holdout | Reusable holdout | Lockbox scored by a human, once per candidate; the agent sees fold scores rounded to 0.1 dB |
 | Split by group | Leakage | Path- and site-grouped folds |
 | Simpler wins ties | autoresearch | Complexity cost in the acceptance rule |
-| Human gate | All of the above | Nick reviews every 10 kept changes and anything leaving the repo |
+| Fast model for breadth, strong model for depth | AlphaEvolve (Gemini Flash and Pro) | Haiku worker runs the loop; Opus or Fable plans batches and writes new physics |
+| Independent check | Reviewer practice | A fresh reviewer agent every 10 kept changes; Nick reads results before they leave the repo |
 
 The 0.1 dB rounding is this project's adaptation of the reusable-holdout
 idea, not a published method: it limits how much the agent learns about the
