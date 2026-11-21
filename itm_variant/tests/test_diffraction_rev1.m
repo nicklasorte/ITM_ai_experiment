@@ -222,3 +222,50 @@ function test_lc_formula_value(tc)
 aa = 10; bb = 15; cc = 17;
 tc.verifyEqual(10 * log10((aa + bb) * (bb + cc) / (bb * (aa + bb + cc))), 10 * log10(800 / 630), 'AbsTol', 1e-12);
 end
+
+function A = itm_ref(pfl, htx, hrx, f, cfg)
+% Reference attenuation through the variant's info output (A_ref_db)
+[~, info] = itm_p2p_core_exp(htx, hrx, pfl, f, 50, 50, 50, 5, 301, 0, 25, 0.02, 13, true, [], cfg);
+A = info.A_ref_db;
+end
+
+function test_delta_p526_straight_terrain_equals_itm(tc)
+% On straight-line terrain L_ba = L_bs and the smooth path is the actual
+% path, so the P.526-16 eq. (66) form must return ITM's own A_ref (B04)
+for slope = [0 0.004 -0.003]
+    x = (0:30:45000)'; g = 300 + slope * x;
+    pfl = [numel(x) - 1; 30; g];
+    c0 = params_exp(); c1 = c0; c1.diffraction = "delta_bullington_p526";
+    a = itm_ref(pfl, 15, 8, 900, c0);
+    b = itm_ref(pfl, 15, 8, 900, c1);
+    tc.verifyEqual(b, a, 'AbsTol', 1e-6, sprintf('slope %g', slope));
+end
+end
+
+function test_delta_reciprocal_and_finite(tc)
+x = (0:30:60000)';
+g = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+pfl = [numel(x) - 1; 30; g]; pflr = [numel(x) - 1; 30; flipud(g)];
+for m = ["delta_bullington" "delta_bullington_p526"]
+    c = params_exp(); c.diffraction = m;
+    a = itm_ref(pfl, 12, 3, 450, c); b = itm_ref(pflr, 3, 12, 450, c);
+    tc.verifyTrue(isfinite(a) && a >= 0);
+    tc.verifyEqual(a, b, 'AbsTol', 0.5, "method " + m);   % ITM's own reciprocity tolerance class
+end
+end
+
+function test_delta_obstruction_forms(tc)
+% A 250 m ridge mid-path on flat terrain. A sharp ridge on a long path can
+% lose less than the smooth earth alone (obstacle gain), so the check is
+% not "more loss than flat". What the construction guarantees: the P.452
+% form is L_ba + max(A_s - L_bs, 0) >= L_ba, so it is at least the
+% Bullington loss of the ridge (about 29 dB knife edge plus the eq. (57)
+% correction), and at least the P.526 form.
+x = (0:30:40000)'; g = 300 + zeros(size(x));
+r = g + 250 * max(0, 1 - abs(x - 20000) / 1500);
+pr = [numel(x) - 1; 30; r];
+c1 = params_exp(); c1.diffraction = "delta_bullington"; c2 = c1; c2.diffraction = "delta_bullington_p526";
+a1 = itm_ref(pr, 10, 10, 1000, c1); a2 = itm_ref(pr, 10, 10, 1000, c2);
+tc.verifyGreaterThan(a1, 35);
+tc.verifyGreaterThanOrEqual(a1, a2 - 1e-9);
+end

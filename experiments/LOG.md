@@ -73,6 +73,32 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### B04 planned (planner note)
+- Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B04.md`.
+- New: `"delta_bullington"` (P.452-18 eq. (38)–(40) form) and
+  `"delta_bullington_p526"` (P.526-16 eq. (66) form), with ITM's own
+  smooth-earth reference standing in for the spherical-earth loss. Smooth
+  surface per P.452-18 eq. (161)–(167), checked against
+  `nicklasorte/matlab_itu_p452`.
+- Tests 15 of 15 pass; both forms pass the battery; parity 6.8 × 10⁻¹³ dB.
+- A first test expected a ridge on flat terrain to add more than 10 dB; it
+  adds 3.4 dB because of obstacle gain (ITM's smooth-earth loss on that path
+  is 37 dB, the ridge's knife edge about 29 dB). Test corrected before any run.
+
+### 401-delta-bullington-p452
+- Date: 2026-11-21. Batch B04. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_bullington";`
+- Rationale: blocked paths get their obstruction loss from the actual profile, and smooth-earth loss only as an excess over the smooth-profile Bullington loss.
+- Predicted (from B04.md, before the run): R2 mean −2 to +6 dB, R2 RMS 20–26; R1, R3 move up to 2 dB; VA 0–2 dB worse; long-term level 19–24; composite 13.5–15.5; censored 30–45 % (likely rejection).
+- Result: pending
+
+### 402-delta-bullington-p526
+- Date: 2026-11-21. Batch B04. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_bullington_p526";`
+- Rationale: the Recommendation's own form, which lets a negative smooth-earth excess lower the obstruction loss.
+- Predicted (from B04.md, before the run): loss at or below 401 everywhere; composite similar or slightly lower; censored 1–5 points above 401.
+- Result: pending
+
 ### B03 summary
 - Date: 2026-11-21. Kept: none. Best stays `000-baseline`.
 - After B01–B03 (eight structural runs): every change that lowers ITM's

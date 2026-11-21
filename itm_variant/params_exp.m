@@ -30,6 +30,10 @@ cfg.diffraction = "itm";
 %   "ep_isolated"       Epstein-Peterson; horizon obstacles merged unless
 %                       isolated (ITU-R P.526-16 section 2.5)
 %   "p526_double_edge"  ITU-R P.526-16 section 4.3 (with Lc where valid)
+%   "delta_bullington"       reference attenuation L_ba + max(A_s - L_bs, 0),
+%                            ITU-R P.452-18 eq. (38)-(40), with ITM's own
+%                            smooth-earth reference A_s in place of L_sph (B04)
+%   "delta_bullington_p526"  max(L_ba + A_s - L_bs, 0), ITU-R P.526-16 eq. (66)
 % Where the profile-based loss applies (only when cfg.diffraction ~= "itm"):
 %   "transhorizon"   transhorizon paths only (batch B01)
 %   "blocked_paths"  also line-of-sight-region paths whose profile blocks

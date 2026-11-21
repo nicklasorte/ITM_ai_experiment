@@ -87,12 +87,19 @@ elev_deg = rad2deg(theta_geo);
 
 % Profile context for the profile-based submodels (batch B01). Built only
 % when a switch leaves its ITM value, so the default path is unchanged.
-if ~area && (cfg.diffraction ~= "itm" || cfg.line_of_sight ~= "itm")
+delta = startsWith(cfg.diffraction, "delta_bullington");
+if ~area && ((cfg.diffraction ~= "itm" && ~delta) || cfg.line_of_sight ~= "itm")
     cfg.ctx = profile_context(pfl, h_m, 1 / gamma_e, f_mhz, cfg);
 end
 
 [A_ref_db, warnings, propmode, lines] = longley_rice(theta_hzn, f_mhz, Z_g, d_hzn_m, h_e_m, ...
     gamma_e, N_s, delta_h_m, h_m, d_m, warnings, area, cfg);
+if delta
+    if area
+        error('itmexp:cfg', 'Delta-Bullington needs a terrain profile; area mode has none.');
+    end
+    A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg);
+end
 
 A_fs_db = free_space_loss(d_m, f_mhz);
 
@@ -668,6 +675,74 @@ term1 = sqrt(1.0 + qk / q);
 d_ML = d_hzn_m(1) + d_hzn_m(2);
 q = (term1 + (-theta_los * a_e + d_ML) / d_m) * c_min(delta_h_d * f_mhz / 47.7, 6283.2);
 w = cfg.cal.w_const / (cfg.cal.w_const + c_sqrt(q));
+end
+
+function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg)
+% Reference attenuation by the delta-Bullington construction (batch B04).
+%   L_ba  Bullington loss of the actual profile with the actual antennas
+%   L_bs  Bullington loss of a zero-height profile with the antennas at
+%         their heights above the smooth-earth surface
+%   A_s   ITM's own reference attenuation for the smooth-earth equivalent
+%         path (straight terrain from h_st to h_sr, same antennas), standing
+%         in for the spherical-earth loss L_sph
+% Smooth-earth surface: least-squares fit with the obstruction adjustment
+% and the terminal-ground limits, ITU-R P.452-18 Attachment 2 section 5,
+% eq. (161)-(167); the same construction as ITU-R P.526-16 section 4.5.2,
+% eq. (58)-(64). Bullington: ITU-R P.526-16 section 4.5.1, eq. (49)-(57).
+% Forms:
+%   "delta_bullington"       L_ba + max(A_s - L_bs, 0)   P.452-18 eq. (38)-(40)
+%   "delta_bullington_p526"  max(L_ba + A_s - L_bs, 0)   P.526-16 eq. (66)
+% On a straight-line terrain L_ba = L_bs and the smooth path is the actual
+% path, so the P.526 form returns ITM's own A_ref exactly (tested).
+np = fix(pfl(1));
+xi = pfl(2);
+x = (0:np)' * xi;
+g = pfl(3:np + 3);
+d = x(end);
+hts = g(1) + h_m(1);
+hrs = g(end) + h_m(2);
+dd = x(2:end) - x(1:end - 1);
+v1 = sum(dd .* (g(2:end) + g(1:end - 1)));                                            % eq. (161)
+v2 = sum(dd .* (g(2:end) .* (2 * x(2:end) + x(1:end - 1)) + g(1:end - 1) .* (x(2:end) + 2 * x(1:end - 1))));  % eq. (162)
+hst = (2 * v1 * d - v2) / d^2;                                                        % eq. (163)
+hsr = (v2 - v1 * d) / d^2;                                                            % eq. (164)
+if np >= 2
+    ii = 2:np;
+    HH = g - (hts * (d - x) + hrs * x) / d;                                           % eq. (165d)
+    hobs = max(HH(ii));                                                               % eq. (165a)
+    if hobs > 0
+        a_t = max(HH(ii) ./ x(ii));                                                   % eq. (165b)
+        a_r = max(HH(ii) ./ (d - x(ii)));                                             % eq. (165c)
+        hst = hst - hobs * a_t / (a_t + a_r);                                         % eq. (166c), (166e)
+        hsr = hsr - hobs * a_r / (a_t + a_r);                                         % eq. (166d), (166f)
+    end
+end
+hst = min(hst, g(1));                                                                 % eq. (167a), (167b)
+hsr = min(hsr, g(end));                                                               % eq. (167c), (167d)
+hp = [hts - hst, hrs - hsr];                                                          % heights above the smooth surface
+a_e = 1 / gamma_e;
+z = g; z(1) = hts; z(end) = hrs;
+L_ba = multi_edge_diffraction_rev1("bullington", x, z, f_mhz, a_e);
+z0 = zeros(size(g)); z0(1) = hp(1); z0(end) = hp(2);
+L_bs = multi_edge_diffraction_rev1("bullington", x, z0, f_mhz, a_e);
+% ITM on the smooth-earth equivalent path, every switch at "itm"
+pfl_s = [pfl(1); pfl(2); hst + (hsr - hst) * x / d];
+c0 = cfg;
+c0.diffraction = "itm"; c0.line_of_sight = "itm";
+if isfield(c0, 'ctx'), c0 = rmfield(c0, 'ctx'); end
+[th_s, dh_s, he_s, delta_h_s, d_s] = quick_pfl(pfl_s, gamma_e, hp);
+A_s = longley_rice(th_s, f_mhz, Z_g, dh_s, he_s, gamma_e, N_s, delta_h_s, hp, d_s, uint32(0), false, c0);
+switch cfg.diffraction
+    case "delta_bullington"
+        A_ref = L_ba + max(A_s - L_bs, 0);
+    case "delta_bullington_p526"
+        A_ref = max(L_ba + A_s - L_bs, 0);
+    otherwise
+        error('itmexp:cfg', 'Unknown delta form "%s".', cfg.diffraction);
+end
+if ~isfinite(A_ref) || ~isreal(A_ref)
+    error('itmexp:delta', 'Non-finite delta-Bullington reference attenuation.');
+end
 end
 
 function ctx = profile_context(pfl, h_m, a_e, f_mhz, cfg)
