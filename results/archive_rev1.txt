@@ -5,16 +5,15 @@ Pareto front (eligible runs no other run beats on all four):
   502-delta-bullington-afo           composite  11.1 |  12.9  15.4   5.1  47.2%   cell: delta_bullington_afo/itm/itm/itm/itm | 0
   401-delta-bullington-p452          composite  11.5 |  14.2  15.0   5.2  67.6%   cell: delta_bullington/itm/itm/itm/itm | 0
   505-delta-ep-isolated              composite  12.4 |  18.0  14.0   5.2  91.3%   cell: delta_ep_isolated/itm/itm/itm/itm | 0
-  104-bullington                     composite  15.7 |  17.6  24.4   5.2  29.4%   cell: bullington/itm/itm/itm/itm | 0
+  601-delta-cascaded-isolated-afo-bounded composite  13.4 |  14.2  20.7   5.1  25.8%   cell: delta_cascaded_isolated_afo/itm/itm/itm/itm | 0
   R02-constrained-recalibration      composite  15.9 |  18.3  24.4   5.1  28.0%   cell: itm/itm/itm/itm/itm +refit | 6+
-  000-baseline                       composite  16.0 |  18.3  24.6   5.2  28.0%   cell: itm/itm/itm/itm/itm | 0
-  105-profile-horizon-region         composite  16.6 |  19.6  24.9   5.2  26.6%   cell: itm/profile_horizons/itm/itm/itm | 0
 
 MAP-Elites cells (structure | free parameters): elite by composite
   delta_bullington_afo/itm/itm/itm/itm | 0           502-delta-bullington-afo (11.1)
   delta_bullington/itm/itm/itm/itm | 0               401-delta-bullington-p452 (11.5)
   delta_bullington_p526/itm/itm/itm/itm | 0          402-delta-bullington-p526 (11.5)
   delta_ep_isolated/itm/itm/itm/itm | 0              505-delta-ep-isolated (12.4)
+  delta_cascaded_isolated_afo/itm/itm/itm/itm | 0    601-delta-cascaded-isolated-afo-bounded (13.4)
   ep_isolated/itm/itm/itm/itm | 0                    201-ep-isolated-blocked (13.7)
   p526_double_edge/itm/itm/itm/itm | 0               202-p526-double-edge-blocked (13.8)
   bullington/itm/itm/itm/itm | 0                     104-bullington (15.7)
@@ -22,8 +21,8 @@ MAP-Elites cells (structure | free parameters): elite by composite
   itm/itm/itm/itm/itm | 0                            000-baseline (16.0)
   itm/profile_horizons/itm/itm/itm | 0               105-profile-horizon-region (16.6)
 
-Reference models (from 506-bullington-blocked-paths):
-  baseline composite  16.0 |  18.3  24.6   5.2  28.0%   beaten on all four by: no front run
+Reference models (from 601-delta-cascaded-isolated-afo-bounded):
+  baseline composite  16.0 |  18.3  24.6   5.2  28.0%   beaten on all four by: 601-delta-cascaded-isolated-afo-bounded
   p452     composite  14.2 |  14.1  18.5   9.9  65.6%   beaten on all four by: 502-delta-bullington-afo
   p2001    composite  14.0 |  14.1  21.2   6.6  65.7%   beaten on all four by: 502-delta-bullington-afo
 

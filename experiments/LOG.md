@@ -73,6 +73,55 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### 601-delta-cascaded-isolated-afo-bounded
+- Date: 2026-11-21. Batch B06. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_cascaded_isolated_afo";` and `cfg.diffraction_bound = "itm_troposcatter_line";`
+- Rationale: an isolated second or third ridge costs its own diffraction loss; one equivalent edge can't carry it, and R2's no-signal rows are multi-ridge paths.
+- Predicted (from B06.md, before the run): R2 no-signal rows violated 0–1 / 2 / 3 / 4+ edges: 60–75 / 15–25 / 20–40 / 10–35 %. R2 measured mean error −3 to +3 dB overall; on 3 and 4+ edge rows it moves up by 3–10 dB from 502. Censored 36–44 %. Phase 2 cell 12.5–14.5. Long-term level 14–17. Composite 11.0–12.5; screened 9.5–11.0. Battery: pass.
+- Result: composite 13.35 dB (stock 16.02); screened 11.85 (13.4); Phase 2 cell 14.2 (18.3); long-term level 20.7 (24.6); shape 5.1 (5.2). Site RMS R1 12.4 (mean +6.2), R2 19.5 (mean +3.8), R3 9.1 (mean +5.9), VA 11.8 (mean -0.6). Censored 25.8 % (stock 28.0 %). Max change from stock 65.1 dB. Paired gain +2.67 (95 % +1.49 to +3.50); screened +1.54 (+0.83 to +2.20).
+- Physics battery: PASS.
+- By edge count:
+  - edges 0-1: dead rows violated 68.3 % of 41; measured-row mean error -9.1 dB
+  - edges 2: 22.5 % of 204; +0.4 dB
+  - edges 3: 7.2 % of 376; +17.0 dB
+  - edges 4+: 5.2 % of 563; +12.9 dB
+- Acceptance rule (FRAMEWORK.md): battery PASS; composite gain +2.7 and screened gain +1.5 (each at least 0.3); both paired intervals above zero; no site RMS worse by more than 0.5 dB (R3 9.1 vs 9.0, others better); censored 25.8 % (at most 29.0 %); no new free parameters. Every gate passes.
+- Decision: HELD, not merged. B06.md requires the three-reviewer pass on A_fo (possible double counting with the obstruction loss) before any `_afo` run is kept. On the Pareto front; beats stock ITM on all four archive objectives (cell 14.2 vs 18.3, level 20.7 vs 24.6, shape 5.1 vs 5.2, censored 25.8 vs 28.0 %). Branch `exp/601-delta-cascaded-isolated-afo-bounded` holds the two switch lines. 603, 604, 602, and 605 were not run (the plan says to hand back).
+- Predictions: held: battery pass; composite gain over stock with the interval above zero; 0-1 edge dead rows 68 % (predicted 60-75); 2 edges 22.5 % (15-25). Missed: composite 13.4 (predicted 11.0-12.5); censored 25.8 % (predicted 36-44, passes the gate); R2 mean +3.8 (predicted -3 to +3, slightly above); 3 edges 7.2 % (predicted 20-40) and 4+ edges 5.2 % (10-35), both lower than predicted; Phase 2 cell 14.2 (12.5-14.5 held); long-term level 20.7 (predicted 14-17).
+- Worker note: R1 and R3 means are +6.2 and +5.9 dB (the variant predicts more loss than measured on average at those sites), and 3 and 4+ edge measured rows are +17 and +13 dB high. The variant is now pessimistic where 502 was optimistic; the planner should check whether that trade is physical.
+
+### 603-delta-bullington-afo-bounded
+- Date: 2026-11-21. Batch B06. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_bullington_afo";` and `cfg.diffraction_bound = "itm_troposcatter_line";`
+- Rationale: 502 with the bound and no new edge term; separates the bound from the edges.
+- Predicted (from B06.md, before the run): Phase 2 within 0.2 dB of 502 (cell 12.7–13.1; R2 mean −6.5 to −5.5). Long-term level 13.5–15.5. Censored 47–49 %. Composite 10.6–11.3; screened 9.2–9.8. By-edge table as 502 within 3 points. Battery: pass.
+- Result: not run. Batch handed back after 601 passed every gate (B06.md stop condition); the setting is unchanged and can be run after the reviewer pass.
+
+### 604-delta-cascaded-isolated-bounded
+- Date: 2026-11-21. Batch B06. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_cascaded_isolated";` and `cfg.diffraction_bound = "itm_troposcatter_line";` (control, no A_fo)
+- Rationale: the new edge term without A_fo; with 601 it prices A_fo on the new base.
+- Predicted (from B06.md, before the run): censored 50–60 %; R2 measured mean −9 to −4 dB; 0–1 edge no-signal rows 95–100 % violated; 3 and 4+ edge rows 30–55 %. Composite 11.5–13.0; screened 10.0–11.5. Battery: pass.
+- Result: not run. Batch handed back after 601 passed every gate (B06.md stop condition); the setting is unchanged and can be run after the reviewer pass.
+
+### 602-delta-cascaded-isolated-afo
+- Date: 2026-11-21. Batch B06. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_cascaded_isolated_afo";` (`cfg.diffraction_bound = "none";`) (control, no bound)
+- Rationale: prices the bound on the new edge term.
+- Predicted (from B06.md, before the run): Phase 2 and the by-edge table within 1 point of 601. Long-term level 20–28. Composite 13–16. Battery: pass.
+- Result: not run. Batch handed back after 601 passed every gate (B06.md stop condition); the setting is unchanged and can be run after the reviewer pass.
+
+### 605-delta-p526-cascaded-bounded
+- Date: 2026-11-21. Batch B06. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_p526_cascaded";` and `cfg.diffraction_bound = "itm_troposcatter_line";` (mechanism test)
+- Rationale: 503 was the only run under the censored gate (26.8 %) and lost on long-term level (30.6); with the bound, it shows how much of that result was the long paths.
+- Predicted (from B06.md, before the run): censored 27–31 %; R2 measured mean +2 to +3.5 dB; long-term level 18–24; composite 13–15; screened 11.5–13.5. By-edge table as 503 within 3 points. Battery: fail as listed (can't be kept).
+- Result: not run. Batch handed back after 601 passed every gate (B06.md stop condition); the setting is unchanged and can be run after the reviewer pass.
+
+### B06 worker summary
+- Date: 2026-11-21. One run (601) of five. 601 passes every gate and uses A_fo, so it is held for the reviewer pass (B06.md) and the batch is handed back; 603, 604, 602, and 605 were not run. No infra retries. Mac `params_exp.m` restored to the defaults (MD5 e9b334fa5d68c11e0159ace40f027ae4).
+- 601: composite 13.35, screened 11.85, censored 25.8 %, battery PASS, paired gains +2.67 and +1.54 (intervals above zero), no site worse by more than 0.1 dB. First structural run to beat stock ITM on all four archive objectives.
+
 ### B06 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Fable 5.2. Plan: `experiments/batches/B06.md`. No scored run yet.
 - 501's blow-up: unbounded stacking of grazing edges, not a code defect. On LT_LT1804 (1,028 km, 417 MHz) `string_ep` finds 56 obstructions, 40 of them under 8 dB each (median ν 0.14), and sums 472 dB; Bullington gives 83, Deygout 123, P.526-11 cascaded 174. Every delta form also lacks a troposcatter limit on L_a.
