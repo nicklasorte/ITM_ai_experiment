@@ -32,8 +32,7 @@ P = itm_exp_paths_rev1();
 S = settings_rev1();
 root = P.root;
 check_splits(root);
-C = load(fullfile(root, 'data', 'cache', 'profiles_rev1.mat'));
-profiles = C.profiles; ids = [profiles.path_id];
+profiles = load_profiles_rev1(root); ids = [profiles.path_id];
 cfg = params_exp();
 
 opts = {'TextType', 'string'};

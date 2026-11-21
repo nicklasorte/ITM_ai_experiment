@@ -39,8 +39,8 @@ addpath eval
 run_eval_rev1(Tag="001-short-name");
 % Check the untouched variant still matches the baseline exactly
 run_eval_rev1(Tag="000-baseline", Parity=true);
-% Rebuild profiles after a fresh clone (data/cache is not committed)
-addpath data; build_links_rev1(ProfilesOnly=true);
+% Terrain comes from data/profiles/*.csv (one file per profile); no tiles
+% or cache are needed after a fresh clone.
 ```
 
 ## Rules

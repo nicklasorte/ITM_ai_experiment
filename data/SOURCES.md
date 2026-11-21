@@ -13,5 +13,17 @@ set. See `nicklasorte/matlab_itm` `docs/model_comparison/data/its/README.md`.
 
 Long-term notes: quantiles are hourly-median attenuation relative to free
 space (base FS) at 0.01, 0.1, 1, 10, 50, 90, 99, 99.9, and 99.99 % of time.
-The archive has no terrain profiles; `build_links_rev1` samples them with
-`itm_terrain_profile_rev1` at 30 m (matlab_itm's fixed default source).
+The archive has no terrain profiles. `export_profiles_rev1(Extract=true)`
+samples each one with `itm_terrain_profile_rev1` at 30 m (USGS 3DEP in the
+US, Copernicus 30 m elsewhere), one path at a time, and deletes the tiles
+after writing the profile.
+
+## Terrain profiles
+
+`profiles/<dataset>/<path_id>.csv` holds one profile per file: header `h_m`,
+then one elevation in metres per line (4 decimals), transmitter first, at
+the spacing given in `profiles/profiles_index_rev1.csv`. Phase 2 profiles
+are the surveyed profiles from the data set, resampled linearly to 30 m.
+Copernicus DEM: © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH
+2014–2018, provided under COPERNICUS by the European Union and ESA; USGS
+3DEP is public domain.

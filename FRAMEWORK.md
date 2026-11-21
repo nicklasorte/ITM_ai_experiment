@@ -197,9 +197,11 @@ ITM_ai_experiment/
 ├── data/                 Human-owned; read-only to the agent
 │   ├── raw/              Unmodified public downloads (ITS Phase 2, ITS long-term)
 │   ├── build_links_rev1.m  Builds links, profiles, splits, baseline and reference predictions
+│   ├── profiles/         Terrain of record: one CSV per profile, plus an index
+│   ├── export_profiles_rev1.m  Writes profiles; samples missing ones one path at a time, deleting tiles
 │   ├── links/            Link tables (CSV) and manifest with hashes
 │   ├── splits/           Frozen fold assignments and their SHA-256
-│   └── cache/            Profiles (not committed; rebuilt by build_links_rev1)
+│   └── cache/            MAT copies for speed (not committed; rebuilt from the CSVs)
 ├── eval/                 Read-only to the agent
 │   ├── run_eval_rev1.m          Runs the variant, checks parity, scores, writes experiments/<tag>/
 │   ├── score_rev1.m             Composite, Phase 2, long-term level and shape scores
@@ -248,18 +250,27 @@ attenuation at 0.01 % to 99.99 % of time, 40 MHz to 10 GHz, 10 to 1000 km.
 296 rows are at 1–10 GHz. After filtering (free-space reference only, both
 antenna heights known, H or V polarization, coordinates for both ends, not
 over sea, distance consistent with coordinates), 548 rows on 325 paths
-remain. Only paths with both ends in the conterminous US are used (Nick,
-2026-11-21), so every profile has the same 30 m terrain: 253 rows on 132
-paths, 39 of them at 1–10 GHz. Worldwide 30 m tiles for the other 193 paths
-would exceed the Mac's disk (`data/build_links_rev1` writes the exact list; `data/build_links_rev1` writes the exact list to
+remain, 106 of them at 1–10 GHz, in the US and abroad. Each path's profile
+is sampled once at 30 m, one path at a time: download the tiles, write the
+profile to `data/profiles/longterm/<path_id>.csv`, delete the tiles
+(Nick, 2026-11-21). The CSVs, not the tiles, are the terrain of record
+(`data/build_links_rev1` writes the exact list; `data/build_links_rev1` writes the exact list to
 `data/links/longterm_links_rev1.csv` and the dropped rows, with reasons, to
 `longterm_dropped_rev1.csv`). The largest loss is 376 rows with no antenna
 heights in the archive; OT/TRER 16 may list them, which would recover
 data (TODO).
 
 The public archive has no profiles, so profiles come from matlab_itm's
-`itm_terrain_profile_rev1` at 30 m with its default source. That is the same
-terrain source matlab_itm uses for every path; it is fixed, not a variable.
+`itm_terrain_profile_rev1` at 30 m with its default source (USGS 3DEP in
+the US, Copernicus elsewhere), via `data/export_profiles_rev1(Extract=true)`.
+Once written, the CSV profiles are fixed; terrain is never a variable.
+
+**Terrain of record.** Every profile, Phase 2 and long-term, is a CSV in
+`data/profiles/<dataset>/<path_id>.csv` (one elevation per line,
+transmitter first, equal spacing), listed with its geometry, climate, N_0,
+and SHA-256 in `data/profiles/profiles_index_rev1.csv`. The builder and the
+evaluator read only these files, so reproducing any result needs no
+terrain tiles.
 
 Known bias: ITM's time-variability curves were drawn from long-term data of
 the same era, so the baseline's time score here is likely optimistic (see

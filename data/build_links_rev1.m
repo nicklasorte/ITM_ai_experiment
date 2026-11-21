@@ -26,6 +26,8 @@ function build_links_rev1(options)
 %     References    true    also compute P.452 and P.2001
 %     ProfilesOnly  false   rebuild data/cache/profiles_rev1.mat and stop
 %     MaxPaths      Inf     for a quick test
+%     SampleTerrain false   sample terrain for long-term paths that have no
+%                           CSV profile (normally use export_profiles_rev1)
 %
 %   Human-owned. The agent doesn't run or edit this file.
 
@@ -34,6 +36,7 @@ arguments
     options.References (1,1) logical = true
     options.ProfilesOnly (1,1) logical = false
     options.MaxPaths (1,1) double = Inf
+    options.SampleTerrain (1,1) logical = false
 end
 here = fileparts(mfilename('fullpath'));
 addpath(fullfile(fileparts(here), 'eval'));
@@ -43,6 +46,12 @@ for d = ["links" "splits" "cache"]
     if ~isfolder(fullfile(here, d)), mkdir(fullfile(here, d)); end
 end
 prof_file = fullfile(here, 'cache', 'profiles_rev1.mat');
+% Canonical terrain: one CSV per profile in data/profiles (export_profiles_rev1).
+% When present, every prediction uses these profiles, so no tiles are needed.
+csvprof = struct('path_id', {});
+if isfile(fullfile(here, 'profiles', 'profiles_index_rev1.csv'))
+    csvprof = load_profiles_rev1(string(fileparts(here)));
+end
 if isfile(prof_file)
     C = load(prof_file); profiles = C.profiles;
 else
@@ -59,6 +68,7 @@ end
 
 if any(options.Datasets == "phase2")
     [T2, pr2, f2] = build_phase2(here, S, options);
+    pr2 = use_csv(pr2, csvprof);
     profiles = merge_profiles(profiles, pr2);
     folds = [folds(folds.dataset ~= "phase2", :); f2];
     if ~options.ProfilesOnly
@@ -69,7 +79,7 @@ if any(options.Datasets == "phase2")
     man.phase2 = summarize(T2, pr2, fullfile(here, 'raw', 'its_phase2.zip'));
 end
 if any(options.Datasets == "longterm")
-    [TL, prl, fl, drop] = build_longterm(here, S, options);
+    [TL, prl, fl, drop] = build_longterm(here, S, options, csvprof);
     profiles = merge_profiles(profiles, prl);
     folds = [folds(folds.dataset ~= "longterm", :); fl];
     if ~options.ProfilesOnly
@@ -176,35 +186,44 @@ folds = table(repmat("phase2", height(u), 1), u.path_id, double(categorical(u.se
 end
 
 %% ---- ITS long-term ------------------------------------------------------
-function [T, prof, folds, drop] = build_longterm(here, S, options)
+function [T, prof, folds, drop] = build_longterm(here, S, options, csvprof)
 tmp = fullfile(tempdir, 'itm_exp_longterm');
 if ~isfolder(fullfile(tmp, 'longterm')), unzip(fullfile(here, 'raw', 'longterm.zip'), tmp); end
 [T, drop] = lt_read(fullfile(tmp, 'longterm'));
-% Nick, 2026-11-21: US paths only, so every profile uses the same 30 m terrain
-% source as matlab_itm (worldwide 30 m tiles exceed the Mac's disk). Both
-% terminals must be inside the conterminous-US box.
-in_us = @(lat, lon) lat > 24 & lat < 50 & lon > -125 & lon < -66;
-keep = in_us(T.tx_lat, T.tx_lon) & in_us(T.rx_lat, T.rx_lon);
-drop = [drop; [T.link_id(~keep), repmat("outside conterminous US", nnz(~keep), 1)]];
-T = T(keep, :);
 up = unique(T.path_id, 'stable');
 if isfinite(options.MaxPaths), up = up(1:min(end, options.MaxPaths)); T = T(ismember(T.path_id, up), :); end
 first = arrayfun(@(p) find(T.path_id == p, 1), up);
-fprintf('Long-term: %d rows on %d paths; sampling terrain...\n', height(T), numel(up));
-[pfls, pinfo] = itm_terrain_profile_rev1(T.tx_lat(first), T.tx_lon(first), T.rx_lat(first), T.rx_lon(first), ...
-    spacing_m=S.profile_spacing_m);
-if ~iscell(pfls), pfls = {pfls}; end
+% Profiles come from data/profiles (one CSV per path). Sample terrain only
+% for paths without one; export_profiles_rev1(Extract=true) does that in
+% bounded-disk chunks and is the normal route.
+have = strings(0, 1);
+if ~isempty(csvprof), have = [csvprof.path_id]; end
+need = ~ismember("LT_" + up, have);
+fprintf('Long-term: %d rows on %d paths; %d paths without a CSV profile\n', height(T), numel(up), nnz(need));
 prof = struct('path_id', {}, 'dataset', {}, 'd_km', {}, 'h_m', {}, 'spacing_m', {}, ...
     'midpoint_deg', {}, 'tx', {}, 'rx', {}, 'climate', {}, 'N_0', {});
-for k = 1:numel(up)
-    i = first(k); pf = pfls{k}; mid = pinfo(k).midpoint_deg;
-    clim = itm_radio_climate_rev1(mid(1), mid(2));
-    if clim == 7
-        clim = min(itm_radio_climate_rev1(T.tx_lat(i), T.tx_lon(i)), itm_radio_climate_rev1(T.rx_lat(i), T.rx_lon(i)));
+if any(need)
+    if ~options.SampleTerrain
+        error('itmexp:profiles', ['%d long-term paths have no CSV profile. Run ', ...
+            'export_profiles_rev1(Extract=true), or pass SampleTerrain=true.'], nnz(need));
     end
-    prof(k) = struct('path_id', "LT_" + up(k), 'dataset', "longterm", 'd_km', pf(1) * pf(2) / 1000, ...
-        'h_m', pf(3:end), 'spacing_m', pf(2), 'midpoint_deg', mid, 'tx', [T.tx_lat(i) T.tx_lon(i)], ...
-        'rx', [T.rx_lat(i) T.rx_lon(i)], 'climate', clim, 'N_0', itm_surface_refractivity_rev1(mid(1), mid(2)));
+    kk = find(need);
+    [pfls, pinfo] = itm_terrain_profile_rev1(T.tx_lat(first(kk)), T.tx_lon(first(kk)), T.rx_lat(first(kk)), ...
+        T.rx_lon(first(kk)), spacing_m=S.profile_spacing_m);
+    if ~iscell(pfls), pfls = {pfls}; end
+    for j = 1:numel(kk)
+        i = first(kk(j)); pf = pfls{j}; mid = pinfo(j).midpoint_deg;
+        clim = itm_radio_climate_rev1(mid(1), mid(2));
+        if clim == 7
+            clim = min(itm_radio_climate_rev1(T.tx_lat(i), T.tx_lon(i)), itm_radio_climate_rev1(T.rx_lat(i), T.rx_lon(i)));
+        end
+        prof(end + 1) = struct('path_id', "LT_" + up(kk(j)), 'dataset', "longterm", 'd_km', pf(1) * pf(2) / 1000, ...
+            'h_m', pf(3:end), 'spacing_m', pf(2), 'midpoint_deg', mid, 'tx', [T.tx_lat(i) T.tx_lon(i)], ...
+            'rx', [T.rx_lat(i) T.rx_lon(i)], 'climate', clim, 'N_0', itm_surface_refractivity_rev1(mid(1), mid(2))); %#ok<AGROW>
+    end
+end
+if ~isempty(csvprof)
+    prof = [prof, csvprof(ismember([csvprof.path_id], "LT_" + up(~need)))];
 end
 T.path_id = "LT_" + T.path_id;
 [~, ip] = ismember(T.path_id, [prof.path_id]);
@@ -290,6 +309,16 @@ end
 end
 
 %% ---- Helpers ------------------------------------------------------------
+function prof = use_csv(prof, csvprof)
+% Replace profiles with the canonical CSV version where one exists
+if isempty(csvprof), return, end
+ids = [csvprof.path_id];
+for k = 1:numel(prof)
+    j = find(ids == prof(k).path_id, 1);
+    if ~isempty(j), prof(k) = csvprof(j); end
+end
+end
+
 function profiles = merge_profiles(profiles, new)
 if isempty(profiles), profiles = new; return, end
 keep = ~ismember([profiles.path_id], [new.path_id]);
