@@ -31,7 +31,7 @@ cfg.diffraction = "itm";
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights
 %   "profile_horizons"  a path whose profile blocks the direct ray is transhorizon
-cfg.line_of_sight = "itm";
+cfg.line_of_sight = "profile_horizons";
 
 % Troposcatter loss and the diffraction/troposcatter switch (troposcatter_loss, longley_rice)
 cfg.troposcatter = "itm";
