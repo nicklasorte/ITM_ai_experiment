@@ -15,6 +15,9 @@ ones that reduce error on held-out measurement sites.
   and replacement parts for ITM from P.452, P.2001, P.526, and the literature.
 - [docs/AGENT_OPTIMIZATION_LITERATURE.md](docs/AGENT_OPTIMIZATION_LITERATURE.md):
   how agents are set up to optimize against a score, and how those loops fail.
+- [docs/PUBLICATION_LITERATURE.md](docs/PUBLICATION_LITERATURE.md): could
+  this be published; related work outside propagation and on AI with
+  propagation models; venues and reporting rules.
 - [experiments/LOG.md](experiments/LOG.md): one entry per experiment.
 - [results/results.tsv](results/results.tsv): one row per experiment.
 
