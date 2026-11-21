@@ -26,7 +26,7 @@ cfg.version = 1;
 % The last four replace the knife-edge part of ITM's diffraction loss with a
 % profile-based loss at the path's own distance, on transhorizon paths
 % (multi_edge_diffraction_rev1; experiments/batches/B01.md).
-cfg.diffraction = "itm";
+cfg.diffraction = "delta_bullington";
 %   "ep_isolated"       Epstein-Peterson; horizon obstacles merged unless
 %                       isolated (ITU-R P.526-16 section 2.5)
 %   "p526_double_edge"  ITU-R P.526-16 section 4.3 (with Lc where valid)
