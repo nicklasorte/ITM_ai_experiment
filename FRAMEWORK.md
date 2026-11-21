@@ -290,6 +290,12 @@ final evaluation:
 | ITS low antenna height | 230 and 416 MHz; Wyoming, Idaho, Washington; antennas under 3 m; more than 145 paths of 2–45 km | Paul (2003) found ITM's largest bias in Idaho; tests effective-height fixes |
 | DBSG3 Table VI-2 | 30 MHz–3 GHz broadcast location medians; parsed by `compare_dbsg3_area_rev1.m` | Independent international data, different measurement method |
 
+Lockbox caveat: Nick's model-comparison working paper (matlab_itm) has
+already compared ITM, P.452, and P.2001 on ITS Phase 1, the low-antenna set,
+DBSG3 VI-2, and DBSG3 Table III. The agent hasn't seen them, but the humans
+have, so they are validation sets, not a blind test (see
+[docs/WORKING_PAPER_FINDINGS.md](docs/WORKING_PAPER_FINDINGS.md)).
+
 Lockbox rule: the agent never reads lockbox metrics. A human runs the lockbox
 once per candidate that survives the development loop, and the result is
 recorded whatever it shows.

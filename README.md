@@ -18,6 +18,8 @@ ones that reduce error on held-out measurement sites.
 - [docs/PUBLICATION_LITERATURE.md](docs/PUBLICATION_LITERATURE.md): could
   this be published; related work outside propagation and on AI with
   propagation models; venues and reporting rules.
+- [docs/WORKING_PAPER_FINDINGS.md](docs/WORKING_PAPER_FINDINGS.md): what the
+  ITM vs P.2001 vs P.452 working paper says to fix, as ranked hypotheses.
 - [experiments/LOG.md](experiments/LOG.md): one entry per experiment.
 - [results/results.tsv](results/results.tsv): one row per experiment.
 
