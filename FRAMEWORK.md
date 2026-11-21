@@ -6,8 +6,21 @@ AI agent proposes and keeps changes by hill climbing. It covers prior work,
 the data, the evaluation protocol, the catalog of changes, the experiment
 loop, and the guardrails that keep the loop from overfitting.
 
-Status: plan, Rev 1, 2026-11-21. Nothing in `eval/`, `data/`, or
-`itm_variant/` exists yet; see [Roadmap](#roadmap).
+Status: Rev 2, 2026-11-21. Scaffolding is in `data/`, `eval/`, and
+`itm_variant/`; see [Roadmap](#roadmap).
+
+Decisions (Nick, 2026-11-21):
+
+- **Terrain source is fixed.** Every model sees the same profile; terrain
+  source and profile spacing are never experiment variables.
+- **Replacement parts come from P.452, P.2001, P.526, or the literature**, or
+  are written here from the literature. See
+  [docs/LITERATURE_REVIEW.md](docs/LITERATURE_REVIEW.md) for the ranked list.
+- **Time variability is scored**, using the ITS long-term measurements.
+- **Runs use MATLAB R2025b on Nick's Mac.**
+
+Background reading: [docs/AGENT_OPTIMIZATION_LITERATURE.md](docs/AGENT_OPTIMIZATION_LITERATURE.md)
+(how agent optimization loops are built and how they fail).
 
 ## Goal
 
@@ -64,7 +77,7 @@ What this tells us:
   R2 29.9 → 30.3 dB, VA 16.3 → 17.7 dB). The error depends on the path, so
   gains must come from changing how ITM treats geometry, not from shifting it.
 - **The error is concentrated.** Mountains (R2), frequencies above 3 GHz, and
-  paths ITM classifies as troposcatter at these short ranges carry most of
+  paths ITM classifies as troposcatter (75–120 km here) carry most of
   the squared error. These are the first targets.
 - **P.452 and P.2001 set the bar.** Both use multi-edge diffraction
   (Bullington-type) on the actual profile. Their roughly 4 dB lower spread is
@@ -171,21 +184,29 @@ What this tells us:
 ITM_ai_experiment/
 ├── FRAMEWORK.md          This plan (human-owned)
 ├── program.md            Instructions for the agent (human-owned)
-├── CLAUDE.md             Points agents at program.md and the rules
-├── data/
-│   ├── raw/              Unmodified downloads with SHA-256 in SOURCES.md
-│   ├── links/            One table of links: path ID, site, profile, f, heights, measured Lb, censored flag
-│   └── splits/           Frozen fold assignments and lockbox list (read-only)
-├── eval/                 Evaluator (read-only to the agent)
-│   ├── run_eval_rev1.m   Runs a variant on a fold set and writes metrics
-│   ├── score_rev1.m      Path-weighted, cell-balanced scoring
-│   └── physics_battery_rev1.m   Sanity checks every variant must pass
-├── itm_variant/
-│   ├── itm_p2p_core_exp.m        The one file the agent edits
-│   └── params_exp.m              Named constants the agent may tune
+├── CLAUDE.md             Rules and commands for any agent working here
+├── docs/
+│   ├── LITERATURE_REVIEW.md            Harness design and ITM replacement parts
+│   └── AGENT_OPTIMIZATION_LITERATURE.md How agent optimization loops are built and fail
+├── data/                 Human-owned; read-only to the agent
+│   ├── raw/              Unmodified public downloads (ITS Phase 2, ITS long-term)
+│   ├── build_links_rev1.m  Builds links, profiles, splits, baseline and reference predictions
+│   ├── links/            Link tables (CSV) and manifest with hashes
+│   ├── splits/           Frozen fold assignments and their SHA-256
+│   └── cache/            Profiles (not committed; rebuilt by build_links_rev1)
+├── eval/                 Read-only to the agent
+│   ├── run_eval_rev1.m          Runs the variant, checks parity, scores, writes experiments/<tag>/
+│   ├── score_rev1.m             Composite, Phase 2, long-term level and shape scores
+│   ├── physics_battery_rev1.m   Checks every variant must pass
+│   ├── settings_rev1.m          Fixed inputs (ground constants, mdvar, time percentages, cells)
+│   └── itm_exp_paths_rev1.m     Paths, and the pinned matlab_itm commit check
+├── itm_variant/          The only code the agent edits
+│   ├── itm_p2p_core_exp.m       Copy of the ITM v1.4 core with a cfg argument
+│   ├── params_exp.m             Submodel switches and constants
+│   └── private/                 Unchanged helpers from matlab_itm
 ├── experiments/
 │   ├── LOG.md            Hypothesis ledger, one entry per experiment
-│   └── NNN-short-name/   Diff, metrics JSON, figures for each experiment
+│   └── NNN-short-name/   summary.txt, metrics.json, predictions for each experiment
 └── results/
     └── results.tsv       One row per experiment (the ratchet record)
 ```
@@ -213,6 +234,27 @@ horizontal polarization only; spot measurements, so the 50 % time value is
 approximate; 2,045 censored results must be handled as lower bounds, not
 dropped silently.
 
+### Tier A2: ITS long-term time distributions (development set)
+
+**ITS long-term data** (measured 1944–1969; Longley, Reasoner, and Fuller,
+OT/TRER 16, 1971): 1,131 measured time distributions of hourly-median
+attenuation at 0.01 % to 99.99 % of time, 40 MHz to 10 GHz, 10 to 1000 km.
+296 rows are at 1–10 GHz. After filtering (free-space reference only, both
+antenna heights known, H or V polarization, coordinates for both ends, not
+over sea, distance consistent with coordinates), the kept rows are listed in
+`data/links/longterm_links_rev1.csv` and the dropped rows, with reasons, in
+`longterm_dropped_rev1.csv`.
+
+The public archive has no profiles, so profiles come from matlab_itm's
+`itm_terrain_profile_rev1` at 30 m with its default source. That is the same
+terrain source matlab_itm uses for every path; it is fixed, not a variable.
+
+Known bias: ITM's time-variability curves were drawn from long-term data of
+the same era, so the baseline's time score here is likely optimistic (see
+[docs/LITERATURE_REVIEW.md §1.2](docs/LITERATURE_REVIEW.md)).
+
+Folds: paths grouped by receiver site (0.1°), groups assigned to five folds.
+
 ### Tier B: lockbox sets (sealed until the end)
 
 These are converted to the same link table but **not scored** until the
@@ -223,7 +265,6 @@ final evaluation:
 | ITS Phase 1 VHF spot | 20–100 MHz; Colorado plains, Colorado mountains, Ohio hills | Different band, same methods; tests whether a fix is frequency-general |
 | ITS low antenna height | 230 and 416 MHz; Wyoming, Idaho, Washington; antennas under 3 m; more than 145 paths of 2–45 km | Paul (2003) found ITM's largest bias in Idaho; tests effective-height fixes |
 | DBSG3 Table VI-2 | 30 MHz–3 GHz broadcast location medians; parsed by `compare_dbsg3_area_rev1.m` | Independent international data, different measurement method |
-| ITS long-term (1944–1969) | 40 MHz–10 GHz, 10–1000 km, time distributions | Tests the variability (time) model, not only the 50 % value |
 
 Lockbox rule: the agent never reads lockbox metrics. A human runs the lockbox
 once per candidate that survives the development loop, and the result is
@@ -258,9 +299,13 @@ Only public, cleared data goes in this repository.
   existing comparison scripts. For Phase 2,
   `Lb = 32.45 + 20 log10(f_MHz) + 20 log10(d_km) + A_measured`, median over
   runs.
-- Predicted value: ITM basic transmission loss at 50 % time, 50 %
-  confidence, with the same profile, heights, polarization, climate, and
-  refractivity for baseline and variant.
+- Long-term: `Lb_p = 32.45 + 20 log10(f_MHz) + 20 log10(d_km) + A_p` for
+  each measured time percentage p.
+- Predicted value: ITM basic transmission loss at reliability p (50 % for
+  Phase 2; 0.01 % to 99.99 % for the long-term set), 50 % confidence, with
+  the same profile, heights, polarization, climate, and refractivity for
+  baseline and variant. Fixed inputs are in `eval/settings_rev1.m`
+  (ε 25, σ 0.02 S/m, mdvar 13, as in `itm_pathloss_rev1`).
 - Error `e = predicted − measured`.
 
 ### Splits
@@ -280,8 +325,22 @@ evaluator refuses to run if the hash changes.
 
 ### Score
 
-The primary score, the number the agent climbs, is the **cell-balanced,
-path-weighted RMS error on held-out folds**:
+The number the agent climbs is the **composite score**, the mean of three
+parts, each a cell-balanced, path-weighted RMS error in dB:
+
+| Part | Data | Cells |
+| --- | --- | --- |
+| Phase 2 level at 50 % | ITS Phase 2 | site × frequency band |
+| Long-term level | ITS long-term, at 1, 10, 50, 90, 99 % | band × distance class (< 100, 100–300, ≥ 300 km) |
+| Long-term shape | ITS long-term, `(L_p − L_50)` at 1, 10, 90, 99 % | band × distance class |
+
+The shape part removes the median error and tests only the time spread, so
+a change can't win on time variability by fixing the median, or the reverse.
+The 0.01 %, 0.1 %, 99.9 %, and 99.99 % quantiles rest on few hours and are
+reported, not scored. `eval/score_rev1.m` implements this; the agent sees
+scores rounded to 0.1 dB.
+
+The Phase 2 part is computed as follows:
 
 1. Within each held-out site, give each path a total weight of 1, split
    evenly across its rows (frequencies and heights).
@@ -289,7 +348,8 @@ path-weighted RMS error on held-out folds**:
    and 6–10 GHz).
 1. Compute the weighted RMS error in each cell.
 1. Average the cell RMS values. Baseline ITM: **18.3 dB**. P.452: 13.3 dB.
-   P.2001: 13.3 dB.
+   P.2001: 13.3 dB (from the existing matlab_itm comparison; reproduced by
+   `eval/` in Phase 0).
 
 The evaluator also reports the following, which gate acceptance but aren't
 climbed directly:
@@ -356,20 +416,14 @@ saturated.
 
 ## Change catalog
 
-The agent works these tiers in order and moves to the next tier when the
-current one stops producing accepted changes. Each entry names the
-`itm_p2p_core.m` function it touches.
-
-### Tier 0: inputs, not the model
-
-These changes test whether the error comes from inputs. They aren't ITM
-changes, and they are logged separately:
-
-- Terrain source: surveyed profile versus 1-arcsecond 3DEP versus SRTM
-  versus Copernicus DEM (following Hammerschmidt 2017).
-- Profile spacing: the current 30 m linear resampling versus native spacing.
-- Ground constants (`epsilon`, `sigma`) and surface refractivity `N_0` per
-  site, from P.527 and P.453 maps instead of defaults.
+Inputs are fixed (terrain source, profile spacing, ground constants,
+climate, refractivity); only the model changes. The ranked candidate list,
+with sources, is in
+[docs/LITERATURE_REVIEW.md Part 3](docs/LITERATURE_REVIEW.md#part-3-ranked-candidates).
+Submodel swaps (Tier 2) come first, because the baseline diagnosis shows
+path-specific structural error that recalibration can't remove. Each entry
+names the `itm_p2p_core_exp.m` function it touches. Name every part by its
+physics and its public source.
 
 ### Tier 1: calibrate existing constants
 
@@ -390,7 +444,12 @@ plausible bounds:
 Rule: one constant group per experiment, so each accepted change has a clear
 cause.
 
-### Tier 2: swap submodels
+### Tier 2: swap submodels (first)
+
+Each swap is written in `itm_variant/` from the ITU-R text or the cited
+paper and switched by a field in `params_exp.m`. Nick's ports of P.452
+(`matlab_itu_p452`) and P.2001 (`itu_p2001`) serve as numerical checks of
+the new code, not as code to copy.
 
 - **Effective antenna height.** Paul (2003) found ITM error largest when
   effective height far exceeds structural height. Try a blend
@@ -401,10 +460,15 @@ cause.
   use), Deygout, or Epstein-Peterson, keeping ITM's smooth-earth blend
   (`knife_edge_diffraction`). This is the most likely fix for R2's 29.9 dB
   RMS.
-- **Short-range troposcatter.** ITM picks troposcatter on 234 Phase 2 rows
-  with +19.1 dB mean error. Test the P.452 or P.2001 troposcatter formula,
-  and test whether the troposcatter/diffraction mode switch fires too early
-  on short, heavily obstructed paths (`longley_rice`, `troposcatter_loss`).
+- **Troposcatter and the mode switch.** ITM picks troposcatter on 234 Phase 2
+  rows (paths of 75–120 km) with +19.1 dB mean error. Test the P.452 or
+  P.2001 troposcatter formula, and test whether the mode switch fires too
+  early on obstructed paths of this length (`longley_rice`,
+  `troposcatter_loss`).
+- **Time variability.** Replace ITM's time deviate with P.2001's clear-air
+  fading and enhancement (Attachment B) on the ITM median, or replace only
+  the enhancement side with P.452's ducting and layer-reflection model
+  (P.452 covers 0.001–50 % of time only) (`variability`).
 - **Line-of-sight ground reflection.** Use the actual reflection point and
   terrain slope from the profile instead of the smoothed effective-height
   geometry (`line_of_sight_loss`).
@@ -438,10 +502,12 @@ instructions to the agent.
    remaining squared error. Write the log entry first: ID, tier, function
    touched, physical rationale, and the predicted effect (which cells should
    improve and which should not change).
-1. **Branch:** `git switch -c exp/NNN-short-name` from the current best.
+1. **Branch:** `git switch -c exp/NNN-short-name` from the current best, or
+   from one of the top three kept variants (tree-style branching, see
+   [docs/AGENT_OPTIMIZATION_LITERATURE.md](docs/AGENT_OPTIMIZATION_LITERATURE.md)).
 1. **Edit** only `itm_variant/itm_p2p_core_exp.m` and `params_exp.m`.
-1. **Run** `run_eval_rev1` (physics battery, then folds). Each run has a
-   fixed time budget; a full Phase 2 pass should take minutes, not hours.
+1. **Run** `run_eval_rev1(Tag="NNN-short-name")` in MATLAB R2025b on Nick's
+   Mac (physics battery, then scoring). A full pass takes minutes.
 1. **Decide** with the acceptance rule. Keep: merge to the `best` branch.
    Reject: discard the branch. Either way, append the result row and
    complete the log entry, including whether the predicted effect happened.
@@ -454,7 +520,7 @@ instructions to the agent.
 `results/results.tsv` columns:
 
 ```text
-id  date  branch  tier  function  n_new_params  score_cv  delta_vs_best  worst_cell  site_R1  site_R2  site_R3  site_VA  censor_viol_pct  physics_pass  decision  commit
+id  date  branch  tier  function  n_new_params  composite  delta_vs_best  p2_cell  lt_level  lt_shape  worst_cell  site_R1  site_R2  site_R3  site_VA  censor_viol_pct  physics_pass  decision  commit
 ```
 
 ## Guardrails
@@ -479,10 +545,10 @@ id  date  branch  tier  function  n_new_params  score_cv  delta_vs_best  worst_c
 
 | Phase | Work | Exit check |
 | --- | --- | --- |
-| 0. Scaffold | Build `data/links/` from Phase 2 via the existing parser; freeze splits; port `itm_p2p_core.m` to `itm_variant/`; write `eval/` and the physics battery | Baseline reproduces 16.74 dB row RMS and 18.3 dB cell-balanced score exactly |
-| 1. Diagnose | Error breakdown by mechanism, Δh, effective height ratio, and frequency; noise floor estimate; Tier 4 residual ceiling; Tier 0 input tests | A ranked list of where squared error lives, with the ceiling and floor |
-| 2. Calibrate | Tier 1, one constant group at a time | Accepted changes logged; held-out score trend |
-| 3. Restructure | Tier 2 submodel swaps, starting with multi-edge diffraction and effective height | Target: at or below 13.3 dB cell-balanced score, no site worse than baseline |
+| 0. Scaffold | `data/build_links_rev1` builds Phase 2 and long-term link tables, profiles, splits, baseline and reference predictions; `itm_variant/` copy; `eval/` and the physics battery | Baseline reproduces 16.74 dB row RMS and 18.3 dB cell-balanced score on Phase 2; variant parity to 1e-9 dB |
+| 1. Diagnose | Error breakdown by mechanism, Δh, effective height ratio, frequency, and time percentage; noise floor estimate; Tier 4 residual ceiling | A ranked list of where squared error lives, with the ceiling and floor |
+| 2. Restructure | Tier 2 submodel swaps from P.452, P.2001, P.526, and the literature, in the ranked order | Target: Phase 2 cell score at or below 13.3 dB, no site worse than baseline, long-term scores no worse |
+| 3. Calibrate | Tier 1 constants of the kept structure, fitted in cross-validation | Accepted changes logged; held-out score trend |
 | 4. Lockbox | Human runs Tier B sets on the best variant and on baseline | Lockbox result recorded, whatever it is |
 | 5. Write-up | Working paper: which changes, why, held-out evidence, limits | Human review |
 
@@ -490,8 +556,5 @@ id  date  branch  tier  function  n_new_params  score_cv  delta_vs_best  worst_c
 
 1. Is the 0.3 dB acceptance threshold and the 0.5 dB per-parameter cost the
    right bar, or should the bar be higher for a policy-facing result?
-1. Should the time-variability model be in scope (needs the long-term data),
-   or is this effort limited to the 50 % value?
-1. Should the agent run on your Mac's MATLAB (through the MATLAB MCP server)
-   or in a cloud container with MATLAB Runtime, which affects how long
-   unattended runs can go?
+1. Should the composite weight the three parts equally, or weight the 1–10
+   GHz cells more, since that is the band this work is for?

@@ -1,2 +1,1 @@
-id	date	branch	tier	function	n_new_params	score_cv	delta_vs_best	worst_cell	site_R1	site_R2	site_R3	site_VA	censor_viol_pct	physics_pass	decision	commit
-000	2026-11-21	main	none	none	0	18.3	0	38.2	13.2	29.9	8.7	16.3		n/a	baseline	matlab_itm@9bd6a4e
+id	date	branch	tier	function	n_new_params	composite	delta_vs_best	p2_cell	lt_level	lt_shape	worst_cell	site_R1	site_R2	site_R3	site_VA	censor_viol_pct	physics_pass	decision	commit
