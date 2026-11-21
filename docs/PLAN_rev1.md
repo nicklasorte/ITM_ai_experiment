@@ -47,9 +47,11 @@ P.452 can't meet the censored target, so meeting all three is the headline.
 
 ## Stage 1: define a real gain
 
-1. **Diagnose long-term level.** Stock ITM's level error is 24.6 dB on the
-   full set against 17.6 dB on the 132 US paths. Break it down by region,
-   distance, frequency, and time percentage before choosing batches.
+1. **Diagnose long-term level (done, D01).** 14 rows on 10 paths are line
+   of sight in the 1971 record but blocked on the 30 m profile; ITM errs by
+   +51 dB on average there, and every terrain model misses. Without them,
+   ITM's level error is 16.9 dB. The rest concentrates at 3–10 GHz (supports
+   H7) and on diffraction paths where ITM misses and P.2001 doesn't (B01).
 1. **Noise floor.** Bootstrap the composite and each objective over paths
    within site, and report the 95 % interval. Replace the 0.3 dB keep
    threshold (marked `TODO` in FRAMEWORK.md) with the measured value.
@@ -105,6 +107,7 @@ censored violations.
 | Which dataset is the lockbox, given that some candidates have been seen | Stage 4 | See FRAMEWORK.md, Tier B |
 | Which public-input study gets the shadow run | Stage 4 | — |
 | Keep the censored gate at +1 point over the current best | Stage 1 | R01 shows this gate is what stops optimistic fits |
+| How to treat the 14 rows where the record says line of sight but the profile is blocked (D01) | Before B01 | Keep in the frozen set; screen them out by a rule fixed now; or score both and report both |
 | Set the `RESTRICTED_TERMS` repository secret | Now | Settings → Secrets and variables → Actions |
 
 ## Checks at each stage

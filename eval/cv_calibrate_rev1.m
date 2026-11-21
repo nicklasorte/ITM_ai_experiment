@@ -19,17 +19,31 @@ function R = cv_calibrate_rev1(options)
 %   Writes experiments/<Tag>/: summary.txt, metrics.json, params_by_fold.csv,
 %   predictions_phase2.csv, predictions_longterm.csv.
 %
+%   With Constrained=true (experiment R02), each trial must also satisfy two
+%   coupled constraints, both evaluated without held-out data:
+%     censored  censored-bound violations on the training folds no more
+%               than 1 percentage point above stock ITM on the same rows
+%               (the acceptance rule's censored gate)
+%     physics   every check in physics_battery_rev1 within its margin
+%               (largest margin over continuity, reciprocity, two-ray)
+%   The search starts from ITM's own constants, which satisfy both, plus
+%   each constant nudged down and up one at a time (so the surrogate learns
+%   which directions stay feasible), and the fold's fit is the best feasible
+%   trial observed.
+%
 %   Options:
 %     Tag        "R01-recalibrated-itm"
 %     MaxEvals   40      objective evaluations per fold
 %     Seed       1
 %     Params     all six; a subset of the field names of params_exp().cal
+%     Constrained false
 
 arguments
     options.Tag (1,1) string = "R01-recalibrated-itm"
     options.MaxEvals (1,1) double = 40
     options.Seed (1,1) double = 1
     options.Params (1,:) string = ["w_const" "afo_scale" "knife_scale" "los_w_scale" "time_minus_scale" "time_plus_scale"]
+    options.Constrained (1,1) logical = false
 end
 t0 = tic;
 P = itm_exp_paths_rev1();
@@ -73,11 +87,29 @@ for t = S.p_tags, LT.("cal_lb_" + t) = NaN(height(LT), 1); end
 fits = table();
 for k = 1:K
     tr2 = P2.cvfold ~= k; trl = LT.cvfold ~= k;
-    obj = @(x) objective(x, base_cfg, P2(tr2, :), LT(trl, :), profiles, ids, S);
     rng(options.Seed + k, 'twister');
-    res = bayesopt(obj, vars, 'MaxObjectiveEvaluations', options.MaxEvals, 'IsObjectiveDeterministic', true, ...
-        'AcquisitionFunctionName', 'expected-improvement-plus', 'Verbose', 0, 'PlotFcn', []);
-    x = res.XAtMinObjective;
+    if options.Constrained
+        cens0 = score_rev1(P2(tr2, :), LT(trl, :), "itm").p2.censored_violation_pct;
+        obj = @(x) objective_constrained(x, base_cfg, P2(tr2, :), LT(trl, :), P2, profiles, ids, S, cens0);
+        x0 = start_points(base_cfg, options.Params, spec);   % ITM's constants, then one-at-a-time nudges
+        res = bayesopt(obj, vars, 'MaxObjectiveEvaluations', options.MaxEvals, 'IsObjectiveDeterministic', true, ...
+            'NumCoupledConstraints', 2, 'AreCoupledConstraintsDeterministic', [true true], ...
+            'InitialX', x0, 'AcquisitionFunctionName', 'expected-improvement-plus', 'Verbose', 0, 'PlotFcn', []);
+        ok = all(res.ConstraintsTrace <= 0, 2) & res.ObjectiveTrace < 1e3;
+        if ~any(ok)
+            error('itmexp:infeasible', 'Fold %d: no feasible trial, not even ITM''s own constants.', k);
+        end
+        tr = res.ObjectiveTrace; tr(~ok) = Inf;
+        [fmin, ib] = min(tr);
+        x = res.XTrace(ib, :);
+        res_min = fmin; n_feasible = nnz(ok);
+    else
+        obj = @(x) objective(x, base_cfg, P2(tr2, :), LT(trl, :), profiles, ids, S);
+        res = bayesopt(obj, vars, 'MaxObjectiveEvaluations', options.MaxEvals, 'IsObjectiveDeterministic', true, ...
+            'AcquisitionFunctionName', 'expected-improvement-plus', 'Verbose', 0, 'PlotFcn', []);
+        x = res.XAtMinObjective;
+        res_min = res.MinObjective; n_feasible = NaN;
+    end
     cfg = apply(base_cfg, x);
     h2 = ~tr2; hl = ~trl;
     if any(h2), P2.cal_lb_50(h2) = predict(P2(h2, :), profiles, ids, 50, cfg, S); end
@@ -85,9 +117,9 @@ for k = 1:K
         V = predict(LT(hl, :), profiles, ids, S.p_all, cfg, S);
         for j = 1:numel(S.p_tags), LT.("cal_lb_" + S.p_tags(j))(hl) = V(:, j); end
     end
-    row = x; row.fold = k; row.train_composite = res.MinObjective;
+    row = x; row.fold = k; row.train_composite = res_min; row.n_feasible = n_feasible;
     fits = [fits; row]; %#ok<AGROW>
-    fprintf('fold %d of %d: train composite %.2f dB  (%s)\n', k, K, res.MinObjective, ...
+    fprintf('fold %d of %d: train composite %.2f dB, %g feasible trials  (%s)\n', k, K, res_min, n_feasible, ...
         strjoin(compose("%s=%.3g", string(x.Properties.VariableNames)', table2array(x)'), ", "));
 end
 
@@ -101,10 +133,12 @@ B = physics_battery_rev1(apply(base_cfg, med), P2, profiles);
 R = struct('tag', options.Tag, 'recalibrated', Rc, 'baseline', Rb, 'physics', B, ...
     'median_params', table2struct(med), 'runtime_s', toc(t0));
 R.cfg = apply(base_cfg, med);
+R.constrained = options.Constrained;
 R.data_version = struct('split_sha', strtrim(string(fileread(fullfile(root, 'data', 'splits', 'folds_rev1.sha256')))), ...
     'datasets', ["phase2" "longterm"]);
 lines = [
-    sprintf("%s: recalibrated ITM, constants fitted in %d-fold cross-validation (bayesopt, %d evals per fold)", options.Tag, K, options.MaxEvals)
+    sprintf("%s: recalibrated ITM, constants fitted in %d-fold cross-validation (bayesopt, %d evals per fold%s)", options.Tag, K, options.MaxEvals, ...
+        string(repmat(', constrained: censored +1 point and physics battery', 1, options.Constrained)))
     sprintf("composite  %.2f dB   (baseline ITM %.2f)", Rc.composite, Rb.composite)
     sprintf("  phase2 cell-balanced RMS   %.2f   (baseline %.2f)", Rc.p2.cell, Rb.p2.cell)
     sprintf("  long-term level RMS        %.2f   (baseline %.2f)", Rc.lt.level, Rb.lt.level)
@@ -133,6 +167,39 @@ writetable(LT(:, cellstr(keep)), fullfile(out, 'predictions_longterm.csv'));
 pareto_rev1();     % refresh results/archive_rev1.*
 end
 
+function [f, c] = objective_constrained(x, base_cfg, P2, LT, P2all, profiles, ids, S, cens0)
+% Training composite, with coupled constraints c <= 0:
+%   c(1) training censored violations minus (stock ITM + 1 point)
+%   c(2) largest physics-battery margin (variant minus its allowed limit)
+cfg = apply(base_cfg, x);
+f = 1e3; c = [1e3 1e3];
+try
+    P2.cal_lb_50 = predict(P2, profiles, ids, 50, cfg, S);
+    V = predict(LT, profiles, ids, S.p_all, cfg, S);
+    for j = 1:numel(S.p_tags), LT.("cal_lb_" + S.p_tags(j)) = V(:, j); end
+    r = score_rev1(P2, LT, "cal");
+    B = physics_battery_rev1(cfg, P2all, profiles);
+catch
+    return                       % a trial that breaks the model is infeasible
+end
+if ~isfinite(r.composite), return, end
+m = -Inf;
+for nm = string(fieldnames(B.checks))'
+    q = B.checks.(nm);
+    if startsWith(nm, "continuity_")
+        m = max(m, q.variant_max_step_db - (q.baseline_max_step_db + 1));
+    elseif nm == "reciprocity"
+        m = max(m, q.variant_p95_db - max(0.1, q.baseline_p95_db + 0.1));
+    elseif nm == "two_ray_bound"
+        m = max(m, q.limit_db - q.variant_min_excess_db);
+    elseif nm == "finite" && ~q.pass
+        m = max(m, 1);
+    end
+end
+f = r.composite;
+c = [r.p2.censored_violation_pct - (cens0 + 1), m];
+end
+
 function f = objective(x, base_cfg, P2, LT, profiles, ids, S)
 cfg = apply(base_cfg, x);
 try
@@ -146,6 +213,23 @@ for j = 1:numel(S.p_tags), LT.("cal_lb_" + S.p_tags(j)) = V(:, j); end
 r = score_rev1(P2, LT, "cal");
 f = r.composite;
 if ~isfinite(f), f = 1e3; end
+end
+
+function x0 = start_points(base_cfg, names, spec)
+% ITM's constants, then each constant moved alone to a lower and a higher
+% value inside its search range: x0.5 and x2 for log-scaled constants,
+% x0.8 and x1.2 otherwise.
+base = table();
+for nm = names, base.(nm) = base_cfg.cal.(nm); end
+x0 = base;
+for nm = names
+    r = spec(1).(nm);
+    if spec(2).(nm) == "log", m = [0.5 2]; else, m = [0.8 1.2]; end
+    for f = m
+        t = base; t.(nm) = min(max(base.(nm) * f, r(1)), r(2));
+        x0 = [x0; t]; %#ok<AGROW>
+    end
+end
 end
 
 function cfg = apply(cfg, x)
