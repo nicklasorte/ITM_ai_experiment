@@ -56,9 +56,16 @@ run_eval_rev1(Tag="000-baseline", Parity=true);
 - No invented constants: cite the source in a comment or mark it `TODO`.
 - Fail loud with `error()`; never return NaN or skip rows silently.
 - Version-suffixed file names (`_rev1`, `_rev2`).
+- Agent commits end with an `Agent-Role: planner|worker|reviewer` trailer.
+  The `guard` CI workflow rejects agent commits outside the editable
+  folders, changed frozen data, a malformed `results.tsv`, or restricted
+  names. Run it locally with
+  `python3 .github/scripts/guard_rev1.py --range <base>..HEAD`.
+- Retry an infrastructure failure (hung session, failed batch job, terrain
+  download error) once and log it as `infra`; it isn't an experiment result.
 - Commit messages say what changed and the score delta. No human review step
-  runs inside the loop; an independent reviewer agent checks every 10 kept
-  changes. Results that leave the repo get Nick's read first.
+  runs inside the loop; three independent reviewer agents check every 10
+  kept changes. Results that leave the repo get Nick's read first.
 - Roles (FRAMEWORK.md, Agent roles): a planner (Opus or Fable) writes batch
   plans in `experiments/batches/`; a worker (Haiku) executes them exactly and
   hands back on any error or ambiguity.

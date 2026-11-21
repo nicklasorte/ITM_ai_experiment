@@ -43,6 +43,14 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
 1. Append the row to `results/results.tsv` and finish the log entry,
    including whether the prediction came true.
 
+## Commits
+
+- End every commit message with a trailer naming your role, for example
+  `Agent-Role: worker`. The `guard` CI check fails agent commits that
+  change files outside `itm_variant/`, `experiments/`, and `results/`.
+- Say what changed and the score delta, including the delta against the
+  recalibrated baseline R01.
+
 ## Rules
 
 - Simpler wins. A small gain that adds complexity isn't worth it.
@@ -50,10 +58,18 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
 - Never tune on held-out folds. Fitted parameters are fit on the training
   sites of each fold only.
 - Fail loud: use `error()` for unexpected conditions, never silent NaN.
+- Infrastructure failures (a hung MATLAB session, a `batch` job that never
+  reached scoring, a terrain or network error) aren't results. Retry once,
+  log it as `infra`, and hand back to the planner if it fails again.
+- Run one evaluation at a time per branch, and wait for it to finish before
+  branching from that branch.
+- Report every kept change against the recalibrated baseline R01 as well as
+  the current best.
 - Stop and report when three tiers in a row produce no accepted change, or
   when every cell is within 1 dB of the noise floor.
 - After every 10 accepted changes, stop for the independent reviewer agent
-  (FRAMEWORK.md, Agent roles). Fix or revert what it finds before going on.
+  (FRAMEWORK.md, Agent roles): three independent reviewer sessions; fix or
+  revert what at least two of them find before going on.
 - Worker agents follow the current batch plan in `experiments/batches/`
   exactly. If a step fails, a spec is ambiguous, or the code needs more than
   the plan says, stop and hand back to the planner instead of improvising.

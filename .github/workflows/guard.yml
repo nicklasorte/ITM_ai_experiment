@@ -1,0 +1,40 @@
+name: guard
+
+# Enforces the repository rules the agent loop depends on: agent commits stay
+# inside itm_variant/, experiments/, and results/; frozen data keeps its
+# hashes; results.tsv stays well formed; restricted names never land.
+# See .github/scripts/guard_rev1.py and docs/INDUSTRY_AGENT_PRACTICES.md.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pick the commit range
+        id: range
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "range=${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "range=${{ github.event.before }}..${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run guard
+        env:
+          RESTRICTED_TERMS: ${{ secrets.RESTRICTED_TERMS }}
+        run: python3 .github/scripts/guard_rev1.py --range "${{ steps.range.outputs.range }}"

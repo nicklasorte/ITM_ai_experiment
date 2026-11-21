@@ -3,7 +3,7 @@
 Rev 1, 2026-11-21. A review of how companies deploy AI agents where an
 automatic check says whether a change is better or worse: CI/CD pipelines,
 tests, code migrations, production optimization, chip design, and telecom
-networks. It ends with the practices this repository should adopt. The
+networks. It ends with the practices this repository adopted. The
 academic side is in
 [AGENT_OPTIMIZATION_LITERATURE.md](AGENT_OPTIMIZATION_LITERATURE.md).
 
@@ -156,20 +156,20 @@ agents have to beat it.
 measured outcomes, and human oversight. Agents that change the propagation
 *models* those networks are planned with are not part of these offerings.
 
-## What this repository should adopt
+## What this repository adopted
 
-| Practice | Who does it | Status here | Action |
-| --- | --- | --- | --- |
-| Assured improvement: show humans only candidates that measurably beat the incumbent | Meta TestGen-LLM | Done: acceptance rule | Keep |
-| Deterministic scorekeeper the agent can't edit | AlphaEvolve | Done: `eval/` read-only | Add a CI guard (below) so it's enforced, not just stated |
-| Readable output over black-box gains | AlphaEvolve | Done: named submodel swaps | Keep |
-| Gate every change with the same pipeline humans use | Elastic, Semaphore | Partly: runs on demand on the Mac | Add a GitHub Actions check on every push: reject agent commits that touch `eval/` or `data/`, scan for restricted names, validate `results.tsv` and `LOG.md` format |
-| Repeat stochastic agent steps and deduplicate | Uber uReview | Not yet | Run the reviewer agent three times independently; keep findings two of three agree on |
-| Track stability, not just speed | DORA | Not yet | Log per batch: share of kept changes later reverted, physics-battery failures, censored-gate failures |
-| Retry flaky steps separately from real failures | Nx | Partly | Treat MATLAB session hangs and tile download errors as infrastructure; retry once, don't count as experiment failures |
-| Don't let long verification runs get canceled by newer commits | Elastic | Relevant | One evaluation per branch at a time; the worker waits for the result before branching again |
-| Shadow before production | Telecom closed loops | Not yet | Before a kept variant informs any policy analysis, run it in shadow beside stock ITM on one real study and compare outputs |
-| Parameter optimizer first, free agent second | EDA (DSO.ai before agents) | Done today: experiment R01 | Every agent result is reported against the recalibrated baseline |
+| Practice | Who does it | Adopted here (2026-11-21) |
+| --- | --- | --- |
+| Assured improvement: show humans only candidates that measurably beat the incumbent | Meta TestGen-LLM | Acceptance rule (FRAMEWORK.md) |
+| Deterministic scorekeeper the agent can't edit | AlphaEvolve | `eval/` read-only, enforced by the `guard` CI workflow and `Agent-Role` commit trailers |
+| Readable output over black-box gains | AlphaEvolve | Named, cited submodel swaps only |
+| Gate every change with the same pipeline humans use | Elastic, Semaphore | `guard` runs on every push and pull request: agent scope, frozen-data hashes, `results.tsv` format, restricted names (from a repository secret) |
+| Repeat stochastic agent steps and deduplicate | Uber uReview | Three independent reviewer sessions; act on findings two of three report |
+| Track stability, not just speed | DORA | `results/batch_stability.tsv`, one row per batch; a rising revert or gate-failure rate triggers a review |
+| Retry flaky steps separately from real failures | Nx | Infrastructure failures retried once and logged as `infra`, never counted as results |
+| Don't let long verification runs get canceled by newer commits | Elastic | One evaluation at a time per branch |
+| Shadow before production | Telecom closed loops | `experiments/shadow/<study>/` paired comparison, read by Nick before any outside use |
+| Parameter optimizer first, free agent second | EDA (DSO.ai before agents) | Every kept change reported against the recalibrated baseline R01 |
 
 ### Evidence from this repository: why the gates matter
 

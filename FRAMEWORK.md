@@ -432,6 +432,15 @@ The agent keeps a change only if all of these hold:
 1. The change has a one-sentence physical rationale recorded in
    `experiments/LOG.md` before the run.
 
+**Report against the recalibrated baseline.** Every kept change also
+reports its composite, Phase 2 cell, and per-site scores against the
+recalibrated ITM baseline (experiment R01: the same six constants fitted by
+a conventional optimizer inside the same folds). A structural change that
+doesn't beat R01 is a retune, not a new mechanism, and the log says so. The
+order follows industry practice: parameter optimizers inside a verified flow
+reached production before free-roaming agents did
+([docs/INDUSTRY_AGENT_PRACTICES.md](docs/INDUSTRY_AGENT_PRACTICES.md)).
+
 If a change fails, the agent reverts it and logs it. Failed experiments are
 data too; the log stops the agent from retrying the same idea.
 
@@ -529,7 +538,7 @@ AlphaEvolve uses: a fast model for breadth and a strong model for depth.
 | --- | --- | --- | --- |
 | Planner | Claude Opus 5.5 or Claude Fable 5.2 | Reads results, the log, and the error breakdown; writes a batch plan of 5–10 experiments in `experiments/batches/BNN.md`, each with the exact change, its public source (section and equation numbers), and its predicted effect; writes any new submodel code that transcribes equations (for example delta-Bullington); analyzes the batch afterward and plans the next | Run the routine loop |
 | Worker | Claude Haiku 5.5 | Runs each planned experiment: branch, apply the specified edit or parameter value, launch the evaluation, read `summary.txt`, apply the acceptance rule, merge or revert, log; runs parameter sweeps | Invent experiments, change the plan, or write new physics; it stops and hands back on any error or ambiguity |
-| Reviewer | A fresh Opus or Fable session with no planner context | Every 10 kept changes or at the end of a batch, tries to break the current best: one-site gains, parameters at bounds, battery gaps, code that disagrees with its cited source | Propose new experiments |
+| Reviewer | Three fresh, independent Opus or Fable sessions with no planner context | Every 10 kept changes or at the end of a batch, each tries to break the current best on its own; only findings that at least two of the three report are acted on (one-of-three findings go in the log as notes): one-site gains, parameters at bounds, battery gaps, code that disagrees with its cited source | Propose new experiments |
 
 Why this split works here:
 
@@ -566,10 +575,13 @@ instructions to the agent.
 1. **Decide** with the acceptance rule. Keep: merge to the `best` branch.
    Reject: discard the branch. Either way, append the result row and
    complete the log entry, including whether the predicted effect happened.
-1. **Every 10 accepted changes,** a separate reviewer agent, which hasn't
-   seen the reasoning behind them, tries to break the current best: it looks
+1. **Every 10 accepted changes,** three independent reviewer sessions,
+   which haven't seen the reasoning behind the changes, each try to break
+   the current best. A single model run is a noisy sample, so the loop acts
+   on findings that at least two of the three report (the same reason Uber
+   runs its review agent several times). Each reviewer looks
    for parameter values that sit at their bounds, gains that come from one
-   site, and physics battery gaps. The loop continues once its findings are
+   site, and physics battery gaps. The loop continues once the agreed findings are
    fixed or the affected changes are reverted. (Nick, 2026-11-21: no human
    review step inside the loop.)
 
@@ -581,9 +593,34 @@ id  date  branch  tier  function  n_new_params  composite  delta_vs_best  p2_cel
 
 ## Guardrails
 
-- **The evaluator is read-only.** The agent can't edit `eval/`,
-  `data/splits/`, or `data/links/`. A hook or CI check rejects commits that
-  touch them.
+- **The evaluator is read-only, and CI enforces it.** Every agent commit
+  carries an `Agent-Role: planner|worker|reviewer` trailer. The `guard`
+  GitHub Actions workflow (`.github/scripts/guard_rev1.py`) runs on every
+  push and pull request and fails when an agent commit touches anything
+  outside `itm_variant/`, `experiments/`, and `results/`, when a frozen
+  split or terrain profile no longer matches its SHA-256, when
+  `results/results.tsv` is malformed, or when a restricted name appears in a
+  tracked file. The restricted names live only in the `RESTRICTED_TERMS`
+  repository secret, so the check never publishes them.
+- **Infrastructure failures aren't experiment results.** A hung MATLAB
+  session, a failed `batch` job that never reached scoring, or a terrain or
+  network error is retried once and logged as `infra`. Only a run that
+  reaches the physics battery counts as an experiment, so flaky tooling
+  never rejects (or keeps) a model change.
+- **One evaluation at a time per branch.** The worker waits for a run to
+  finish before starting another on the same branch or branching from it,
+  so a long evaluation is never superseded by a newer commit mid-run.
+- **Track stability, not just speed.** At the end of each batch the planner
+  appends a row to `results/batch_stability.tsv`: experiments run, kept,
+  kept changes later reverted, physics-battery failures, censored-gate
+  failures, infrastructure retries, and the best composite against R01. A
+  rising revert or gate-failure rate stops the loop for a reviewer pass.
+- **Shadow before policy use.** Before a kept variant informs any study or
+  briefing, it runs in shadow beside stock ITM on one real study: same
+  inputs, both outputs kept, and the differences (median, 95th percentile,
+  and the cases that change a protection or exclusion decision) written to
+  `experiments/shadow/<study>/`. Nick reads that comparison before the
+  variant is used.
 - **The agent never sees the lockbox.** Lockbox data is outside the agent's
   working tree until a human runs the final check.
 - **Public provenance only.** Code in this repository comes from the

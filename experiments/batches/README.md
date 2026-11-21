@@ -12,4 +12,8 @@ worker (Haiku) starts. Each experiment in a batch has:
 - What would make the worker stop and hand back
 
 After the batch, the planner appends a short analysis: what was kept, which
-predictions failed, and what that implies for the next batch.
+predictions failed, how the best compares with the recalibrated baseline
+R01, and what that implies for the next batch. The planner also appends one
+row to `results/batch_stability.tsv`. If the share of kept changes later
+reverted, or of physics or censored-gate failures, rises from the previous
+batch, run the three-reviewer pass before the next batch.
