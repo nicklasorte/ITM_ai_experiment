@@ -7,7 +7,8 @@ Runs in GitHub Actions on every push and pull request, and locally with
 Checks (each failure is reported; any failure exits 1):
   1. Agent scope: a commit with an `Agent-Role:` trailer may change only
      itm_variant/, experiments/, and results/ (program.md, CLAUDE.md).
-  2. Frozen data: data/splits/folds_rev1.csv matches folds_rev1.sha256, and
+  2. Frozen data: data/splits/folds_rev1.csv and the long-term screen list
+     match their .sha256 files, and
      every terrain profile CSV matches the SHA-256 in profiles_index_rev1.csv.
   3. Results table: every row of results/results.tsv has the header's field
      count, and experiment IDs are unique.
@@ -78,6 +79,11 @@ def check_frozen_data():
     expected = (ROOT / "data/splits/folds_rev1.sha256").read_text().split()[0]
     if sha256(folds) != expected:
         failures.append("data/splits/folds_rev1.csv does not match folds_rev1.sha256")
+
+    screen = ROOT / "data/links/longterm_screen_rev1.csv"
+    want = (ROOT / "data/links/longterm_screen_rev1.sha256").read_text().split()[0]
+    if sha256(screen) != want:
+        failures.append("data/links/longterm_screen_rev1.csv does not match its .sha256")
 
     index = ROOT / "data/profiles/profiles_index_rev1.csv"
     n = 0

@@ -91,6 +91,10 @@ lines = [
     sprintf("  long-term level RMS             %.1f   (baseline %.1f)", A.lt.level, B0.lt.level)
     sprintf("  long-term shape RMS             %.1f   (baseline %.1f)", A.lt.shape, B0.lt.shape)
     ];
+if isfield(A, 'screened')
+    lines(end + 1) = sprintf("composite, screened set  %.1f dB   (baseline %.1f; %d rows left out)", ...
+        A.screened.composite, B0.screened.composite, A.screened.n_dropped);
+end
 if ~isempty(P2)
     for s = ["R1" "R2" "R3" "VA"]
         lines(end + 1) = sprintf("  site %s RMS %.1f  mean %+.1f   (baseline %.1f)", s, ...

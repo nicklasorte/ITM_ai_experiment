@@ -52,9 +52,13 @@ P.452 can't meet the censored target, so meeting all three is the headline.
    +51 dB on average there, and every terrain model misses. Without them,
    ITM's level error is 16.9 dB. The rest concentrates at 3–10 GHz (supports
    H7) and on diffraction paths where ITM misses and P.2001 doesn't (B01).
-1. **Noise floor.** Bootstrap the composite and each objective over paths
-   within site, and report the 95 % interval. Replace the 0.3 dB keep
-   threshold (marked `TODO` in FRAMEWORK.md) with the measured value.
+1. **Noise floor (done, D02).** Paired SD between similar models is about
+   0.3 dB, so the fixed 0.3 dB threshold is about one SD. Next: add a
+   paired bootstrap against the current best to `eval/`, and keep a change
+   only if the 95 % interval of its gain excludes zero.
+1. **Screened scoring (done).** `score_rev1` reports a second composite
+   without the 14 D01 rows (`data/links/longterm_screen_rev1.csv`); a kept
+   change must improve both.
 1. **R02, constrained recalibration.** Rerun `cv_calibrate_rev1` on the full
    data with the censored and continuity gates in the objective. R02
    becomes the comparator every agent result is reported against.
@@ -107,7 +111,6 @@ censored violations.
 | Which dataset is the lockbox, given that some candidates have been seen | Stage 4 | See FRAMEWORK.md, Tier B |
 | Which public-input study gets the shadow run | Stage 4 | — |
 | Keep the censored gate at +1 point over the current best | Stage 1 | R01 shows this gate is what stops optimistic fits |
-| How to treat the 14 rows where the record says line of sight but the profile is blocked (D01) | Before B01 | Keep in the frozen set; screen them out by a rule fixed now; or score both and report both |
 | Set the `RESTRICTED_TERMS` repository secret | Now | Settings → Secrets and variables → Actions |
 
 ## Checks at each stage

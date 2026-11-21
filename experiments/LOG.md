@@ -56,6 +56,26 @@ bottom.
 - Splits re-frozen with the full long-term set (hash `06d9f440607a`).
 - Decision: baseline
 
+### D02-noise-floor (diagnostic, no model change)
+- Date: 2026-11-21
+- Question: how large must a score change be to be real?
+- Method: `experiments/D02-noise-floor/noise_floor_rev1.py` replicates
+  `score_rev1` exactly (composite matches to 4e-15 dB), then draws 500
+  bootstrap samples of paths, with replacement, within each Phase 2 site and
+  each long-term fold.
+- Path-sampling spread of a single model's composite: SD 1.1 dB (stock ITM),
+  1.2–1.4 dB (P.2001, P.452), 0.6 dB (R01).
+- Paired differences, same resampled paths for both models: R01 − ITM
+  −3.3 ± 0.6 dB; P.2001 − ITM −2.2 ± 1.0 dB; P.452 − P.2001 +0.2 ± 0.3 dB,
+  95 % interval −0.3 to +0.7, so the two ITU models aren't distinguishable.
+- Implication: for two similar models the paired SD is about 0.3 dB, so the
+  fixed 0.3 dB keep threshold is about one SD — too loose on its own.
+  Proposed: keep a change only if the 95 % paired-bootstrap interval of its
+  gain over the current best excludes zero, as well as meeting 0.3 dB. To be
+  built into `eval/` before batch B01.
+- Screened composite (14 rows left out, D01): ITM 13.4, P.452 12.9, P.2001
+  12.7, R01 10.9 dB.
+
 ### D01-longterm-level (diagnostic, no model change)
 - Date: 2026-11-21
 - Question: why is stock ITM's long-term level error 24.6 dB on all 325

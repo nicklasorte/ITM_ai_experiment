@@ -18,15 +18,22 @@ function R = score_rev1(P2, LT, predcol, options)
 %     R.lt.level    long-term level error, mean over p in settings p_scored
 %     R.lt.shape    long-term shape error (L_p - L_50), mean over p ~= 50
 %     R.composite   mean of the three; the number the agent climbs
+%     R.screened    the same long-term scores and composite with the rows in
+%                   data/links/longterm_screen_rev1.csv left out (record says
+%                   line of sight, 30 m profile is blocked; experiment D01).
+%                   A kept change must improve both composites
+%                   (FRAMEWORK.md, acceptance rule).
 %
 %   Options: Round (0) rounds the reported scores to this step, used for
 %   the agent-facing summary (FRAMEWORK.md, reusable-holdout rule).
+%   Screen (true) also computes R.screened.
 
 arguments
     P2 table
     LT table
     predcol (1,1) string
     options.Round (1,1) double = 0
+    options.Screen (1,1) logical = true
 end
 S = settings_rev1();
 R = struct('model', predcol);
@@ -92,9 +99,20 @@ else
     R.composite = mean([R.p2.cell, R.lt.level, R.lt.shape], 'omitnan');
 end
 
+if options.Screen && ~isempty(LT)
+    drop = ismember(string(LT.link_id), screen_list());
+    Q = score_rev1(P2, LT(~drop, :), predcol, Screen=false);
+    R.screened = struct('n_dropped', nnz(drop), 'lt_level', Q.lt.level, 'lt_shape', Q.lt.shape, ...
+        'composite', Q.composite);
+end
+
 if options.Round > 0
     rnd = @(x) options.Round * round(x / options.Round);
     R.composite = rnd(R.composite); R.p2.cell = rnd(R.p2.cell); R.lt.level = rnd(R.lt.level); R.lt.shape = rnd(R.lt.shape);
+    if isfield(R, 'screened')
+        R.screened.composite = rnd(R.screened.composite);
+        R.screened.lt_level = rnd(R.screened.lt_level); R.screened.lt_shape = rnd(R.screened.lt_shape);
+    end
 end
 end
 
@@ -108,4 +126,28 @@ function [names, r, n] = cell_scores(e, w, cellname)
 [names, ~, g] = unique(cellname);
 r = sqrt(accumarray(g, w .* e .^ 2) ./ accumarray(g, w));
 n = accumarray(g, 1);
+end
+
+function ids = screen_list()
+% Link IDs left out of the screened scores. Fixed on 2026-11-21 (D01) by a
+% rule set before any experiment: the record gives path type LOS and the
+% 30 m profile blocks the 4/3-earth ray between the antennas. Hash-checked.
+persistent cache
+if isempty(cache)
+    root = fileparts(fileparts(mfilename('fullpath')));
+    f = fullfile(root, 'data', 'links', 'longterm_screen_rev1.csv');
+    want = strtrim(string(fileread(fullfile(root, 'data', 'links', 'longterm_screen_rev1.sha256'))));
+    fid = fopen(f, 'r'); b = fread(fid, Inf, '*uint8'); fclose(fid);
+    md = java.security.MessageDigest.getInstance('SHA-256'); md.update(b);
+    got = string(sprintf('%02x', typecast(md.digest(), 'uint8')));
+    if got ~= want
+        error('itmexp:screen', 'data/links/longterm_screen_rev1.csv does not match its hash.');
+    end
+    T = readtable(f, 'TextType', 'string');
+    if height(T) == 0
+        error('itmexp:screen', 'The screen list is empty.');
+    end
+    cache = T.link_id;
+end
+ids = cache;
 end

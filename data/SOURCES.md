@@ -27,3 +27,14 @@ are the surveyed profiles from the data set, resampled linearly to 30 m.
 Copernicus DEM: © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH
 2014–2018, provided under COPERNICUS by the European Union and ESA; USGS
 3DEP is public domain.
+
+## Long-term screen list (D01, 2026-11-21)
+
+`data/links/longterm_screen_rev1.csv` lists 14 long-term rows on 10 paths
+whose path type in the 1971 record (Longley, Reasoner, and Fuller, OT/TRER 16)
+is LOS but whose 30 m terrain profile blocks the 4/3-earth ray between the
+antennas. The rule was fixed before any experiment. The rows stay in the
+frozen set; `score_rev1` reports scores with and without them, and a kept
+change must improve both. Generated from
+`experiments/D01-longterm-level/rows_rev1.csv`; hash in
+`longterm_screen_rev1.sha256`.

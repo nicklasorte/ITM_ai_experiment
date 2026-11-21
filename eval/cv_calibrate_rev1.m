@@ -149,6 +149,10 @@ for s = ["R1" "R2" "R3" "VA"]
         Rc.p2.site.(s).mean, Rb.p2.site.(s).rms, Rb.p2.site.(s).mean); %#ok<AGROW>
 end
 lines(end + 1) = sprintf("  censored violations %.1f%%   (baseline %.1f%%)", Rc.p2.censored_violation_pct, Rb.p2.censored_violation_pct);
+if isfield(Rc, 'screened')
+    lines(end + 1) = sprintf("composite, screened set  %.2f dB   (baseline %.2f; %d rows left out)", ...
+        Rc.screened.composite, Rb.screened.composite, Rc.screened.n_dropped);
+end
 lines(end + 1) = sprintf("physics battery at median fitted constants: %s", string(B.pass));
 lines(end + 1) = "median fitted constants: " + strjoin(compose("%s=%.3g", string(med.Properties.VariableNames)', table2array(med)'), ", ");
 lines(end + 1) = sprintf("runtime %.0f s", R.runtime_s);

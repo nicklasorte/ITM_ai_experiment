@@ -421,11 +421,21 @@ The agent keeps a change only if all of these hold:
 
 1. The physics battery passes.
 1. The primary score improves by at least **0.3 dB** over the current best.
-   This is above the run-to-run noise of a deterministic model and the
-   variation from profile resampling. TODO: confirm by measuring the score
-   change from resampling profiles at 25 m versus 30 m.
+   Experiment D02 measured the path-sampling noise: the paired difference
+   between two similar models has an SD of about 0.3 dB, so 0.3 dB alone is
+   about one SD. Before batch B01, `eval/` adds a paired bootstrap against
+   the current best, and a change is kept only if the 95 % interval of its
+   gain excludes zero.
 1. **No held-out site gets worse** by more than 0.5 dB RMS.
 1. Censored-bound violations don't increase by more than 1 percentage point.
+1. **The gain shows on the screened set too.** The screened composite
+   (long-term rows in `data/links/longterm_screen_rev1.csv` left out) must
+   also improve by at least the same threshold. Those 14 rows on 10 paths
+   are line of sight in the 1971 record but blocked on the 30 m profile
+   (experiment D01), so every terrain model misses them; a change can't be
+   kept on the strength of those rows alone. The rule was fixed on
+   2026-11-21, before any experiment, and the list is hash-checked. Both
+   composites are reported for every run.
 1. **Complexity cost:** each new free parameter must buy at least 0.5 dB on
    the primary score. A change that adds a fitted parameter and gains 0.4 dB
    is rejected.

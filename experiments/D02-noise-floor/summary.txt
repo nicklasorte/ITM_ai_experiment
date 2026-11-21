@@ -1,0 +1,21 @@
+Replica check against experiments/000-baseline/metrics.json (composite):
+  itm    replica 16.0249  stored 16.0249  diff -3.6e-15
+  p452   replica 14.1755  stored 14.1755  diff -3.6e-15
+  p2001  replica 13.9691  stored 13.9691  diff +0.0e+00
+
+Point scores (dB): composite | Phase 2 cell | LT level | LT shape | screened composite
+  baseline  16.02 |  18.32 |  24.60 |  5.16 |  13.40
+  p452      14.18 |  14.06 |  18.53 |  9.94 |  12.89
+  p2001     13.97 |  14.06 |  21.21 |  6.64 |  12.66
+  R01       12.36 |  14.47 |  17.61 |  5.00 |  10.93
+
+Bootstrap over paths within site / fold, 500 draws:
+  baseline composite SD 1.11 dB; 95 % interval 13.36-17.56
+  p452     composite SD 1.38 dB; 95 % interval 10.86-15.73
+  p2001    composite SD 1.22 dB; 95 % interval 10.96-15.23
+  R01      composite SD 0.62 dB; 95 % interval 10.93-13.34
+
+Paired differences (same resampled paths for both models):
+  R01 - baseline: mean -3.32, SD 0.61 dB, 95 % interval -4.47 to -2.19
+  p2001 - baseline: mean -2.20, SD 0.95 dB, 95 % interval -4.05 to -0.56
+  p452 - p2001: mean +0.18, SD 0.27 dB, 95 % interval -0.32 to +0.69

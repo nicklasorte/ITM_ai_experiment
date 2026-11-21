@@ -66,8 +66,10 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
   log it as `infra`, and hand back to the planner if it fails again.
 - Run one evaluation at a time per branch, and wait for it to finish before
   branching from that branch.
-- Report every kept change against the recalibrated baseline R01 as well as
+- Report every kept change against the recalibrated baseline as well as
   the current best.
+- A change must improve both the composite and the screened composite
+  (both are in `summary.txt`). Don't target the screened-out rows.
 - Stop and report when three tiers in a row produce no accepted change, or
   when every cell is within 1 dB of the noise floor.
 - After every 10 accepted changes, stop for the independent reviewer agent
