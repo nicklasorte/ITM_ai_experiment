@@ -86,7 +86,7 @@ end
 elev_deg = rad2deg(theta_geo);
 
 [A_ref_db, warnings, propmode, lines] = longley_rice(theta_hzn, f_mhz, Z_g, d_hzn_m, h_e_m, ...
-    gamma_e, N_s, delta_h_m, h_m, d_m, warnings, area);
+    gamma_e, N_s, delta_h_m, h_m, d_m, warnings, area, cfg);
 
 A_fs_db = free_space_loss(d_m, f_mhz);
 
@@ -98,7 +98,7 @@ else
     mode_code = 4 + 4 * (q > 0) + 1 + (propmode == 3);
 end
 
-[V_db, extreme] = variability(z, h_e_m, delta_h_m, f_mhz, d_m, A_ref_db, climate, mdvar);
+[V_db, extreme] = variability(z, h_e_m, delta_h_m, f_mhz, d_m, A_ref_db, climate, mdvar, cfg);
 wbits = bitor(uint32(warnings), uint32(any(extreme(:))) * uint32(8192));
 if lines.A_ref_undefined
     wbits = bitor(wbits, uint32(65536));   % MATLAB-only flag; not in info.warnings
@@ -455,7 +455,7 @@ end
 %  Reference attenuation (LongleyRice.cpp)
 %  ------------------------------------------------------------------------
 function [A_ref_db, warnings, propmode, lines] = longley_rice(theta_hzn, f_mhz, Z_g, d_hzn_m, h_e_m, ...
-    gamma_e, N_s, delta_h_m, h_m, d_m, warnings, area)
+    gamma_e, N_s, delta_h_m, h_m, d_m, warnings, area, cfg)
 % area: true in area mode (DiffractionLoss leaves out its q + 10).
 % lines: the reference-attenuation construction, for diagnostics (info.lines):
 % the diffraction line through (d_3, A_3) and (d_4, A_4), the line-of-sight
@@ -483,8 +483,8 @@ if real(Z_g) <= abs(imag(Z_g)), itm_error(1013); end
 
 d_3 = c_max(d_sML, d_ML + 5.0 * (a_e^2 / f_mhz)^(1.0 / 3.0));
 d_4 = d_3 + 10.0 * (a_e^2 / f_mhz)^(1.0 / 3.0);
-A_3 = diffraction_loss(d_3, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area);
-A_4 = diffraction_loss(d_4, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area);
+A_3 = diffraction_loss(d_3, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg);
+A_4 = diffraction_loss(d_4, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg);
 M_d = (A_4 - A_3) / (d_4 - d_3);
 A_d0 = A_3 - M_d * d_3;
 nan_ = NaN;
@@ -511,12 +511,12 @@ if d_m < d_sML
     else
         d_1 = c_max(-A_d0 / M_d, 0.25 * d_ML);
     end
-    A_1 = line_of_sight_loss(d_1, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz);
+    A_1 = line_of_sight_loss(d_1, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg);
     flag = false;
     kHat_1 = 0;
     kHat_2 = 0;
     if d_0 < d_1
-        A_0 = line_of_sight_loss(d_0, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz);
+        A_0 = line_of_sight_loss(d_0, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg);
         q = log(d_sML / d_0);
         kHat_2 = c_max(0.0, ((d_sML - d_0) * (A_1 - A_0) - (d_1 - d_0) * (A_sML - A_0)) / ...
             ((d_sML - d_0) * log(d_1 / d_0) - (d_1 - d_0) * q));
@@ -578,7 +578,7 @@ lines.A_ref_undefined = isnan(A_ref_db);
 A_ref_db = c_max(A_ref_db, 0.0);
 end
 
-function A_d = diffraction_loss(d_m, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area)
+function A_d = diffraction_loss(d_m, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg)
 A_k = knife_edge_diffraction(d_m, f_mhz, a_e, theta_los, d_hzn_m);
 A_se = smooth_earth_diffraction(d_m, f_mhz, a_e, theta_los, d_hzn_m, h_e_m, Z_g);
 delta_h_dsML = terrain_roughness(d_sML, delta_h_m);
@@ -593,8 +593,8 @@ end
 term1 = sqrt(1.0 + qk / q);
 d_ML = d_hzn_m(1) + d_hzn_m(2);
 q = (term1 + (-theta_los * a_e + d_ML) / d_m) * c_min(delta_h_d * f_mhz / 47.7, 6283.2);
-w = 25.1 / (25.1 + c_sqrt(q));
-A_d = w * A_se + (1.0 - w) * A_k + A_fo;
+w = cfg.cal.w_const / (cfg.cal.w_const + c_sqrt(q));      % ITM: 25.1
+A_d = w * A_se + (1.0 - w) * (cfg.cal.knife_scale * A_k) + cfg.cal.afo_scale * A_fo;   % ITM: scales 1
 end
 
 function A_k = knife_edge_diffraction(d_m, f_mhz, a_e, theta_los, d_hzn_m)
@@ -656,7 +656,7 @@ else
 end
 end
 
-function A_los = line_of_sight_loss(d_m, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz)
+function A_los = line_of_sight_loss(d_m, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg)
 delta_h_d = terrain_roughness(d_m, delta_h_m);
 sigma_h_d = sigma_h_function(delta_h_d);
 wn = f_mhz / 47.7;
@@ -673,7 +673,7 @@ end
 rr = complex(cos(delta_phi), -sin(delta_phi)) + R_e;
 A_t = -10 * log10(real(rr)^2 + imag(rr)^2);
 A_d = M_d * d_m + A_d0;
-w = 1 / (1 + f_mhz * delta_h_m / c_max(10e3, d_sML));
+w = 1 / (1 + cfg.cal.los_w_scale * f_mhz * delta_h_m / c_max(10e3, d_sML));   % ITM: scale 1
 A_los = w * A_t + (1 - w) * A_d;
 end
 
@@ -768,7 +768,7 @@ end
 %% ------------------------------------------------------------------------
 %  Variability (Variability.cpp), vectorized over time and situation
 %  ------------------------------------------------------------------------
-function [result, extreme] = variability(z, h_e_m, delta_h_m, f_mhz, d_m, A_ref_db, climate, mdvar)
+function [result, extreme] = variability(z, h_e_m, delta_h_m, f_mhz, d_m, A_ref_db, climate, mdvar, cfg)
 % Vectorized over the deviates in z (see itm_percentiles). Scalars stay
 % scalars and implicit expansion forms the output, which gives the same
 % values as expanding every array to the output size first.
@@ -851,8 +851,8 @@ Y_L = sigma_L * z_L;
 q = log(0.133 * wn);
 g_minus = bfm1(c) + bfm2(c) / ((bfm3(c) * q)^2 + 1.0);
 g_plus = bfp1(c) + bfp2(c) / ((bfp3(c) * q)^2 + 1.0);
-sigma_T_minus = curve(bsm1(c), bsm2(c), xsm1(c), xsm2(c), xsm3(c), d_e) * g_minus;
-sigma_T_plus = curve(bsp1(c), bsp2(c), xsp1(c), xsp2(c), xsp3(c), d_e) * g_plus;
+sigma_T_minus = curve(bsm1(c), bsm2(c), xsm1(c), xsm2(c), xsm3(c), d_e) * g_minus * cfg.cal.time_minus_scale;  % ITM: 1
+sigma_T_plus = curve(bsp1(c), bsp2(c), xsp1(c), xsp2(c), xsp3(c), d_e) * g_plus * cfg.cal.time_plus_scale;     % ITM: 1
 sigma_TD = C_D(c) * sigma_T_plus;
 tgtd = (sigma_T_plus - sigma_TD) * z_D(c);
 

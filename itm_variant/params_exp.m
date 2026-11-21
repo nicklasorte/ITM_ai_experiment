@@ -33,4 +33,15 @@ cfg.effective_height_alpha = 1;
 
 % Time variability (variability)
 cfg.variability = "itm";
+
+% Recalibration constants (Tier 1). At these values ITM v1.4 is unchanged.
+% eval/cv_calibrate_rev1 fits them inside cross-validation for the
+% recalibrated-ITM baseline; the agent doesn't hand-tune them.
+cfg.cal = struct( ...
+    'w_const', 25.1, ...          % smooth-earth weight constant in diffraction_loss (ITM v1.4)
+    'afo_scale', 1, ...           % scale on the terrain clutter term A_fo (ITM v1.4: 1)
+    'knife_scale', 1, ...         % scale on the double knife-edge loss A_k (ITM v1.4: 1)
+    'los_w_scale', 1, ...         % scale on f*dh/d in the line-of-sight blend weight (ITM v1.4: 1)
+    'time_minus_scale', 1, ...    % scale on sigma_T for z_T < 0, enhancement side (ITM v1.4: 1)
+    'time_plus_scale', 1);        % scale on sigma_T for z_T >= 0, fading side (ITM v1.4: 1)
 end
