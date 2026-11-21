@@ -85,6 +85,12 @@ else
 end
 elev_deg = rad2deg(theta_geo);
 
+% Profile context for the profile-based submodels (batch B01). Built only
+% when a switch leaves its ITM value, so the default path is unchanged.
+if ~area && (cfg.diffraction ~= "itm" || cfg.line_of_sight ~= "itm")
+    cfg.ctx = profile_context(pfl, h_m, 1 / gamma_e, f_mhz, cfg);
+end
+
 [A_ref_db, warnings, propmode, lines] = longley_rice(theta_hzn, f_mhz, Z_g, d_hzn_m, h_e_m, ...
     gamma_e, N_s, delta_h_m, h_m, d_m, warnings, area, cfg);
 
@@ -501,7 +507,34 @@ if d_m < 1e3,     warnings = bitor(warnings, 64); end
 if d_m > 1000e3,  warnings = bitor(warnings, 8); end
 if d_m > 2000e3,  warnings = bitor(warnings, 16); end
 
-if d_m < d_sML
+% Region and, for the profile-based diffraction switches, the diffraction
+% line. Without cfg.ctx (every switch at "itm") this is ITM's own test.
+los_region = d_m < d_sML;
+if isfield(cfg, 'ctx')
+    if cfg.line_of_sight == "profile_horizons" && cfg.ctx.obstructed
+        % The profile blocks the ray between the antennas, so the path is
+        % treated as transhorizon even where the smooth-earth horizons of
+        % the effective heights say line of sight.
+        los_region = false;
+    end
+    if cfg.diffraction ~= "itm" && ~los_region
+        % ITM: A_d = w A_se + (1 - w) A_k + A_fo, extrapolated along the line
+        % through d_3 and d_4. Here the smooth-earth and clutter part keeps
+        % that line, and the knife-edge part is replaced by the
+        % profile-based loss at the path's own distance. The slope M_d is
+        % kept, and the line is re-anchored to pass through the new value
+        % at d, so the line-of-sight fit and the scatter crossover use it.
+        [~, B_3] = diffraction_loss(d_3, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg);
+        [~, B_4] = diffraction_loss(d_4, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg);
+        w_d = knife_weight(d_m, d_hzn_m, h_e_m, a_e, delta_h_m, h_m, theta_los, f_mhz, area, cfg);
+        A_var = B_3 + (B_4 - B_3) / (d_4 - d_3) * (d_m - d_3) ...
+            + (1.0 - w_d) * cfg.cal.knife_scale * cfg.ctx.A_knife_db;
+        A_d0 = A_var - M_d * d_m;
+        lines.A_d0_db = A_d0;
+    end
+end
+
+if los_region
     % Line-of-sight region
     A_sML = d_sML * M_d + A_d0;
     d_0 = 0.04 * f_mhz * h_e_m(1) * h_e_m(2);
@@ -578,7 +611,9 @@ lines.A_ref_undefined = isnan(A_ref_db);
 A_ref_db = c_max(A_ref_db, 0.0);
 end
 
-function A_d = diffraction_loss(d_m, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg)
+function [A_d, A_base] = diffraction_loss(d_m, d_hzn_m, h_e_m, Z_g, a_e, delta_h_m, h_m, theta_los, d_sML, f_mhz, area, cfg)
+% A_base (optional): the smooth-earth and clutter part, w A_se + A_fo,
+% without the knife-edge part (1 - w) A_k.
 A_k = knife_edge_diffraction(d_m, f_mhz, a_e, theta_los, d_hzn_m);
 A_se = smooth_earth_diffraction(d_m, f_mhz, a_e, theta_los, d_hzn_m, h_e_m, Z_g);
 delta_h_dsML = terrain_roughness(d_sML, delta_h_m);
@@ -595,6 +630,47 @@ d_ML = d_hzn_m(1) + d_hzn_m(2);
 q = (term1 + (-theta_los * a_e + d_ML) / d_m) * c_min(delta_h_d * f_mhz / 47.7, 6283.2);
 w = cfg.cal.w_const / (cfg.cal.w_const + c_sqrt(q));      % ITM: 25.1
 A_d = w * A_se + (1.0 - w) * (cfg.cal.knife_scale * A_k) + cfg.cal.afo_scale * A_fo;   % ITM: scales 1
+if nargout > 1
+    A_base = w * A_se + cfg.cal.afo_scale * A_fo;
+end
+end
+
+function w = knife_weight(d_m, d_hzn_m, h_e_m, a_e, delta_h_m, h_m, theta_los, f_mhz, area, cfg)
+% ITM's smooth-earth weight w from diffraction_loss, at distance d_m. The
+% knife-edge part carries 1 - w. Same arithmetic as diffraction_loss.
+delta_h_d = terrain_roughness(d_m, delta_h_m);
+q = h_m(1) * h_m(2);
+qk = h_e_m(1) * h_e_m(2) - q;
+if ~area
+    q = q + 10.0;
+end
+term1 = sqrt(1.0 + qk / q);
+d_ML = d_hzn_m(1) + d_hzn_m(2);
+q = (term1 + (-theta_los * a_e + d_ML) / d_m) * c_min(delta_h_d * f_mhz / 47.7, 6283.2);
+w = cfg.cal.w_const / (cfg.cal.w_const + c_sqrt(q));
+end
+
+function ctx = profile_context(pfl, h_m, a_e, f_mhz, cfg)
+% What the profile-based submodels need from the terrain profile:
+%   obstructed   terrain rises above the direct ray between the antennas
+%                (FindHorizons found a terrain horizon)
+%   A_knife_db   profile-based knife-edge loss at the path's own geometry
+%                (multi_edge_diffraction_rev1), or NaN when cfg.diffraction
+%                is "itm"
+if ~ismember(cfg.line_of_sight, ["itm" "profile_horizons"])
+    error('itmexp:cfg', 'Unknown cfg.line_of_sight "%s".', cfg.line_of_sight);
+end
+np = fix(pfl(1));
+d_m = pfl(1) * pfl(2);
+[~, d_hzn_geo] = find_horizons(pfl, a_e, h_m);
+ctx = struct('obstructed', d_hzn_geo(1) < d_m || d_hzn_geo(2) < d_m, 'A_knife_db', NaN);
+if cfg.diffraction ~= "itm"
+    x = (0:np)' * pfl(2);
+    z = pfl(3:np + 3);
+    z(1) = z(1) + h_m(1);
+    z(np + 1) = z(np + 1) + h_m(2);
+    ctx.A_knife_db = multi_edge_diffraction_rev1(cfg.diffraction, x, z, f_mhz, a_e);
+end
 end
 
 function A_k = knife_edge_diffraction(d_m, f_mhz, a_e, theta_los, d_hzn_m)

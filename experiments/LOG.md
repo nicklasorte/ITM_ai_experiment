@@ -56,6 +56,28 @@ bottom.
 - Splits re-frozen with the full long-term set (hash `06d9f440607a`).
 - Decision: baseline
 
+### B01 planned (planner note)
+- Date: 2026-11-21. Planner: Claude Fable 5.2.
+- Plan: `experiments/batches/B01.md`, experiments 101–106 (H1, H2, H3).
+- New code: `itm_variant/multi_edge_diffraction_rev1.m` (Epstein-Peterson
+  over the two horizon obstacles, Deygout three-edge, ITU-R P.526-11
+  cascaded, ITU-R P.526-16 Bullington) and switch handling in
+  `itm_p2p_core_exp.m`. Tests: 9 of 9 pass
+  (`itm_variant/tests/test_diffraction_rev1.m`), including the J(ν)
+  approximation against the exact Fresnel integral and Bullington rewritten
+  in the Recommendation's own units. Parity at default switches:
+  6.8 × 10⁻¹³ dB.
+- Finding: H2 as first written (evaluate ITM's own diffraction formulas at
+  the path distance) is degenerate; ITM's double knife edge is zero-valued
+  at d = d_L1 + d_L2. H1 and H2 are tested together through profile-based
+  knife-edge loss at the path distance.
+- Equation numbers were checked against text extractions of ITU-R P.526-16
+  and P.526-11. The extraction garbled some symbols in eq. (31), (49), and
+  (55); the coded forms match the standard expressions and the independent
+  checks in the tests, but a read against the PDFs is still owed.
+- Not built: delta-Bullington (needs the spherical-earth model, P.526-16
+  section 3.2). Deferred to B02 if censored violations block B01.
+
 ### R02-constrained-recalibration
 - Date: 2026-11-21
 - Tier: 1 (recalibration by a conventional optimizer; no agent)

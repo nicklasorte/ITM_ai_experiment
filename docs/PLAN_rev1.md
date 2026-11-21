@@ -83,10 +83,17 @@ Hypotheses from [docs/WORKING_PAPER_FINDINGS.md](WORKING_PAPER_FINDINGS.md):
 - H2: diffraction loss at the path distance, not extrapolated from d3/d4
 - H3: the propagation region chosen from the actual horizons
 
-The planner writes `experiments/batches/B01.md`: each experiment's parent
-(from `best` or the archive), exact change, P.526 section and equation
-numbers, and predicted effect per site. The Haiku worker runs it. After 10
-kept changes, three independent reviewers try to break the result.
+Planned (2026-11-21): [experiments/batches/B01.md](../experiments/batches/B01.md),
+experiments 101–106. The planner found H2 as first written degenerate
+(ITM's double knife edge is zero-valued at the path distance), so H1 and H2
+are tested together: a profile-based knife-edge loss at the path's own
+geometry replaces the knife-edge part of ITM's diffraction loss
+(Epstein-Peterson over the two horizon obstacles, Deygout three-edge,
+ITU-R P.526-11 cascaded, and ITU-R P.526-16 Bullington as a bound). H3 is a
+region test from the profile's own horizons. The code and its 9 tests are
+in `itm_variant/`; parity at the default switches holds. Next: the Haiku
+worker runs the batch; after 10 kept changes, or at the end of the batch,
+three independent reviewers try to break the result.
 
 **Gate:** at least one kept change beats R02 on Phase 2 without raising
 censored violations.

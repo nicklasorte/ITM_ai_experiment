@@ -1,0 +1,179 @@
+function tests = test_diffraction_rev1
+%TEST_DIFFRACTION_REV1 Checks multi_edge_diffraction_rev1 against values computed independently.
+%   Run:  results = runtests('itm_variant/tests/test_diffraction_rev1.m')
+%   Each test recomputes the expected value from the cited equation, written
+%   out separately here (in the Recommendation's own units where it uses
+%   km), so a transcription slip in the function shows up as a mismatch.
+tests = functiontests(localfunctions);
+end
+
+function setupOnce(tc)
+here = fileparts(mfilename('fullpath'));
+addpath(fileparts(here));
+tc.TestData.f = 1000;                         % MHz
+tc.TestData.lambda = 299.792458 / 1000;       % m
+tc.TestData.flat = 1e30;                      % effective radius large enough for a flat Earth
+end
+
+function J = J_approx(nu)
+% ITU-R P.526-16 eq. (31)
+if nu > -0.78, J = 6.9 + 20 * log10(sqrt((nu - 0.1)^2 + 1) + nu - 0.1); else, J = 0; end
+end
+
+function J = J_exact(nu)
+% ITU-R P.526-16 eq. (30): exact knife-edge loss from the Fresnel integrals
+% C(nu), S(nu) (eq. (7a), (7b)), by numerical integration.
+C = integral(@(s) cos(pi * s.^2 / 2), 0, nu, 'AbsTol', 1e-12, 'RelTol', 1e-12);
+S = integral(@(s) sin(pi * s.^2 / 2), 0, nu, 'AbsTol', 1e-12, 'RelTol', 1e-12);
+J = -20 * log10(sqrt((1 - C - S)^2 + (C - S)^2) / 2);
+end
+
+function [x, z] = spike_profile(d, xs, hs, h_ant)
+% Flat ground at 0 m, antennas h_ant above it, knife edges of height hs at xs
+x = (0:30:d)';
+z = zeros(size(x));
+for k = 1:numel(xs)
+    [~, i] = min(abs(x - xs(k)));
+    z(i) = hs(k);
+end
+z(1) = h_ant; z(end) = h_ant;
+end
+
+function test_J_matches_exact_fresnel(tc)
+% The eq. (31) approximation, as coded, stays within 0.3 dB of eq. (30).
+% One edge mid-path, antennas 50 m above flat ground, edge top at 50 m + h.
+d = 21000; d1 = 10500; d2 = d - d1; h_ant = 50;
+for nu = [-0.7 -0.3 0 0.5 1 2 3 5]
+    h = nu / sqrt(2 * d / (tc.TestData.lambda * d1 * d2));
+    [x, z] = spike_profile(d, d1, h_ant + h, h_ant);
+    L = multi_edge_diffraction_rev1("deygout", x, z, tc.TestData.f, tc.TestData.flat);
+    tc.verifyEqual(L, J_approx(nu), 'AbsTol', 1e-9);
+    tc.verifyEqual(J_approx(nu), J_exact(nu), 'AbsTol', 0.3);
+end
+% Known value: grazing incidence is 6 dB
+tc.verifyEqual(J_exact(0), 6.0206, 'AbsTol', 1e-3);
+tc.verifyEqual(J_approx(0), 6.03, 'AbsTol', 0.01);
+end
+
+function test_single_edge_all_methods(tc)
+% One 100 m edge mid-path: every method must reduce to the single-edge loss
+% (plus its own published correction)
+d = 30000; H = 100; h_ant = 10;
+[x, z] = spike_profile(d, 15000, H, h_ant);
+i = find(z == H);
+d1 = x(i); d2 = d - d1;
+nu = (H - h_ant) * sqrt(2 * d / (tc.TestData.lambda * d1 * d2));
+J1 = J_approx(nu);
+f = tc.TestData.f; a = tc.TestData.flat;
+tc.verifyEqual(multi_edge_diffraction_rev1("epstein_peterson", x, z, f, a), J1, 'AbsTol', 1e-6);
+tc.verifyEqual(multi_edge_diffraction_rev1("deygout", x, z, f, a), J1, 'AbsTol', 1e-6);
+% P.526-11 eq. (50a)-(52) with no secondary edges
+T = 1 - exp(-J1 / 6); C = 10 + 0.04 * (d / 1000);
+tc.verifyEqual(multi_edge_diffraction_rev1("p526_cascaded", x, z, f, a), J1 + T * C, 'AbsTol', 1e-6);
+% P.526-16 eq. (57): the Bullington point of a single edge is the edge
+tc.verifyEqual(multi_edge_diffraction_rev1("bullington", x, z, f, a), ...
+    J1 + (1 - exp(-J1 / 6)) * (10 + 0.02 * (d / 1000)), 'AbsTol', 1e-6);
+end
+
+function test_two_edges_epstein_peterson_and_deygout(tc)
+% Two edges, 150 m at 10 km and 120 m at 25 km of a 42 km path
+d = 42000; h_ant = 5;
+[x, z] = spike_profile(d, [10000 25000], [150 120], h_ant);
+i1 = find(z == 150); i2 = find(z == 120);
+lam = tc.TestData.lambda; f = tc.TestData.f; a = tc.TestData.flat;
+nuf = @(h, d1, d2) h * sqrt(2 * (d1 + d2) / (lam * d1 * d2));
+% Epstein-Peterson: edge 1 between the transmitter and edge 2; edge 2
+% between edge 1 and the receiver
+h1 = 150 - (h_ant + (120 - h_ant) * x(i1) / x(i2));
+h2 = 120 - (150 + (h_ant - 150) * (x(i2) - x(i1)) / (d - x(i1)));
+ep = J_approx(nuf(h1, x(i1), x(i2) - x(i1))) + J_approx(nuf(h2, x(i2) - x(i1), d - x(i2)));
+tc.verifyEqual(multi_edge_diffraction_rev1("epstein_peterson", x, z, f, a), ep, 'AbsTol', 1e-6);
+% Deygout: principal edge on the full path, then the other edge on its
+% sub-path. Edge 1 has the higher nu on the full path.
+nu1 = nuf(150 - h_ant, x(i1), d - x(i1));
+nu2 = nuf(120 - h_ant, x(i2), d - x(i2));
+tc.assertGreaterThan(nu1, nu2);
+dg = J_approx(nu1) + J_approx(nuf(h2, x(i2) - x(i1), d - x(i2)));
+[L, D] = multi_edge_diffraction_rev1("deygout", x, z, f, a);
+tc.verifyEqual(L, dg, 'AbsTol', 1e-6);
+tc.verifyEqual(D.edges(2), i1);
+% P.526-11 cascaded on the same edges
+T = 1 - exp(-J_approx(nu1) / 6); C = 10 + 0.04 * (d / 1000);
+tc.verifyEqual(multi_edge_diffraction_rev1("p526_cascaded", x, z, f, a), ...
+    J_approx(nu1) + T * (J_approx(nuf(h2, x(i2) - x(i1), d - x(i2))) + C), 'AbsTol', 1e-6);
+end
+
+function test_bullington_in_recommendation_units(tc)
+% P.526-16 eq. (49)-(57) written in the Recommendation's km and m units,
+% on a two-edge path over a curved Earth
+d = 42000; h_ant = 5; a_e = 8.5e6;
+[x, z] = spike_profile(d, [10000 25000], [150 120], h_ant);
+lam = tc.TestData.lambda;
+Ce = 1 / (a_e / 1000);                      % km^-1
+dk = x(2:end - 1) / 1000; D = d / 1000;
+hi = z(2:end - 1); hts = z(1); hrs = z(end);
+Stim = max((hi + 500 * Ce * dk .* (D - dk) - hts) ./ dk);
+Str = (hrs - hts) / D;
+tc.assertGreaterThanOrEqual(Stim, Str);
+Srim = max((hi + 500 * Ce * dk .* (D - dk) - hrs) ./ (D - dk));
+db = (hrs - hts + Srim * D) / (Stim + Srim);
+nub = (hts + Stim * db - (hts * (D - db) + hrs * db) / D) * sqrt(0.002 * D / (lam * db * (D - db)));
+Luc = J_approx(nub);
+want = Luc + (1 - exp(-Luc / 6)) * (10 + 0.02 * D);
+tc.verifyEqual(multi_edge_diffraction_rev1("bullington", x, z, tc.TestData.f, a_e), want, 'AbsTol', 1e-6);
+end
+
+function test_bullington_line_of_sight_case(tc)
+% Clear path: eq. (51)-(52); a point well below the ray gives no loss
+d = 21000; a_e = 8.5e6;
+[x, z] = spike_profile(d, 10500, 0, 200);
+tc.verifyEqual(multi_edge_diffraction_rev1("bullington", x, z, tc.TestData.f, a_e), 0, 'AbsTol', 1e-12);
+tc.verifyEqual(multi_edge_diffraction_rev1("epstein_peterson", x, z, tc.TestData.f, a_e), 0, 'AbsTol', 1e-12);
+tc.verifyEqual(multi_edge_diffraction_rev1("p526_cascaded", x, z, tc.TestData.f, a_e), 0, 'AbsTol', 1e-12);
+end
+
+function test_earth_bulge(tc)
+% Flat ground, 10 m antennas, 50 km: the highest-nu point is the midpoint,
+% lifted by d1 d2 / (2 a_e) (P.526-11 eq. (49a))
+d = 50010; a_e = 8.5e6; h_ant = 10;
+x = (0:30:d)'; z = zeros(size(x)); z(1) = h_ant; z(end) = h_ant;
+d1 = x; d2 = d - x;
+h = d1 .* d2 / (2 * a_e) - h_ant;
+nu = max(h(2:end - 1) .* sqrt(2 * d ./ (tc.TestData.lambda * d1(2:end - 1) .* d2(2:end - 1))));
+tc.assertGreaterThan(nu, 0);
+[~, D] = multi_edge_diffraction_rev1("deygout", x, z, tc.TestData.f, a_e);
+tc.verifyEqual(D.nu(2), nu, 'RelTol', 1e-12);
+end
+
+function test_reciprocity(tc)
+% Swapping the terminals and reversing the profile must not change the loss
+d = 60000; a_e = 8.5e6;
+x = (0:30:d)';
+z = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+z(1) = z(1) + 12; z(end) = z(end) + 3;
+for m = ["epstein_peterson" "deygout" "p526_cascaded" "bullington"]
+    a = multi_edge_diffraction_rev1(m, x, z, 450, a_e);
+    b = multi_edge_diffraction_rev1(m, x, flipud(z), 450, a_e);
+    tc.verifyEqual(a, b, 'AbsTol', 1e-6, "method " + m);
+    tc.verifyGreaterThan(a, 0);
+end
+end
+
+function test_ordering_on_two_edges(tc)
+% Published behavior: Bullington's single equivalent edge underestimates a
+% two-edge path relative to Epstein-Peterson and Deygout before its
+% correction term; the P.526-11 correction only adds loss to Deygout.
+d = 42000; h_ant = 5;
+[x, z] = spike_profile(d, [10000 25000], [150 120], h_ant);
+f = tc.TestData.f; a = tc.TestData.flat;
+dg = multi_edge_diffraction_rev1("deygout", x, z, f, a);
+cs = multi_edge_diffraction_rev1("p526_cascaded", x, z, f, a);
+tc.verifyGreaterThanOrEqual(cs, dg - 1e-9);
+end
+
+function test_bad_inputs_fail_loud(tc)
+x = (0:30:3000)'; z = zeros(size(x));
+tc.verifyError(@() multi_edge_diffraction_rev1("nope", x, z, 1000, 8.5e6), 'itmexp:multiedge');
+z(5) = NaN;
+tc.verifyError(@() multi_edge_diffraction_rev1("deygout", x, z, 1000, 8.5e6), 'itmexp:multiedge');
+end

@@ -18,9 +18,19 @@ cfg = struct();
 cfg.version = 1;
 
 % Diffraction between the horizons (diffraction_loss, knife_edge_diffraction)
+%   "itm"               ITM v1.4 double knife edge on the line through d_3, d_4
+%   "epstein_peterson"  Epstein and Peterson 1953 over the two horizon obstacles
+%   "deygout"           Deygout 1966, principal edge plus one edge each side
+%   "p526_cascaded"     ITU-R P.526-11 section 4.4.2 (Deygout with correction)
+%   "bullington"        ITU-R P.526-16 section 4.5.1
+% The last four replace the knife-edge part of ITM's diffraction loss with a
+% profile-based loss at the path's own distance, on transhorizon paths
+% (multi_edge_diffraction_rev1; experiments/batches/B01.md).
 cfg.diffraction = "itm";
 
-% Line-of-sight loss (line_of_sight_loss)
+% Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
+%   "itm"               region from the smooth-earth horizons of the effective heights
+%   "profile_horizons"  a path whose profile blocks the direct ray is transhorizon
 cfg.line_of_sight = "itm";
 
 % Troposcatter loss and the diffraction/troposcatter switch (troposcatter_loss, longley_rice)
