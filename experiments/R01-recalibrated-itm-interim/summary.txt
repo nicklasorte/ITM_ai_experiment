@@ -1,0 +1,13 @@
+R01-recalibrated-itm-interim: recalibrated ITM, constants fitted in 5-fold cross-validation (bayesopt, 40 evals per fold)
+composite  12.09 dB   (baseline ITM 13.94)
+  phase2 cell-balanced RMS   14.51   (baseline 18.32)
+  long-term level RMS        16.57   (baseline 17.64)
+  long-term shape RMS        5.18   (baseline 5.86)
+  site R1 RMS 11.7  mean -0.2   (baseline 13.3, mean +2.6)
+  site R2 RMS 19.1  mean -7.5   (baseline 28.6, mean +10.6)
+  site R3 RMS 8.6  mean +1.8   (baseline 9.0, mean +0.2)
+  site VA RMS 16.1  mean -8.0   (baseline 15.4, mean -8.1)
+  censored violations 55.6%   (baseline 28.0%)
+physics battery at median fitted constants: false
+median fitted constants: w_const=5.87, afo_scale=1.95, knife_scale=0.639, los_w_scale=23.8, time_minus_scale=0.78, time_plus_scale=0.761
+runtime 217 s

@@ -20,6 +20,9 @@ ones that reduce error on held-out measurement sites.
   propagation models; venues and reporting rules.
 - [docs/WORKING_PAPER_FINDINGS.md](docs/WORKING_PAPER_FINDINGS.md): what the
   ITM vs P.2001 vs P.452 working paper says to fix, as ranked hypotheses.
+- [docs/INDUSTRY_AGENT_PRACTICES.md](docs/INDUSTRY_AGENT_PRACTICES.md): how
+  industry runs agents on self-checking systems (CI/CD, migrations,
+  AlphaEvolve, EDA, telecom) and what this repo adopts.
 - [experiments/LOG.md](experiments/LOG.md): one entry per experiment.
 - [results/results.tsv](results/results.tsv): one row per experiment.
 
