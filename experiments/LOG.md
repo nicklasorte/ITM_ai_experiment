@@ -56,19 +56,43 @@ bottom.
 - Splits re-frozen with the full long-term set (hash `06d9f440607a`).
 - Decision: baseline
 
+### B02 summary (planner and worker)
+- Date: 2026-11-21. Planner and worker: Claude Opus 5.5.
+- Kept: none. Best stays `000-baseline`.
+- Learned: the continuity fix works mechanically (both settings pass the
+  battery), but extending the profile-based loss into ITM's line-of-sight
+  region lowers loss on half of all Phase 2 rows by about 10 dB and doubles
+  censored violations. The sampling-artifact fix (`"ep_isolated"`) is sound
+  and stays available.
+- For B03: get continuity at d_sML without changing line-of-sight-region
+  paths. Options, none built yet: (a) on the transhorizon side, phase the
+  profile-based loss in from ITM's value at d_sML to its full value at d_3,
+  using only ITM's own anchor distances; (b) apply the profile-based loss
+  only as a cap that can lower ITM's diffraction loss by no more than ITM's
+  own knife-edge part; (c) treat the 30 % censored outcome of 101 as the
+  real limit and move to the Virginia question, which needs inputs other
+  than bare-earth profiles.
+
 ### 201-ep-isolated-blocked
 - Date: 2026-11-21. Batch B02. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "ep_isolated";` and `cfg.diffraction_region = "blocked_paths";`
 - Rationale: 101's mechanism, with the sampling artifact removed and the loss continuous at ITM's line-of-sight boundary.
 - Predicted (from B02.md, before the run): the artifact removal adds loss back on ridge tops between samples, and the extension changes blocked line-of-sight-region paths (direction uncertain). Net: less gain than 101. Composite 15.4–15.9; R2 RMS 26–28 (mean +8 to +10); R1, R3, VA within 1.0 dB of stock; censored 28.5–31 %. Physics battery: pass. About even odds of clearing every gate; the censored gate and the 0.3 dB screened-gain threshold are the likely failures.
-- Result: pending
+- Result: composite 13.75 dB (stock 16.02; R02 15.93); screened 11.89; Phase 2 cell 15.21; long-term level 20.88; shape 5.16. Site RMS R1 11.0 (mean -4.5), R2 21.6 (mean -9.1), R3 6.8 (mean -2.3), VA 16.5 (mean -11.1). Censored 56.0 %. paired gain over stock +2.28 dB (95 % +1.33 to +3.00), screened +1.51 (+0.98 to +2.12).
+- Physics battery: PASS.
+- Decision: reject (censored 56.0 % > 29.0 %; VA 1.1 dB worse). On the Pareto front and its cell's elite: kept as `arc/201-ep-isolated-blocked`.
+- Predictions: wrong. Predicted composite 15.4–15.9 and censored 28.5–31 %; got 13.7 and 56.0 %. R2 mean error flipped from +10.6 to −9.1.
+- Planner analysis: against 101, 9,294 of 16,805 Phase 2 rows changed, by a median −10 dB (R2 2,652 rows, R1 1,274 lowered by more than 10 dB). The cause is `"blocked_paths"`: ITM puts many blocked low-antenna paths in its line-of-sight region, and re-anchoring their line through the variant value feeds them ITM's smooth-earth term extrapolated to distances below d_3, where it has no meaning. The extension buys continuity at the cost of the R01 pattern: optimism on dead paths.
 
 ### 202-p526-double-edge-blocked
 - Date: 2026-11-21. Batch B02. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "p526_double_edge";` and `cfg.diffraction_region = "blocked_paths";`
 - Rationale: the Recommendation's own two-edge method adds the separation correction Lc for strongly shadowed isolated edge pairs.
 - Predicted (from B02.md, before the run): same as 201 on most paths; slightly more loss on isolated pairs that both exceed 15 dB. Composite 0.0–0.3 dB above 201; censored 0–1 point below 201. Physics battery: pass.
-- Result: pending
+- Result: composite 13.75 dB; screened 11.90; same site scores and censored rate as 201 (56.0 %). paired gain over stock +2.27 dB (95 % +1.32 to +2.99), screened +1.50 (+0.96 to +2.12).
+- Physics battery: PASS.
+- Decision: reject (censored; VA). On the front and its cell's elite: kept as `arc/202-p526-double-edge-blocked`.
+- Predictions: composite 0.0–0.3 above 201 held (+0.04); the Lc correction rarely applies (few isolated pairs above 15 dB each). Censored predicted 0–1 point below 201; equal.
 
 ### B02 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Opus 5.5.

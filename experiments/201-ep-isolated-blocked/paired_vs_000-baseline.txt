@@ -1,0 +1,4 @@
+paired bootstrap: 201-ep-isolated-blocked vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +2.28 dB  (SD 0.43; 95% interval +1.33 to +3.00)  PASS
+  screened gain    +1.51 dB  (SD 0.30; 95% interval +0.98 to +2.12)  PASS
+  gain = best minus new; positive means the new run is better

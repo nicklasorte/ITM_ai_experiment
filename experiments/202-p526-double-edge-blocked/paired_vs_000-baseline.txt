@@ -1,0 +1,4 @@
+paired bootstrap: 202-p526-double-edge-blocked vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +2.27 dB  (SD 0.43; 95% interval +1.32 to +2.99)  PASS
+  screened gain    +1.50 dB  (SD 0.30; 95% interval +0.96 to +2.12)  PASS
+  gain = best minus new; positive means the new run is better
