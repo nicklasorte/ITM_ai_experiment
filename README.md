@@ -28,5 +28,62 @@ reference to within 4 × 10⁻¹³ dB.
 Scored on ITS Phase 2 spot measurements (50 % time) and ITS long-term time
 distributions (1 % to 99 % of time). Runs in MATLAB R2025b.
 
-Starting point on the ITS Phase 2 measurements (76–9190 MHz, 426 paths): ITM
-has 16.7 dB RMS error, versus 12.7 dB for P.452 and 12.6 dB for P.2001.
+## How it works
+
+```mermaid
+flowchart TB
+    subgraph HUMAN["Human-owned (read-only to the agent)"]
+        RAW["Raw public data<br/>ITS Phase 2 spot · ITS long-term"]
+        BUILD["data/build_links_rev1<br/>links, profiles, splits"]
+        BASE["Baseline predictions<br/>ITM 1.4 (matlab_itm @ 9bd6a4e)<br/>P.452 · P.2001 references"]
+        EVAL["eval/<br/>run_eval · score · physics battery"]
+        PROG["program.md · FRAMEWORK.md<br/>literature reviews"]
+        RAW --> BUILD --> BASE
+    end
+
+    subgraph AGENT["Agent loop (runs in MATLAB R2025b on Nick's Mac)"]
+        PLAN["Planner (Opus or Fable)<br/>writes batch plan BNN.md"]
+        PICK["Worker (Haiku) takes next<br/>planned experiment"]
+        PLAN --> PICK
+        EDIT["Edit itm_variant/<br/>itm_p2p_core_exp · params_exp"]
+        RUN["run_eval_rev1(Tag=...)"]
+        DEC{"Keep?"}
+        KEEP["Merge to best"]
+        REV["Revert branch"]
+        LOG["experiments/LOG.md<br/>results/results.tsv"]
+        PICK --> EDIT --> RUN --> DEC
+        DEC -- "yes" --> KEEP --> LOG
+        DEC -- "no" --> REV --> LOG
+        LOG --> PICK
+        LOG -. "batch done" .-> PLAN
+    end
+
+    PROG --> PLAN
+    BASE --> RUN
+    EVAL --> RUN
+
+    subgraph GATE["Checks outside the loop"]
+        REVIEW["Every 10 keeps:<br/>independent reviewer agent"]
+        LOCK["Lockbox, once per candidate:<br/>ITS Phase 1 · low antenna · DBSG3"]
+    end
+    KEEP -. "10 kept" .-> REVIEW
+    REVIEW -. "survivor" .-> LOCK
+```
+
+More detail, including one experiment step by step: [docs/FLOW.md](docs/FLOW.md).
+
+## Baseline
+
+Experiment 000-baseline (RMS error in dB, lower is better; composite is the
+mean of the other three):
+
+| Model | Composite | Phase 2 cell-balanced | Long-term level | Long-term shape |
+| --- | --- | --- | --- | --- |
+| ITM (baseline) | 13.9 | 18.3 | 17.6 | 5.9 |
+| P.452 | 11.0 | 14.1 | 12.2 | 6.8 |
+| P.2001 | 11.2 | 14.1 | 13.6 | 6.0 |
+
+Phase 2 is 76–9190 MHz on 426 paths (ITM row RMS 16.7 dB). Long-term
+figures are interim, from the 132 US paths; the full set of 325 paths is
+being rebuilt. P.452 covers 0.001–50 % of time only, so its long-term
+scores use fewer percentages.

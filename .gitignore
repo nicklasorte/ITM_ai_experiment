@@ -2,3 +2,4 @@ data/cache/
 *.asv
 .DS_Store
 experiments/scratch*/
+private_ref/
