@@ -1,0 +1,5 @@
+experiment archive: not built yet
+
+eval/pareto_rev1.m writes this file after the first run on the re-frozen
+data (docs/PLAN_rev1.md, Stage 0). Every earlier run used an older data
+version, so none is eligible.
