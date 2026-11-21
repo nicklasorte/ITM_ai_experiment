@@ -45,8 +45,8 @@ engineering models.
 
 ### Closest analog: agents improving Earth system model parameterizations
 
-[Lamb et al., "Can LLM agents improve imperfect parameterizations in Earth
-system models?" (NeurIPS 2026)](https://neurips.cc/virtual/2026/166426)
+[Lamb, "Can LLM agents improve imperfect parameterizations in Earth system
+models?" (NeurIPS 2026; the conference page lists one author)](https://neurips.cc/virtual/2026/166426)
 ([arXiv 2611.03543](https://arxiv.org/pdf/2611.03543)) is the nearest
 published study. Its setup:
 
