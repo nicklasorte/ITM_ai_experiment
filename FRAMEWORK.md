@@ -97,7 +97,8 @@ What this tells us:
   compared the 1968 method with measurements from 20 to 10,000 MHz to set
   its limits of applicability.
 - [Paul (2003), ISART SP-03-401](https://its.ntia.gov/publications/download/2003%20ISART%2003-401%20Paul.pdf)
-  compared ITM and TIREM on 13 datasets with more than 41,000 measurements.
+  compared ITM with another terrain-based model on 13 datasets with more than
+  41,000 measurements.
   Overall statistics were similar, but single-path errors differed by 20 dB
   or more. The paper names two concrete ITM levers:
   - The **effective antenna height** drives ITM error. Errors are largest
@@ -134,8 +135,8 @@ What this tells us:
 ### Correction factors and machine learning
 
 - [Varner et al.](https://par.nsf.gov/servlets/purl/10409412) applied
-  minimum mean-squared-error correction factors to TIREM, which is based on
-  ITM, and cut the error standard deviation by as much as 6.9 dB on some
+  minimum mean-squared-error correction factors to an ITM-derived terrain
+  model and cut the error standard deviation by as much as 6.9 dB on some
   Utah campus datasets. This is the simplest data-driven fix and the right
   baseline to beat with a physics change.
 - Canada's CRC (Ethier, Dempsey, and others) trains path-loss models on
