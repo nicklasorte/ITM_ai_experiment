@@ -1,0 +1,18 @@
+experiment 504-delta-deygout   (matlab_itm 9bd6a4e, 21-Nov-2026 18:11:50)
+composite  13.0 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   14.7   (baseline 18.3)
+  long-term level RMS             19.0   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  11.6 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 10.3  mean +0.1   (baseline 13.3)
+  site R2 RMS 20.5  mean -6.9   (baseline 28.6)
+  site R3 RMS 6.4  mean +0.1   (baseline 9.0)
+  site VA RMS 15.5  mean -9.5   (baseline 15.4)
+  worst cell 34.3   censored violations 36.6% (baseline 28.0%)
+physics battery: FAIL
+max |variant - baseline| = 81.4 dB; runtime 8 s
+
+paired bootstrap: 504-delta-deygout vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +3.07 dB  (SD 0.77; 95% interval +1.20 to +4.24)  PASS
+  screened gain    +1.84 dB  (SD 0.61; 95% interval +0.45 to +2.72)  PASS
+  gain = best minus new; positive means the new run is better

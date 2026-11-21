@@ -1,0 +1,18 @@
+experiment 501-delta-string-ep   (matlab_itm 9bd6a4e, 21-Nov-2026 18:06:07)
+composite  28.0 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   16.5   (baseline 18.3)
+  long-term level RMS             62.2   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  27.1 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 14.6  mean -3.4   (baseline 13.3)
+  site R2 RMS 21.8  mean -10.7   (baseline 28.6)
+  site R3 RMS 6.9  mean -3.3   (baseline 9.0)
+  site VA RMS 16.5  mean -7.8   (baseline 15.4)
+  worst cell 34.7   censored violations 35.6% (baseline 28.0%)
+physics battery: FAIL
+max |variant - baseline| = 410 dB; runtime 100 s
+
+paired bootstrap: 501-delta-string-ep vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   -11.94 dB  (SD 1.96; 95% interval -15.70 to -7.93)  not distinguishable from zero
+  screened gain    -13.70 dB  (SD 1.91; 95% interval -17.25 to -9.72)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

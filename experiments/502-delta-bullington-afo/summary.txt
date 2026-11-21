@@ -1,0 +1,18 @@
+experiment 502-delta-bullington-afo   (matlab_itm 9bd6a4e, 21-Nov-2026 18:08:31)
+composite  11.1 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   12.9   (baseline 18.3)
+  long-term level RMS             15.4   (baseline 24.6)
+  long-term shape RMS             5.1   (baseline 5.2)
+composite, screened set  9.6 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 10.6  mean +2.8   (baseline 13.3)
+  site R2 RMS 16.8  mean -6.0   (baseline 28.6)
+  site R3 RMS 7.9  mean +4.6   (baseline 9.0)
+  site VA RMS 12.1  mean -4.0   (baseline 15.4)
+  worst cell 25.6   censored violations 47.2% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 89.9 dB; runtime 8 s
+
+paired bootstrap: 502-delta-bullington-afo vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +4.89 dB  (SD 0.62; 95% interval +3.36 to +5.79)  PASS
+  screened gain    +3.75 dB  (SD 0.51; 95% interval +2.59 to +4.51)  PASS
+  gain = best minus new; positive means the new run is better

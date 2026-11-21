@@ -1,0 +1,4 @@
+paired bootstrap: 501-delta-string-ep vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   -11.94 dB  (SD 1.96; 95% interval -15.70 to -7.93)  not distinguishable from zero
+  screened gain    -13.70 dB  (SD 1.91; 95% interval -17.25 to -9.72)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

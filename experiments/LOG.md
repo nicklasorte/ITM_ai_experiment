@@ -73,6 +73,15 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### B05 worker summary
+- Date: 2026-11-21. Six runs (501-506), none kept. Four failed the physics battery as the plan listed (501, 503, 504, 506); two passed the battery and failed the censored gate (502 at 47.2 %, 505 at 91.3 %). 502 and 505 are new Pareto-front members, kept as `arc/` branches. No infra retries. Parameters file on the Mac restored to the defaults; MD5 c494457ec3b988caaf9d4a7666f5e2da matches the repo.
+- Main results for the planner:
+  1. Counting ridges removes the optimism: 501 drops 4+ edge dead-row violations from 81 % (401) to 21 %, and 504 to 4 %, but unbounded edge sums give 100-600 dB on 500-1,000 km paths.
+  2. A_fo is a main cause of the delta construction's optimism: 502 cuts censored from 67.6 % to 47.2 % and has the best composite (11.1) with the battery passing.
+  3. Without Bullington's eq. (57) correction (505) the delta construction predicts too little loss almost everywhere (censored 91 %).
+  4. Bullington on blocked paths alone (506) keeps censored at 35 %.
+- Open question: 501's long-term blow-up looks like unbounded edge stacking, not a coding defect; the planner should confirm.
+
 ### B05 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Fable 5.2. Plan: `experiments/batches/B05.md`,
   experiments 501–506.
@@ -91,6 +100,98 @@ bottom.
   term common to all R2 paths (502 tests ITM's A_fo).
 - Not built: the rounded-obstacle term of P.526-16 section 4.2 (the
   extraction of eq. (34)–(36) was inconsistent; needs the PDF).
+
+### 501-delta-string-ep
+- Date: 2026-11-21. Batch B05. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_string_ep";`
+- Rationale: separated ridges each cost a diffraction loss; one equivalent edge can't represent several.
+- Predicted (from B05.md, before the run): R2 dead rows violated: 4+ edges from 81 % to 30–60 %, 3 edges from 63 % to 30–55 %, 0–1 edges unchanged (100 %). R2 measured mean error from −11.3 to between −7 and −2 dB; on 3-edge measured rows it moves from −3 to positive (worse). Censored overall 45–60 % (VA stays near 83 %). Long-term level 15–19. Composite 11.5–13.5. Battery: fail as listed.
+- Result: composite 27.96 dB (stock 16.02); screened 27.1; Phase 2 cell 16.5; long-term level 62.2; shape 5.2. Site RMS R1 14.6 (mean -3.4), R2 21.8 (mean -10.7), R3 6.9 (mean -3.3), VA 16.5 (mean -7.8). Censored 35.6 %. Max change from stock 410 dB. Paired gain -11.94 (95 % -15.70 to -7.93).
+- Physics battery: FAIL (as listed).
+- By edge count (violations_by_edges_rev1.py):
+  - edges 0-1: dead rows violated 100.0 % of 41; measured-row mean error -22.2 dB
+  - edges 2: 36.3 % of 204; -16.9 dB
+  - edges 3: 31.6 % of 376; -0.5 dB
+  - edges 4+: 20.8 % of 563; -1.5 dB
+- Decision: reject (battery fail; composite and long-term level far worse). Not archive-eligible.
+- Predictions: held: battery fail; 0-1 edges 100 %; 3 edges 63 -> 32 % (predicted 30-55). Missed: 4+ edges 81 -> 21 % (predicted 30-60, better than predicted); R2 mean -10.7 (predicted -7 to -2); 3-edge measured mean -0.5, not positive; censored 35.6 % (predicted 45-60); long-term level 62.2 (predicted 15-19); composite 28.0 (predicted 11.5-13.5).
+- Worker note: 128 of 548 long-term rows are more than 50 dB above stock, up to 661 dB (LT1804_0577, 1,028 km, 417 MHz; stock 252, measured 253). Epstein-Peterson sums every merged obstruction on 500-1,000 km paths, so loss grows without bound with path length. This is the mechanism, not a coding defect as far as the worker can tell; the planner should check.
+
+### 502-delta-bullington-afo
+- Date: 2026-11-21. Batch B05. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_bullington_afo";` (control)
+- Rationale: the smooth-path ITM call drops A_fo, a loss of up to 15 dB that stock ITM applies to every diffraction path.
+- Predicted (from B05.md, before the run): 3–10 dB more loss on most R2 rows. R2 measured mean error from −11.3 to between −8 and −3 dB; 0–1 edge dead rows violated from 100 % to 70–95 %; censored overall 55–65 %. Composite 11.0–12.0. Battery: pass.
+- Result: composite 11.13 dB (stock 16.02; R02 15.93; P.452 14.18; P.2001 13.97); screened 9.6; Phase 2 cell 12.9; long-term level 15.4; shape 5.1. Site RMS R1 10.6 (mean +2.8), R2 16.8 (mean -6.0), R3 7.9 (mean +4.6), VA 12.1 (mean -4.0). Censored 47.2 %. Paired gain +4.89 (95 % +3.36 to +5.79); screened +3.75 (+2.59 to +4.51).
+- Physics battery: PASS.
+- By edge count:
+  - edges 0-1: dead rows violated 68.3 % of 41; measured-row mean error -9.7 dB
+  - edges 2: 23.5 % of 204; -7.6 dB
+  - edges 3: 44.9 % of 376; +2.4 dB
+  - edges 4+: 49.9 % of 563; -4.4 dB
+- Decision: reject (censored 47.2 % > 29.0 %). On the Pareto front and its cell's elite: kept as `arc/502-delta-bullington-afo`. Best composite of any run so far; beats P.452 and P.2001 on all four archive objectives.
+- Predictions: held: composite 11.0-12.0 (11.1); R2 mean -8 to -3 (-6.0); battery pass. Missed: 0-1 edge dead rows 100 -> 68 % (predicted 70-95, just below); censored 47.2 % (predicted 55-65).
+- Flag for the planner (the plan asked for this): censored fell below 50 %, so ITM's dropped A_fo term is a main cause of the optimism of 401. Restoring it cut composite by 0.3 dB, censored by 20 points versus 401 and the 0-1 edge violations from 100 % to 68 %.
+
+### 503-delta-p526-cascaded
+- Date: 2026-11-21. Batch B05. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_p526_cascaded";`
+- Rationale: Deygout's three edges with the ITU-R correction, the method ITU-R used before delta-Bullington.
+- Predicted (from B05.md, before the run): more loss than 501 on long paths. Censored 35–55 %; R2 measured mean error −5 to +3 dB; long-term level 17–24; composite 12.5–15. Battery: fail as listed.
+- Result: composite 17.0 dB; screened 15.5; Phase 2 cell 15.1; long-term level 30.6; shape 5.2. Site RMS R1 12.1 (mean +5.4), R2 21.3 (mean +2.7), R3 8.0 (mean +2.0), VA 13.8 (mean -6.2). Censored 26.8 %. Paired gain -0.94 (95 % -2.63 to +0.12).
+- Physics battery: FAIL (as listed).
+- By edge count:
+  - edges 0-1: dead rows violated 100.0 % of 41; measured-row mean error -13.4 dB
+  - edges 2: 23.5 % of 204; -0.3 dB
+  - edges 3: 14.4 % of 376; +14.6 dB
+  - edges 4+: 0.0 % of 563; +19.5 dB
+- Decision: reject (battery fail; composite above stock).
+- Predictions: held: battery fail; R2 mean error (+2.7, in -5 to +3); more loss than 501 on long paths is not directly comparable (501 stacks unbounded loss on 500 km paths). Missed: censored 26.8 % (predicted 35-55); long-term level 30.6 (predicted 17-24); composite 17.0 (predicted 12.5-15).
+
+### 504-delta-deygout
+- Date: 2026-11-21. Batch B05. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_deygout";`
+- Rationale: 503 without the empirical correction, to separate the edge count from the correction.
+- Predicted (from B05.md, before the run): between 501 and 503. Censored 40–60 %; composite 12–14. If 504 has clearly fewer violations than 501 on 0–1 and 2-edge rows, the shoulders-of-one-top artifact is the reason. Battery: fail as listed.
+- Result: composite 13.0 dB; screened 11.6; Phase 2 cell 14.7; long-term level 19.0; shape 5.2. Site RMS R1 10.3 (mean +0.1), R2 20.5 (mean -6.9), R3 6.4 (mean +0.1), VA 15.5 (mean -9.5). Censored 36.6 %. Paired gain +3.07 (95 % +1.20 to +4.24); screened +1.84 (+0.45 to +2.72).
+- Physics battery: FAIL (as listed).
+- By edge count:
+  - edges 0-1: dead rows violated 100.0 % of 41; measured-row mean error -19.5 dB
+  - edges 2: 23.5 % of 204; -11.0 dB
+  - edges 3: 35.6 % of 376; +2.6 dB
+  - edges 4+: 3.9 % of 563; +8.7 dB
+- Decision: reject (battery fail).
+- Predictions: held: composite 12-14 (13.0); battery fail. Missed: censored 36.6 % (predicted 40-60, just below); not between 501 and 503 (503 composite 17.0, 501 28.0, 504 13.0). Shoulder artifact check: 504 vs 501 on 2-edge rows 23.5 % vs 36.3 % violated, on 0-1 edge rows both 100 %. Mixed: some support for the artifact on 2-edge rows only.
+
+### 505-delta-ep-isolated
+- Date: 2026-11-21. Batch B05. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_ep_isolated";`
+- Rationale: the two-horizon-edge method that passes the battery; its strict isolation test merges most pairs, so it mostly tests the delta construction without Bullington's eq. (57) correction.
+- Predicted (from B05.md, before the run): close to 401. Composite 11.4–12.2; censored 62–72 %. Battery: pass.
+- Result: composite 12.38 dB; screened 11.8; Phase 2 cell 18.0; long-term level 14.0; shape 5.2. Site RMS R1 13.8 (mean -7.4), R2 27.5 (mean -22.8), R3 8.0 (mean -4.1), VA 17.7 (mean -12.8). Censored 91.3 %. Paired gain +3.62 (95 % +1.24 to +4.88); screened +1.61 (+0.08 to +2.66).
+- Physics battery: PASS.
+- By edge count:
+  - edges 0-1: dead rows violated 100.0 % of 41; measured-row mean error -22.2 dB
+  - edges 2: 80.9 % of 204; -21.4 dB
+  - edges 3: 100.0 % of 376; -18.9 dB
+  - edges 4+: 100.0 % of 563; -25.4 dB
+- Decision: reject (censored 91.3 % > 29.0 %; Phase 2 cell 18.0 only 0.3 dB better than stock). On the Pareto front (best long-term level, 14.0) and its cell's elite: kept as `arc/505-delta-ep-isolated`.
+- Predictions: held: battery pass. Missed: composite 12.4 (predicted 11.4-12.2, just above); censored 91.3 % (predicted 62-72). Without Bullington's eq. (57) correction the delta construction is far more optimistic than 401 (R2 mean -22.8 dB).
+
+### 506-bullington-blocked-paths
+- Date: 2026-11-21. Batch B05. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "bullington";` and `cfg.diffraction_region = "blocked_paths";` (control)
+- Rationale: reach ITM's blocked line-of-sight-region paths with Bullington but without the delta construction.
+- Predicted (from B05.md, before the run): like 201 (56 %): censored 45–60 %, R2 measured mean error −6 to −10 dB. Battery: fail as listed (by 0.3 dB over the margin).
+- Result: composite 14.60 dB; screened 12.4; Phase 2 cell 15.1; long-term level 23.6; shape 5.2. Site RMS R1 10.6 (mean +0.7), R2 21.8 (mean +0.6), R3 7.7 (mean -0.5), VA 14.5 (mean -7.3). Censored 35.2 %. Paired gain +1.43 (95 % +0.87 to +2.01); screened +1.00 (+0.56 to +1.62).
+- Physics battery: FAIL (as listed).
+- By edge count:
+  - edges 0-1: dead rows violated 68.3 % of 41; measured-row mean error -10.1 dB
+  - edges 2: 17.2 % of 204; -2.3 dB
+  - edges 3: 17.6 % of 376; +18.9 dB
+  - edges 4+: 16.9 % of 563; +4.9 dB
+- Decision: reject (battery fail). Not archive-eligible.
+- Predictions: held: battery fail. Missed: censored 35.2 % (predicted 45-60, like 201's 56 %); R2 mean +0.6 (predicted -6 to -10). Bullington on blocked paths alone keeps censored near 35 %, well below the delta constructions.
 
 ### D03-r2-dead-paths (diagnostic, no model change)
 - Date: 2026-11-21.

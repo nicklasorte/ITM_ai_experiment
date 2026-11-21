@@ -1,0 +1,4 @@
+paired bootstrap: 504-delta-deygout vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +3.07 dB  (SD 0.77; 95% interval +1.20 to +4.24)  PASS
+  screened gain    +1.84 dB  (SD 0.61; 95% interval +0.45 to +2.72)  PASS
+  gain = best minus new; positive means the new run is better

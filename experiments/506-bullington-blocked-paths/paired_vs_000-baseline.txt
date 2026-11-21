@@ -1,0 +1,4 @@
+paired bootstrap: 506-bullington-blocked-paths vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +1.43 dB  (SD 0.30; 95% interval +0.87 to +2.01)  PASS
+  screened gain    +1.00 dB  (SD 0.27; 95% interval +0.56 to +1.62)  PASS
+  gain = best minus new; positive means the new run is better

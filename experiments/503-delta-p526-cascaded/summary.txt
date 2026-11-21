@@ -1,0 +1,18 @@
+experiment 503-delta-p526-cascaded   (matlab_itm 9bd6a4e, 21-Nov-2026 18:10:18)
+composite  17.0 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   15.1   (baseline 18.3)
+  long-term level RMS             30.6   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  15.5 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 12.1  mean +5.4   (baseline 13.3)
+  site R2 RMS 21.3  mean +2.7   (baseline 28.6)
+  site R3 RMS 8.0  mean +2.0   (baseline 9.0)
+  site VA RMS 13.8  mean -6.2   (baseline 15.4)
+  worst cell 31.3   censored violations 26.8% (baseline 28.0%)
+physics battery: FAIL
+max |variant - baseline| = 74.4 dB; runtime 8 s
+
+paired bootstrap: 503-delta-p526-cascaded vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   -0.94 dB  (SD 0.71; 95% interval -2.63 to +0.12)  not distinguishable from zero
+  screened gain    -2.10 dB  (SD 0.57; 95% interval -3.46 to -1.20)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better
