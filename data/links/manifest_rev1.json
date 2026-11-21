@@ -1,0 +1,13 @@
+{
+  "built": "2026-11-21T15:14:18Z",
+  "matlab": "25.2.0.3150157 (R2025b) Update 4",
+  "matlab_itm_commit": "9bd6a4e",
+  "p452_commit": "cf2b6db",
+  "p2001_commit": "9efe1d1",
+  "phase2": {
+    "rows": 16805,
+    "paths": 515,
+    "raw_sha256": "30e611b88b2188aedbe408c04b05e90dd52e35f2512c3bcf6d120142458ac668",
+    "profiles_sha256": "1109fb71aaca437ae73574cb18c6b74705ff9de54f76c1143b1d9364b5a8ed45"
+  }
+}

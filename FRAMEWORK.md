@@ -352,14 +352,13 @@ The Phase 2 part is computed as follows:
 1. Group rows into cells of site × frequency band (< 0.3, 0.3–1, 1–3, 3–6,
    and 6–10 GHz).
 1. Compute the weighted RMS error in each cell.
-1. Average the cell RMS values. Baseline ITM: **18.3 dB**. P.452: 13.3 dB.
-   P.2001: 13.3 dB (from the existing matlab_itm comparison; reproduced by
-   `eval/` in Phase 0).
+1. Average the cell RMS values. Baseline ITM: **18.3 dB**. P.452: 14.1 dB.
+   P.2001: 14.1 dB (from `eval/` in Phase 0, experiment 000-baseline).
 
 The evaluator also reports the following, which gate acceptance but aren't
 climbed directly:
 
-- Worst cell RMS (baseline 38.2 dB).
+- Worst cell RMS (baseline 39.6 dB).
 - Mean error per site (bias).
 - Error by ITM propagation mode, Δh bin, distance bin, and the ratio of
   effective to structural antenna height.
@@ -580,7 +579,7 @@ id  date  branch  tier  function  n_new_params  composite  delta_vs_best  p2_cel
 | --- | --- | --- |
 | 0. Scaffold | `data/build_links_rev1` builds Phase 2 and long-term link tables, profiles, splits, baseline and reference predictions; `itm_variant/` copy; `eval/` and the physics battery | Baseline reproduces 16.74 dB row RMS and 18.3 dB cell-balanced score on Phase 2; variant parity to 1e-9 dB |
 | 1. Diagnose | Error breakdown by mechanism, Δh, effective height ratio, frequency, and time percentage; noise floor estimate; Tier 4 residual ceiling | A ranked list of where squared error lives, with the ceiling and floor |
-| 2. Restructure | Tier 2 submodel swaps from P.452, P.2001, P.526, and the literature, in the ranked order | Target: Phase 2 cell score at or below 13.3 dB, no site worse than baseline, long-term scores no worse |
+| 2. Restructure | Tier 2 submodel swaps from P.452, P.2001, P.526, and the literature, in the ranked order | Target: Phase 2 cell score at or below 14.1 dB (P.452 and P.2001), no site worse than baseline, long-term scores no worse |
 | 3. Calibrate | Tier 1 constants of the kept structure, fitted in cross-validation | Accepted changes logged; held-out score trend |
 | 4. Lockbox | Human runs Tier B sets on the best variant and on baseline | Lockbox result recorded, whatever it is |
 | 5. Write-up | Working paper: which changes, why, held-out evidence, limits | Human review |
