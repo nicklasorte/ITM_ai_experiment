@@ -113,19 +113,23 @@ bottom.
 - It predicts signal on 71 % of R2's no-signal rows (P.452 67 %, P.2001
   68 %, stock ITM 7 %). On censored rows its predictions correlate with
   P.2001 at r = 0.995 (stock ITM 0.80).
-- Cause, as corrected: Bullington used as the entire reference attenuation.
-  On the rows where 401 fails, the smooth-earth term max(A_s − L_bs, 0) is
-  about zero (77 % within ±1 dB of free space plus L_ba), and free space plus
-  L_ba alone reproduces the failure (74 % censored, R2 mean −11.4 dB). The
-  first version of this entry attributed the optimism to the smooth-earth
-  step; that was wrong (see the reviewer pass below).
+- Cause, as corrected: replacing ITM's loss on blocked paths, including the
+  ones ITM puts in its line-of-sight region, with an obstruction-only loss.
+  Three results show it: 201 and 202 reach 56 % censored with no delta
+  construction, only by extending the profile-based loss to those paths;
+  free space plus L_ba alone reaches 74 %; and in 401 the smooth-earth term
+  max(A_s − L_bs, 0) is about zero on the failing rows (77 % within ±1 dB of
+  free space plus L_ba). Not yet separated: dropping ITM's clutter term A_fo
+  (up to 15 dB) and its smooth-earth weight, which the smooth-path ITM call
+  also does. The first version of this entry blamed the smooth-earth step;
+  that was wrong.
 - Together with D03, this places the R2 dead paths where a single equivalent
   edge underweights several separated ridges.
 
 ### B04 reviewer pass (three independent reviewers, 2-of-3 rule)
 - Date: 2026-11-21. Reviewers: fresh agent sessions with no planner
   context, read-only, Python on the stored files.
-- Agreed by at least two (acted on):
+- All three reported. Agreed by at least two (acted on):
   - The headline numbers (composite, censored rates by site, 96.5 %
     overlap, 12.9 dB median margin) recompute exactly from the raw files.
   - The 96.5 % overlap is weak evidence: stock ITM's violations already sit
@@ -138,9 +142,16 @@ bottom.
     value is free space plus the median of exact values and lower bounds).
   - No transcription bug in `delta_bullington_reference` (eq. (161)–(167),
     both forms, the heights passed to the smooth ITM call).
+  - Reaching ITM's blocked line-of-sight-region paths explains most of the
+    jump (201, 202 already reach 56 %); dropping ITM's clutter term A_fo and
+    smooth-earth weight in the smooth-path call is an untested contributor.
+  - Missing controls: Bullington with `diffraction_region = "blocked_paths"`;
+    delta with the actual Δh (keeping A_fo); delta with ITM's effective
+    heights.
 - Noted by one (logged, not acted on):
-  - The smooth-path ITM call drops ITM's terrain terms (A_fo up to 15 dB,
-    roughness), a further untested difference.
+  - P.452 is scored on 14,308 Phase 2 rows against 14,760 for the others.
+  - On R2, 401 lowers loss by 41 dB on censored rows against 21 dB on
+    measured rows.
   - `delta_bullington_reference` ignores `cfg.diffraction_region`; the cfg
     doesn't record that.
   - 39 censored rows on clear-path profiles are violated by every model,
