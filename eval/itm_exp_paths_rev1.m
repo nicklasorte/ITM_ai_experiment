@@ -26,10 +26,9 @@ P.p2001 = env_or("ITM_EXP_P2001", fullfile(parent, "itu_p2001"));
 if ~isfolder(P.matlab_itm)
     error('itmexp:path', 'matlab_itm not found at %s. Clone it or set ITM_EXP_MATLAB_ITM.', P.matlab_itm);
 end
-[st, out] = system(sprintf('git -C "%s" rev-parse --short=7 HEAD', P.matlab_itm));
-head = strtrim(string(out));
-if st ~= 0
-    error('itmexp:git', 'Could not read the matlab_itm commit: %s', out);
+head = git_head_rev1(P.matlab_itm);
+if head == "unavailable"
+    error('itmexp:git', 'Could not read the matlab_itm commit from %s/.git.', P.matlab_itm);
 end
 if head ~= P.itm_commit && getenv('ITM_EXP_ALLOW_ANY_COMMIT') ~= "1"
     error('itmexp:commit', ['matlab_itm is at %s; the baseline is pinned to %s. ', ...

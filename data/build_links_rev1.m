@@ -295,8 +295,7 @@ s.profiles_sha256 = sha256_bytes(uint8(char(join(h, ""))));
 end
 
 function h = git_head(d)
-[st, out] = system(sprintf('git -C "%s" rev-parse --short=7 HEAD', d));
-if st == 0, h = strtrim(string(out)); else, h = "unavailable"; end
+h = git_head_rev1(d);
 end
 
 function h = file_sha256(f)
