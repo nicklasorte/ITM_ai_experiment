@@ -73,6 +73,35 @@ bottom.
   real limit and move to the Virginia question, which needs inputs other
   than bare-earth profiles.
 
+### D03-r2-dead-paths (diagnostic, no model change)
+- Date: 2026-11-21.
+- Question: what separates R2's 1,184 no-signal rows from its 2,560 measured
+  rows, which every model that fits the measured rows lands on?
+- Method: `experiments/D03-r2-dead-paths/r2_dead_paths_rev1.py`. Geometry
+  from the 30 m CSV profiles on a 4/3 earth: obstruction height above the
+  antenna ray, Bullington ν (P.526-16 eq. (49)–(55)), Deygout edges with
+  ν > 0 to depth 3 (P.526-11 section 4.4.2), and the spread between the
+  outermost edges. Compared within bins of the delta-Bullington (401)
+  predicted loss, so the model's own estimate is held fixed.
+- Finding: at the same predicted loss, the share of dead rows rises steeply
+  with the number of separate edges. Predicted 160–173 dB: 2 % dead with one
+  edge, 51 % with four or more. 173–188 dB: 13 % against 82 %. Dead rows are
+  long (median 50 km against 10 km), deeply obstructed (452 m against 63 m),
+  and their edges are spread out (17 km against 30 m, effectively one
+  ridge). 30 of 45 R2 paths have both dead and measured rows; on those, the
+  dead rows are the higher frequencies (median 1,846 against 751 MHz) at
+  the same antenna heights.
+- Interpretation: the delta construction's single equivalent edge
+  underweights paths with several separated ridges, which is where the
+  no-signal results sit. A multi-edge obstruction loss inside the delta
+  construction (Deygout, Epstein-Peterson with the isolation test, or the
+  P.526 cascaded method in place of L_ba) is the hypothesis this points to.
+  In B01 those methods added too much loss because they sat inside ITM's
+  extrapolated knife-edge structure; inside the delta construction they
+  replace only the obstruction term.
+- Caveat: edge count is confounded with distance and frequency; the binned
+  comparison controls for predicted loss, not for every covariate.
+
 ### B04 summary
 - Date: 2026-11-21. Kept: none. Best stays `000-baseline`.
 - ITM with delta-Bullington reference attenuation beats every model so far
