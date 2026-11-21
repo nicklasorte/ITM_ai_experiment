@@ -56,6 +56,41 @@ bottom.
 - Splits re-frozen with the full long-term set (hash `06d9f440607a`).
 - Decision: baseline
 
+### 101-ep-two-horizon
+- Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "epstein_peterson";`
+- Rationale: the same two horizon obstacles ITM uses, but with each edge's own geometry at the path distance instead of a line extrapolated from 20 km or more beyond the horizons.
+- Predicted (from B01.md, before the run): R2 mean error falls from +10.6 to between +3 and +8 dB, R2 RMS to 24–27. R1, R3, and VA RMS move by less than 0.5 dB. Phase 2 cell 16.5–17.8. Long-term level 21–24, with the D01 Sutton Coldfield rows (LT2116) at least 20 dB lower. Shape within ±0.1. Composite 14.5–15.6. Censored violations rise to 30–40 %; this is the most likely reason for rejection. Continuity: possible step where a sweep crosses from the line-of-sight region to transhorizon.
+- Result: pending
+
+### 102-deygout-three-edge
+- Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "deygout";`
+- Rationale: the principal obstruction and one edge on each side capture multi-ridge mountain paths that two horizon edges miss or double count.
+- Predicted (from B01.md, before the run): loss at or above 101 on multi-ridge paths, so R2 mean error between +4 and +9 dB and R2 RMS 24–27; other sites within 0.5 dB. Long-term level 21–24. Censored 29–38 %. Composite 14.6–15.7.
+- Result: pending
+
+### 103-p526-cascaded
+- Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "p526_cascaded";`
+- Rationale: Deygout's three edges with the ITU-R empirical correction, which adds up to 10 + 0.04·D dB when the principal edge is strong.
+- Predicted (from B01.md, before the run): the highest loss of 101–103, so the smallest gain and the smallest censored increase: R2 mean error +7 to +11 dB, R2 RMS 26–29, censored 28–33 %, composite 15.2–16.1. The one most likely to pass the censored gate and the least likely to clear 0.3 dB.
+- Result: pending
+
+### 104-bullington
+- Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "bullington";`
+- Rationale: a single equivalent edge is the low-loss end of the knife-edge family and the core of the P.452 and P.2001 diffraction models, so it shows how much of their Phase 2 advantage this substitution explains.
+- Predicted (from B01.md, before the run): R2 mean error between −2 and +5 dB; Phase 2 cell 15–17; censored above 40 %, failing the gate. If censored stays under 33 %, tell the planner: the references' optimism then comes from elsewhere.
+- Result: pending
+
+### 105-profile-horizon-region
+- Date: 2026-11-21. Batch B01. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.line_of_sight = "profile_horizons";` (diffraction stays `"itm"`)
+- Rationale: a path whose terrain blocks the direct ray isn't a two-ray path, whatever the smooth-earth horizons of the effective heights say.
+- Predicted (from B01.md, before the run): affects only blocked paths that ITM places in its line-of-sight region. Composite within ±0.4 of stock; R2 and R3 move by less than 1.5 dB RMS in either direction; long-term nearly unchanged. Real chance of a continuity failure, because a path changes formula the moment terrain touches the ray. Not expected to be kept alone; it is here to price the region change before combining it.
+- Result: pending
+
 ### B01 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Fable 5.2.
 - Plan: `experiments/batches/B01.md`, experiments 101–106 (H1, H2, H3).
