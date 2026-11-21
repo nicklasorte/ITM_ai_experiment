@@ -4,6 +4,8 @@ The planner (Opus or Fable) writes one file per batch, `BNN.md`, before the
 worker (Haiku) starts. Each experiment in a batch has:
 
 - ID and short name (`NNN-short-name`)
+- Parent: `best`, a Pareto front member, or a cell elite from
+  `results/archive_rev1.txt`, with one line on why
 - Tier and the `itm_p2p_core_exp.m` function it touches
 - The exact change: the `params_exp.m` values, or the code to switch on
 - Public source, with section and equation numbers

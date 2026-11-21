@@ -7,6 +7,7 @@ function M = run_eval_rev1(options)
 %     experiments/<Tag>/metrics.json        full metrics (human view)
 %     experiments/<Tag>/summary.txt         agent-facing summary, scores rounded to 0.1 dB
 %     experiments/<Tag>/predictions_phase2.csv, predictions_longterm.csv
+%   and then refreshes the archive (pareto_rev1: results/archive_rev1.*).
 %
 %   Before scoring it checks that the split file matches its hash and that
 %   the pinned matlab_itm is in use. With Parity=true it also requires the
@@ -52,6 +53,7 @@ end
 
 % Parity with the stored baseline
 M = struct('tag', options.Tag, 'cfg', cfg, 'matlab_itm', P.itm_head, 'matlab', string(version));
+M.data_version = struct('split_sha', split_sha(root), 'datasets', options.Datasets);
 dmax = 0;
 if ~isempty(P2), dmax = max(dmax, max(abs(P2.var_lb_50 - P2.itm_lb_50), [], 'omitnan')); end
 if ~isempty(LT)
@@ -119,6 +121,7 @@ if options.Write
         keep = ["link_id" "path_id" "fold" "f_mhz" "d_km", "meas_lb_" + S.p_tags, "itm_lb_" + S.p_tags, "var_lb_" + S.p_tags];
         writetable(LT(:, cellstr(keep)), fullfile(out, 'predictions_longterm.csv'));
     end
+    pareto_rev1();     % refresh results/archive_rev1.*
 end
 end
 
@@ -147,6 +150,10 @@ if ~ismember('itm_error', T.Properties.VariableNames) || isnumeric(T.itm_error)
 else
     ok = ismissing(T.itm_error) | T.itm_error == "";
 end
+end
+
+function s = split_sha(root)
+s = strtrim(string(fileread(fullfile(root, 'data', 'splits', 'folds_rev1.sha256'))));
 end
 
 function check_splits(root)

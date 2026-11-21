@@ -444,6 +444,38 @@ reached production before free-roaming agents did
 If a change fails, the agent reverts it and logs it. Failed experiments are
 data too; the log stops the agent from retrying the same idea.
 
+### Archive: Pareto front and MAP-Elites cells
+
+The composite score picks one winner, so a change that fixes mountain
+diffraction but costs a little on the long-term shape can be thrown away
+even when it's the better starting point. The archive keeps those
+trade-offs visible and usable as parents. It doesn't change what becomes
+`best`.
+
+- **Objectives**, all held-out and minimized: Phase 2 cell RMS, long-term
+  level RMS, long-term shape RMS, and censored-bound violations.
+- **Pareto front:** the eligible runs that no other run beats on all four.
+- **MAP-Elites cells** ([Mouret and Clune 2015](https://arxiv.org/abs/1504.04909)):
+  one cell per model structure (the submodel switches in `params_exp.m`,
+  plus whether ITM's constants were refit) and free-parameter bin (0, 1–2,
+  3–5, 6+). Each cell keeps its lowest-composite run.
+- **Eligible:** the physics battery passed, all four objectives exist, and
+  the run used the current data version (the frozen split hash). Runs that
+  fail any of these are listed with the reason, never dropped silently.
+- `eval/pareto_rev1.m` rebuilds `results/archive_rev1.csv` and
+  `results/archive_rev1.txt` after every `run_eval_rev1` and
+  `cv_calibrate_rev1` run.
+- **Keeping archive members.** A run the acceptance rule rejects, but that
+  lands on the front or becomes the elite of a new cell, keeps its branch as
+  `arc/NNN-short-name` (not merged into `best`) so it can be a parent.
+- **Parents.** The planner picks each experiment's parent from `best`, a
+  front member, or an elite, and favors cells with few runs. The worker
+  branches from the parent the batch plan names.
+- **Headline.** Reported results still come from `best` under the
+  acceptance rule. The archive goes in the write-up as the trade-off figure:
+  Phase 2 error against long-term shape, with censored violations as color,
+  and P.452, P.2001, stock ITM, and R02 as reference points.
+
 ### Noise floor
 
 Measurement error and location variability set a floor no model can beat.
@@ -566,14 +598,16 @@ instructions to the agent.
    remaining squared error. Write the log entry first: ID, tier, function
    touched, physical rationale, and the predicted effect (which cells should
    improve and which should not change).
-1. **Branch:** `git switch -c exp/NNN-short-name` from the current best, or
-   from one of the top three kept variants (tree-style branching, see
+1. **Branch:** `git switch -c exp/NNN-short-name` from the parent the
+   batch plan names: the current best, a Pareto front member, or a
+   MAP-Elites elite from `results/archive_rev1.txt` (tree-style branching, see
    [docs/AGENT_OPTIMIZATION_LITERATURE.md](docs/AGENT_OPTIMIZATION_LITERATURE.md)).
 1. **Edit** only `itm_variant/itm_p2p_core_exp.m` and `params_exp.m`.
 1. **Run** `run_eval_rev1(Tag="NNN-short-name")` in MATLAB R2025b on Nick's
    Mac (physics battery, then scoring). A full pass takes minutes.
 1. **Decide** with the acceptance rule. Keep: merge to the `best` branch.
-   Reject: discard the branch. Either way, append the result row and
+   Reject: discard the branch, or keep it as `arc/NNN-short-name` if the
+   archive lists it on the front or as a cell elite. Either way, append the result row and
    complete the log entry, including whether the predicted effect happened.
 1. **Every 10 accepted changes,** three independent reviewer sessions,
    which haven't seen the reasoning behind the changes, each try to break
@@ -640,6 +674,9 @@ id  date  branch  tier  function  n_new_params  composite  delta_vs_best  p2_cel
   repository get Nick's read first.
 
 ## Roadmap
+
+The working plan, with stages and gates, is
+[docs/PLAN_rev1.md](docs/PLAN_rev1.md).
 
 | Phase | Work | Exit check |
 | --- | --- | --- |

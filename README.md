@@ -20,6 +20,9 @@ ones that reduce error on held-out measurement sites.
   propagation models; venues and reporting rules.
 - [docs/WORKING_PAPER_FINDINGS.md](docs/WORKING_PAPER_FINDINGS.md): what the
   ITM vs P.2001 vs P.452 working paper says to fix, as ranked hypotheses.
+- [docs/PLAN_rev1.md](docs/PLAN_rev1.md): the working plan, stages and gates.
+- [results/archive_rev1.txt](results/archive_rev1.txt): Pareto front and
+  MAP-Elites cells of every eligible run.
 - [docs/INDUSTRY_AGENT_PRACTICES.md](docs/INDUSTRY_AGENT_PRACTICES.md): how
   industry runs agents on self-checking systems (CI/CD, migrations,
   AlphaEvolve, EDA, telecom) and what this repo adopts.

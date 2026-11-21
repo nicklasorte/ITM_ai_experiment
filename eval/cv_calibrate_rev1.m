@@ -100,6 +100,9 @@ B = physics_battery_rev1(apply(base_cfg, med), P2, profiles);
 
 R = struct('tag', options.Tag, 'recalibrated', Rc, 'baseline', Rb, 'physics', B, ...
     'median_params', table2struct(med), 'runtime_s', toc(t0));
+R.cfg = apply(base_cfg, med);
+R.data_version = struct('split_sha', strtrim(string(fileread(fullfile(root, 'data', 'splits', 'folds_rev1.sha256')))), ...
+    'datasets', ["phase2" "longterm"]);
 lines = [
     sprintf("%s: recalibrated ITM, constants fitted in %d-fold cross-validation (bayesopt, %d evals per fold)", options.Tag, K, options.MaxEvals)
     sprintf("composite  %.2f dB   (baseline ITM %.2f)", Rc.composite, Rb.composite)
@@ -127,6 +130,7 @@ writetable(P2(:, {'link_id', 'path_id', 'set', 'cvfold', 'f_mhz', 'censored', 'm
     fullfile(out, 'predictions_phase2.csv'));
 keep = ["link_id" "path_id" "cvfold" "f_mhz" "d_km", "meas_lb_" + S.p_tags, "itm_lb_" + S.p_tags, "cal_lb_" + S.p_tags];
 writetable(LT(:, cellstr(keep)), fullfile(out, 'predictions_longterm.csv'));
+pareto_rev1();     % refresh results/archive_rev1.*
 end
 
 function f = objective(x, base_cfg, P2, LT, profiles, ids, S)

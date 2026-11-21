@@ -22,7 +22,7 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
 
 ## Each experiment
 
-1. Read `results/results.tsv` and the last 20 entries in
+1. Read `results/results.tsv`, `results/archive_rev1.txt`, and the last 20 entries in
    `experiments/LOG.md`. Don't repeat a rejected idea unless you state what
    is different.
 1. Pick the cell (site × band) with the most remaining squared error, and
@@ -30,8 +30,9 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
    it. Work the tiers in order.
 1. Before editing, write the log entry: ID, tier, function, the physical
    rationale in one sentence, and the predicted effect on each site.
-1. Create the branch `exp/NNN-short-name` from `best`, or from one of the
-   top three kept variants.
+1. Create the branch `exp/NNN-short-name` from the parent the batch plan
+   names: `best`, a Pareto front member, or an elite listed in
+   `results/archive_rev1.txt`.
 1. Make one change. Keep it small. Name any new constant in `params_exp.m`
    with a comment citing its source or marked `TODO`.
 1. Run `run_eval_rev1(Tag="NNN-short-name")` in MATLAB R2025b on Nick's
@@ -39,7 +40,9 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
    `experiments/NNN-short-name/summary.txt`. If the physics battery fails,
    fix or abandon the change; don't weaken the battery.
 1. Apply the acceptance rule in `FRAMEWORK.md`. Keep: merge into `best`.
-   Reject: discard the branch.
+   Reject: discard the branch, unless `results/archive_rev1.txt` now lists
+   the run on the Pareto front or as a cell elite; then rename the branch
+   `arc/NNN-short-name` and keep it, unmerged.
 1. Append the row to `results/results.tsv` and finish the log entry,
    including whether the prediction came true.
 
