@@ -13,7 +13,8 @@ Checks (each failure is reported; any failure exits 1):
      count, and experiment IDs are unique.
   4. Restricted names: no tracked text file contains a term from the
      RESTRICTED_TERMS environment variable (comma-separated, set from a
-     repository secret so the terms never appear in the repo). Skipped with a
+     repository secret so the terms never appear in the repo), matched
+     case-insensitively at letter boundaries. Skipped with a
      warning when the variable is empty.
   5. File naming (warning only): new .m files outside private/ folders in
      itm_variant/, eval/, or data/ should carry a _revN or _exp suffix.
@@ -115,7 +116,11 @@ def check_restricted_names():
     if not terms:
         warnings.append("RESTRICTED_TERMS is not set; restricted-name scan skipped")
         return
-    pattern = re.compile("|".join(re.escape(t) for t in terms), re.IGNORECASE)
+    # Letter boundaries, not word boundaries: catches snake_case identifiers
+    # that contain a term, without matching it inside a longer English word.
+    pattern = re.compile(
+        "|".join(rf"(?<![a-z]){re.escape(t)}(?![a-z])" for t in terms), re.IGNORECASE
+    )
     for idx, rel in enumerate(git("ls-files").splitlines(), start=1):
         if pattern.search(rel):
             failures.append(f"restricted name in a tracked file path (entry {idx} of git ls-files)")
