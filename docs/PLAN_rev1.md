@@ -70,7 +70,8 @@ P.452 can't meet the censored target, so meeting all three is the headline.
 anticipated: within the gates, retuning ITM's constants buys 0.1 dB, so
 improvement has to come from structure.
 
-**Before B01:** add the paired-bootstrap keep check to `eval/` (D02).
+**Before B01 (done):** the paired-bootstrap keep check is in `eval/`
+(`paired_gain_rev1`, called by `run_eval_rev1` with `Best=`).
 
 ## Stage 2: batch B01, diffraction
 

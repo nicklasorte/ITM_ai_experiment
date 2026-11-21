@@ -35,7 +35,7 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
    `results/archive_rev1.txt`.
 1. Make one change. Keep it small. Name any new constant in `params_exp.m`
    with a comment citing its source or marked `TODO`.
-1. Run `run_eval_rev1(Tag="NNN-short-name")` in MATLAB R2025b on Nick's
+1. Run `run_eval_rev1(Tag="NNN-short-name", Best="<current best tag>")` in MATLAB R2025b on Nick's
    Mac (see CLAUDE.md for the background command). Read
    `experiments/NNN-short-name/summary.txt`. If the physics battery fails,
    fix or abandon the change; don't weaken the battery.

@@ -423,9 +423,14 @@ The agent keeps a change only if all of these hold:
 1. The primary score improves by at least **0.3 dB** over the current best.
    Experiment D02 measured the path-sampling noise: the paired difference
    between two similar models has an SD of about 0.3 dB, so 0.3 dB alone is
-   about one SD. Before batch B01, `eval/` adds a paired bootstrap against
-   the current best, and a change is kept only if the 95 % interval of its
-   gain excludes zero.
+   about one SD.
+1. **The gain is distinguishable from zero.** `run_eval_rev1(Tag=...,
+   Best=<current best tag>)` runs a paired bootstrap (`paired_gain_rev1`,
+   500 draws, paths resampled within site and fold) and appends it to
+   `summary.txt`. The 95 % interval of the gain must lie above zero on both
+   the full and the screened composite. Example: R02's 0.09 dB gain over
+   stock ITM is distinguishable from zero but under 0.3 dB, so it wouldn't
+   be kept.
 1. **No held-out site gets worse** by more than 0.5 dB RMS.
 1. Censored-bound violations don't increase by more than 1 percentage point.
 1. **The gain shows on the screened set too.** The screened composite

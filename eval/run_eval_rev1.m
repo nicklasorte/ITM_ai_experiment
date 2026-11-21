@@ -20,6 +20,9 @@ function M = run_eval_rev1(options)
 %     Physics     true
 %     Parity      false
 %     Write       true
+%     Best        ""      tag of the current best; when given, a paired
+%                         bootstrap of the gain over it (paired_gain_rev1)
+%                         is appended to summary.txt
 
 arguments
     options.Tag (1,1) string
@@ -27,6 +30,7 @@ arguments
     options.Physics (1,1) logical = true
     options.Parity (1,1) logical = false
     options.Write (1,1) logical = true
+    options.Best (1,1) string = ""
 end
 t0 = tic;
 P = itm_exp_paths_rev1();
@@ -124,6 +128,12 @@ if options.Write
     if ~isempty(LT)
         keep = ["link_id" "path_id" "fold" "f_mhz" "d_km", "meas_lb_" + S.p_tags, "itm_lb_" + S.p_tags, "var_lb_" + S.p_tags];
         writetable(LT(:, cellstr(keep)), fullfile(out, 'predictions_longterm.csv'));
+    end
+    if options.Best ~= ""
+        G = paired_gain_rev1(options.Tag, options.Best, Write=true);
+        lines = [lines; ""; readlines(fullfile(out, "paired_vs_" + options.Best + ".txt"))];
+        writelines(lines, fullfile(out, 'summary.txt'));
+        M.paired = G;
     end
     pareto_rev1();     % refresh results/archive_rev1.*
 end
