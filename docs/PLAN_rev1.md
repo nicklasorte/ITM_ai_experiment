@@ -32,6 +32,8 @@ P.452 can't meet the censored target, so meeting all three is the headline.
 - Recalibration R01 (6 constants, cross-validated, full data): composite
   12.4 dB, but it fails the censored gate (55.9 % violations) and the
   ridge-continuity check. Not a kept variant.
+- Constrained recalibration R02: composite 15.9 dB, passes both gates. The
+  comparator for agent results.
 - `guard` CI, `Agent-Role` trailers, the three-reviewer rule, stability
   log, shadow folder, and the experiment archive (Pareto front plus
   MAP-Elites cells) are in place. No agent experiments have run yet.
@@ -59,12 +61,16 @@ P.452 can't meet the censored target, so meeting all three is the headline.
 1. **Screened scoring (done).** `score_rev1` reports a second composite
    without the 14 D01 rows (`data/links/longterm_screen_rev1.csv`); a kept
    change must improve both.
-1. **R02, constrained recalibration.** Rerun `cv_calibrate_rev1` on the full
-   data with the censored and continuity gates in the objective. R02
-   becomes the comparator every agent result is reported against.
+1. **R02, constrained recalibration (done).** Composite 15.9 dB against
+   16.0 for stock ITM; passes both gates. Every structural constant stays at
+   ITM's value; only the lower time spread narrows (×0.8). R02 is the
+   comparator every agent result is reported against.
 
-**Gate:** R02 passes both gates. If it can't, record that as a finding:
-retuning alone can't repair ITM without breaking physics.
+**Gate:** R02 passes both gates. Met, and the finding is the one this gate
+anticipated: within the gates, retuning ITM's constants buys 0.1 dB, so
+improvement has to come from structure.
+
+**Before B01:** add the paired-bootstrap keep check to `eval/` (D02).
 
 ## Stage 2: batch B01, diffraction
 

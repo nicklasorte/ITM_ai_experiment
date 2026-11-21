@@ -143,9 +143,9 @@ if isempty(cache)
     if got ~= want
         error('itmexp:screen', 'data/links/longterm_screen_rev1.csv does not match its hash.');
     end
-    T = readtable(f, 'TextType', 'string');
-    if height(T) == 0
-        error('itmexp:screen', 'The screen list is empty.');
+    T = readtable(f, 'TextType', 'string', 'Delimiter', ',', 'ReadVariableNames', true);
+    if ~ismember('link_id', T.Properties.VariableNames) || height(T) == 0
+        error('itmexp:screen', 'The screen list has no link_id column or no rows.');
     end
     cache = T.link_id;
 end

@@ -56,6 +56,37 @@ bottom.
 - Splits re-frozen with the full long-term set (hash `06d9f440607a`).
 - Decision: baseline
 
+### R02-constrained-recalibration
+- Date: 2026-11-21
+- Tier: 1 (recalibration by a conventional optimizer; no agent)
+- Method: `cv_calibrate_rev1(Tag="R02-constrained-recalibration",
+  MaxEvals=120, Constrained=true)`. Same six constants and folds as R01, with
+  two coupled constraints on every trial, evaluated without held-out data:
+  training censored violations within 1 point of stock ITM, and every
+  physics-battery check within its margin. Start points: ITM's constants
+  plus each constant moved alone (×0.5/×2 for log-scaled, ×0.8/×1.2
+  otherwise). 109–112 of 120 trials per fold were feasible. Runtime 995 s.
+- Result (out-of-fold): composite 15.93 dB (stock ITM 16.02); Phase 2 cell
+  18.32 (unchanged); long-term level 24.39 (24.60); long-term shape 5.09
+  (5.16). Screened composite 13.34 (stock 13.40). Censored violations 28.0 %
+  (unchanged). Physics battery at the fitted constants: pass.
+- Fitted constants, identical on all five folds: every structural constant
+  stays at ITM's value (w_const 25.1, afo_scale, knife_scale, and
+  los_w_scale 1); only the lower-side time spread narrows
+  (time_minus_scale 0.8).
+- Selection check: a separate run tuning only the two time-spread constants
+  (15 trials per fold, all feasible) reached composite 15.92 dB with
+  time_minus_scale 0.74–0.84 and time_plus_scale 0.82–0.90, so the
+  feasible-best selection works and R02 found the same optimum.
+- Free parameters: the archive counts six because six were searched; one
+  moved.
+- Decision: the recalibration baseline every agent result is compared to.
+- What it tells us: under the censored and continuity gates, retuning ITM's
+  constants buys 0.1 dB. Every structural constant change that passes the
+  gates makes the score worse. The 3.7 dB from the unconstrained retune (R01)
+  came from changes that break physics and predict optimistically on dead
+  paths. Gains have to come from structure, not constants.
+
 ### D02-noise-floor (diagnostic, no model change)
 - Date: 2026-11-21
 - Question: how large must a score change be to be real?

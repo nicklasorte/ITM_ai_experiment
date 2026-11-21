@@ -85,15 +85,18 @@ More detail, including one experiment step by step: [docs/FLOW.md](docs/FLOW.md)
 Experiment 000-baseline (RMS error in dB, lower is better; composite is the
 mean of the other three):
 
-| Model | Composite | Phase 2 cell-balanced | Long-term level | Long-term shape |
-| --- | --- | --- | --- | --- |
-| ITM (baseline) | 16.0 | 18.3 | 24.6 | 5.2 |
-| P.452 | 14.2 | 14.1 | 18.5 | 9.9 |
-| P.2001 | 14.0 | 14.1 | 21.2 | 6.6 |
-| ITM, constants refit in cross-validation (R01; fails physics and censored gates) | 12.4 | 14.5 | 17.6 | 5.0 |
+| Model | Composite | Phase 2 cell-balanced | Long-term level | Long-term shape | Screened composite |
+| --- | --- | --- | --- | --- | --- |
+| ITM (baseline) | 16.0 | 18.3 | 24.6 | 5.2 | 13.4 |
+| P.452 | 14.2 | 14.1 | 18.5 | 9.9 | 12.9 |
+| P.2001 | 14.0 | 14.1 | 21.2 | 6.6 | 12.7 |
+| ITM, constants refit within the physics and censored gates (R02, the comparator) | 15.9 | 18.3 | 24.4 | 5.1 | 13.3 |
+| ITM, constants refit with no gates (R01; fails both gates) | 12.4 | 14.5 | 17.6 | 5.0 | 10.9 |
 
 Phase 2 is 76–9190 MHz on 426 paths (ITM row RMS 16.7 dB). Long-term is
 548 distributions on 325 paths worldwide, scored at the same 30 m terrain.
 P.452 covers 0.001–50 % of time only, so its long-term scores use fewer
-percentages. Censored-bound violations: ITM 28.0 %, R01 55.9 %, P.452 and
-P.2001 about 66 %.
+percentages. Censored-bound violations: ITM and R02 28.0 %, R01 55.9 %,
+P.452 and P.2001 about 66 %. The screened composite leaves out 14 long-term
+rows that the 1971 record calls line of sight but the 30 m profile blocks
+(experiment D01); a kept change must improve both composites.
