@@ -1,0 +1,4 @@
+data/cache/
+*.asv
+.DS_Store
+experiments/scratch*/
