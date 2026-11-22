@@ -13,6 +13,8 @@ addpath(fileparts(here));
 tc.TestData.f = 1000;                         % MHz
 tc.TestData.lambda = 299.792458 / 1000;       % m
 tc.TestData.flat = 1e30;                      % effective radius large enough for a flat Earth
+tc.TestData.nlcd_ids = struct('P2_VA_FOREST', "P2_VA_T1-010-R2_O", ...   % NLCD 41 at the VA receiver
+    'P2_R3_URBAN', "P2_R3_R3-003-T1_O", 'P2_VA_PASTURE', "P2_VA_T1-003-R1_O");   % 23 at the R3 transmitter; 81
 end
 
 function J = J_approx(nu)
@@ -558,6 +560,45 @@ z = g; z(1) = z(1) + 12; z(end) = z(end) + 3;
 a = multi_edge_diffraction_rev1("p526_cylinders_knife", x, z, 450, 8.5e6);
 b = multi_edge_diffraction_rev1("p526_cylinders_knife", x, flipud(z), 450, 8.5e6);
 tc.verifyEqual(a, b, 'AbsTol', 1e-6);
+end
+
+function test_terminal_clutter_open_nlcd(tc)
+% cfg.terminal_clutter_open = "nlcd" (B11): an open row whose mobile
+% terminal is in NLCD forest gets ITM at max(h, R) plus A_h for trees/forest;
+% developed medium intensity (23) gets "urban"; pasture (81) gets nothing;
+% the reversed call matches; a concealed row is unchanged by the switch;
+% missing path_id fails loud. Needs data/landcover/phase2_terminals_nlcd_rev1.csv.
+x = (0:30:12000)';
+g = 200 + 25 * sin(2 * pi * x / 3100) + 60 * exp(-((x - 7000) / 900).^2);
+pfl = [numel(x) - 1; 30; g]; pflr = [numel(x) - 1; 30; flipud(g)];
+c0 = params_exp();
+c3 = c0; c3.terminal_clutter = "p2108_height_gain"; c3.terminal_clutter_base = "clutter_height";
+c3.terminal_clutter_frange = "hold3";
+cn = c3; cn.terminal_clutter_open = "nlcd";
+cases = {"P2_VA_FOREST", "VA", "trees_forest"; "P2_R3_URBAN", "R3", "urban"; "P2_VA_PASTURE", "VA", ""};
+ids = tc.TestData.nlcd_ids;
+for k = 1:size(cases, 1)
+    pid = ids.(cases{k, 1}); set_ = cases{k, 2}; ct = cases{k, 3};
+    row = struct('set', set_, 'siting', "O", 'reversed', false, 'path_id', pid);
+    rowr = row; rowr.reversed = true;
+    htx = 7.3; hrx = 2; f = 1846;
+    got = itm_ref(pfl, htx, hrx, f, setfield(cn, 'row', row)); %#ok<SFLD>
+    if ct == ""
+        tc.verifyEqual(got, itm_ref(pfl, htx, hrx, f, setfield(c3, 'row', row)), 'AbsTol', 1e-12, pid); %#ok<SFLD>
+    else
+        if set_ == "VA", hm = hrx; hs = [htx max(hrx, 15)]; else, hm = htx; hs = [max(htx, 15) hrx]; end
+        A = p2108_height_gain_rev1(f, hm, ct, "hold3");
+        tc.verifyEqual(got, itm_ref(pfl, hs(1), hs(2), f, c0) + A, 'AbsTol', 1e-9, pid);
+    end
+    if ct ~= ""
+        if set_ == "VA", hsr = [max(hrx, 15) htx]; else, hsr = [hrx max(htx, 15)]; end
+        tc.verifyEqual(itm_ref(pflr, hrx, htx, f, setfield(cn, 'row', rowr)), itm_ref(pflr, hsr(1), hsr(2), f, c0) + A, 'AbsTol', 1e-9); %#ok<SFLD>
+    end
+end
+rowc = struct('set', "VA", 'siting', "C", 'reversed', false, 'path_id', ids.P2_VA_FOREST);
+tc.verifyEqual(itm_ref(pfl, 7.3, 2, 1846, setfield(cn, 'row', rowc)), itm_ref(pfl, 7.3, 2, 1846, setfield(c3, 'row', rowc)), 'AbsTol', 1e-12); %#ok<SFLD>
+rowx = struct('set', "VA", 'siting', "O", 'reversed', false);
+tc.verifyError(@() itm_ref(pfl, 7.3, 2, 1846, setfield(cn, 'row', rowx)), 'itmexp:cfg'); %#ok<SFLD>
 end
 
 function test_params_overrides(tc)

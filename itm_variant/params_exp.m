@@ -85,6 +85,11 @@ cfg.terminal_clutter_db = 0;
 % "clutter_height" computes it at max(h, R) and adds A_h, as ITU-R P.2108-1
 % section 3.1 and Table 1 say.
 cfg.terminal_clutter_base = "actual";
+% Open and A sitings (B11): "none" (B07/B08 behavior) or "nlcd", the
+% ITU-R P.2108-1 section 3.1 term at the mobile terminal with the category of
+% the NLCD 2001 class there (landcover_lookup_rev1; Nick approved the input
+% 2026-11-22). Needs cfg.terminal_clutter = "p2108_height_gain" and cfg.row.path_id.
+cfg.terminal_clutter_open = "none";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights

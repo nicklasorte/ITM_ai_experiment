@@ -185,6 +185,13 @@ bottom.
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
 
+### B11 planned (planner note): NLCD land cover, battery PR, screen PR
+- Date: 2026-11-22. Planner: Claude Opus 5.5. Plan `experiments/batches/B11.md`, predictions registered before any scored run.
+- PR #4 (eval/): real-path height-gain check relative to stock. Stock passes at 0 dB; 707 fails at 27.0 dB (principal-edge switch); every current delta form fails (Bullington 4.2 dB, from P.452 eq. (166)).
+- PR #5 (data/): long-term screen adds a terminal-geometry rule (terminal horizon within 0.5 km above 50 mrad); 22 links on 14 paths added to the existing 14; recovers 7 of D01's 14 rows without the record's LOS flag; thresholds chosen after seeing three outliers (stated in the builder).
+- PR #6 (data/ + eval/, built on PR #4): NLCD 2001 land cover at all 1,030 Phase 2 terminal rows via the MRLC WCS (builder `data/build_landcover_rev1.m`, about 2 minutes), and `cfg.row.path_id` for every row. Mobile-terminal forest within 100 m: R1 11 %, R2 48 %, R3 2 %, VA 32 %; developed: R1 11 %, R2 6 %, R3 39 %, VA 10 %. 143 of 515 mobile pixels changed cover since 1985.
+- Variant: `cfg.terminal_clutter_open = "nlcd"` with `landcover_lookup_rev1.m`; 37 tests pass; parity 6.8e-13 dB. The planner had guessed R1 and R3 would barely change; the extraction shows R3 is largely developed, so the fixed mapping adds clutter there. Smoke test and logged site means predict 711 fails on R3 and R1.
+
 ### Research package added (2026-11-22)
 - Nick's ITM research package (11 Markdown files: README, five research documents, proposals H01–H05) added unchanged under `experiments/proposals/itm_research_package_rev1/`, with a planner status note `STATUS_rev1.md` that marks what is out of date (written at B05: stock parent, 502 arithmetic, A_fo) and maps each item to work done. Planner's order for next batches: H02 and H03 in parallel, then H01 as an oracle against 707's cascade, then H05.
 

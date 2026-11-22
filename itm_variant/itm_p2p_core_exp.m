@@ -85,9 +85,9 @@ h_m = [h_tx_m, h_rx_m];
 % of the representative clutter height used" (also Table 1). B07 used the
 % actual height and so counted the gain from h up to R twice (B07
 % reviewer pass).
-[mobile_end, h_mobile_m] = clutter_terminal(cfg, area, h_m);
+[mobile_end, h_mobile_m, ctype] = clutter_terminal(cfg, area, h_m);
 if mobile_end > 0 && cfg.terminal_clutter_base == "clutter_height"
-    [~, R_clut_m] = p2108_height_gain_rev1(f_mhz, h_mobile_m, cfg.terminal_clutter_type, ...
+    [~, R_clut_m] = p2108_height_gain_rev1(f_mhz, h_mobile_m, ctype, ...
         cfg.terminal_clutter_frange);
     h_m(mobile_end) = max(h_mobile_m, R_clut_m);
 end
@@ -166,7 +166,7 @@ if mobile_end > 0
     switch cfg.terminal_clutter
         case "p2108_height_gain"
             A_ref_db = A_ref_db + p2108_height_gain_rev1(f_mhz, h_mobile_m, ...
-                cfg.terminal_clutter_type, cfg.terminal_clutter_frange);
+                ctype, cfg.terminal_clutter_frange);
         case "constant"
             A_ref_db = A_ref_db + cfg.terminal_clutter_db;
         otherwise
@@ -1220,13 +1220,17 @@ y(x < 0) = NaN;
 end
 
 
-function [mobile_end, h_mobile_m] = clutter_terminal(cfg, area, h_m)
-%CLUTTER_TERMINAL Which end is a concealed Phase 2 mobile terminal (0 = none).
+function [mobile_end, h_mobile_m, ctype] = clutter_terminal(cfg, area, h_m)
+%CLUTTER_TERMINAL Which end is a Phase 2 mobile terminal in clutter (0 = none), and its P.2108 category.
 %   The mobile terminal is the transmitter (end 1) in sets R1, R2, R3 and
-%   the receiver (end 2) in VA; cfg.row.reversed swaps it. Only siting "C"
-%   gets the term. Fails loud when the row metadata is missing.
+%   the receiver (end 2) in VA; cfg.row.reversed swaps it. Siting "C" gets
+%   cfg.terminal_clutter_type (B07). With cfg.terminal_clutter_open =
+%   "nlcd" (B11), sitings "O" and "A" get the category of the NLCD 2001
+%   class at the mobile terminal (landcover_lookup_rev1), or none. Fails
+%   loud when the row metadata is missing.
 mobile_end = 0;
 h_mobile_m = NaN;
+ctype = "";
 if ~isfield(cfg, 'terminal_clutter') || cfg.terminal_clutter == "none"
     return
 end
@@ -1240,8 +1244,27 @@ end
 if ~any(cfg.terminal_clutter_base == ["actual", "clutter_height"])
     error('itmexp:cfg', 'Unknown cfg.terminal_clutter_base "%s".', cfg.terminal_clutter_base);
 end
+if ~any(cfg.terminal_clutter_open == ["none", "nlcd"])
+    error('itmexp:cfg', 'Unknown cfg.terminal_clutter_open "%s".', cfg.terminal_clutter_open);
+end
+if cfg.row.set == ""
+    return                                   % long-term rows and synthetic sweeps: no mobile terminal
+end
+if cfg.row.set == "VA", orig_end = 2; else, orig_end = 1; end
 if cfg.row.siting == "C"
-    if cfg.row.set == "VA", mobile_end = 2; else, mobile_end = 1; end
+    ctype = cfg.terminal_clutter_type;
+elseif cfg.terminal_clutter_open == "nlcd" && any(cfg.row.siting == ["O", "A"])
+    if ~isfield(cfg.row, 'path_id') || strlength(cfg.row.path_id) == 0
+        error('itmexp:cfg', 'cfg.terminal_clutter_open = "nlcd" needs cfg.row.path_id from the evaluator.');
+    end
+    names = ["tx", "rx"];
+    [~, ctype] = landcover_lookup_rev1(cfg.row.path_id, names(orig_end));
+    if cfg.terminal_clutter ~= "p2108_height_gain"
+        error('itmexp:cfg', 'cfg.terminal_clutter_open = "nlcd" works only with cfg.terminal_clutter = "p2108_height_gain".');
+    end
+end
+if strlength(ctype) > 0
+    mobile_end = orig_end;
     if cfg.row.reversed, mobile_end = 3 - mobile_end; end
     h_mobile_m = h_m(mobile_end);
 end
