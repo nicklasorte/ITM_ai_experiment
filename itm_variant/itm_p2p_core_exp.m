@@ -184,6 +184,11 @@ else
     mode_code = 4 + 4 * (q > 0) + 1 + (propmode == 3);
 end
 
+if isfield(cfg, 'time_variability') && cfg.time_variability == "two_leg" && ~area
+    cfg.leg = two_leg_geometry(pfl, h_m, 1 / gamma_e, f_mhz);   % research package H03 (B12)
+elseif isfield(cfg, 'time_variability') && ~any(cfg.time_variability == ["itm", "two_leg"])
+    error('itmexp:cfg', 'Unknown cfg.time_variability "%s".', cfg.time_variability);
+end
 [V_db, extreme] = variability(z, h_e_m, delta_h_m, f_mhz, d_m, A_ref_db, climate, mdvar, cfg);
 wbits = bitor(uint32(warnings), uint32(any(extreme(:))) * uint32(8192));
 if lines.A_ref_undefined
@@ -644,12 +649,12 @@ if los_region
     else
         d_1 = c_max(-A_d0 / M_d, 0.25 * d_ML);
     end
-    A_1 = line_of_sight_loss(d_1, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg);
+    A_1 = line_of_sight_loss(d_1, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg, a_e);
     flag = false;
     kHat_1 = 0;
     kHat_2 = 0;
     if d_0 < d_1
-        A_0 = line_of_sight_loss(d_0, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg);
+        A_0 = line_of_sight_loss(d_0, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg, a_e);
         q = log(d_sML / d_0);
         kHat_2 = c_max(0.0, ((d_sML - d_0) * (A_1 - A_0) - (d_1 - d_0) * (A_sML - A_0)) / ...
             ((d_sML - d_0) * log(d_1 / d_0) - (d_1 - d_0) * q));
@@ -949,7 +954,7 @@ else
 end
 end
 
-function A_los = line_of_sight_loss(d_m, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg)
+function A_los = line_of_sight_loss(d_m, h_e_m, Z_g, delta_h_m, M_d, A_d0, d_sML, f_mhz, cfg, a_e)
 delta_h_d = terrain_roughness(d_m, delta_h_m);
 sigma_h_d = sigma_h_function(delta_h_d);
 wn = f_mhz / 47.7;
@@ -959,7 +964,15 @@ q = real(R_e)^2 + imag(R_e)^2;
 if q < 0.25 || q < sin_psi
     R_e = R_e * sqrt(sin_psi / q);
 end
-delta_phi = wn * 2.0 * h_e_m(1) * h_e_m(2) / d_m;
+if isfield(cfg, 'los_phase') && cfg.los_phase == "curved_specular"
+    % Research package H02 (batch B12): heights above the plane tangent at
+    % the curved-Earth specular point, ITU-R P.530-19 eq. (121)-(126)
+    delta_phi = los_phase_curved_rev1(h_e_m(1), h_e_m(2), d_m, a_e, wn);
+elseif ~isfield(cfg, 'los_phase') || cfg.los_phase == "itm"
+    delta_phi = wn * 2.0 * h_e_m(1) * h_e_m(2) / d_m;
+else
+    error('itmexp:cfg', 'Unknown cfg.los_phase "%s".', cfg.los_phase);
+end
 if delta_phi > pi / 2.0
     delta_phi = pi - (pi / 2.0)^2 / delta_phi;
 end
@@ -1161,6 +1174,29 @@ middle = ~(lower | upper);
 sigma_T = sigma_T_minus .* lower + sigma_T_plus .* middle + ...
     (sigma_TD + tgtd ./ max(z_T, z_D(c))) .* upper;
 Y_T = sigma_T .* z_T;
+if isfield(cfg, 'leg') && cfg.leg.w > 0 && any(z_T(:) ~= 0)
+    % Research package H03 (batch B12): two legs over a common crest, each
+    % with ITM's own time curve at its effective distance (NBS TN 101
+    % section 10.8, independent legs), convolved and centred at its own
+    % median, blended with the stock deviate by the clearance taper w.
+    % Y_T(0) = 0, so every 50 % value is unchanged.
+    Ydev = @(Z, d_e_j) (curve(bsm1(c), bsm2(c), xsm1(c), xsm2(c), xsm3(c), d_e_j) * g_minus * cfg.cal.time_minus_scale .* (Z < 0) + ...
+        curve(bsp1(c), bsp2(c), xsp1(c), xsp2(c), xsp3(c), d_e_j) * g_plus * cfg.cal.time_plus_scale .* (Z >= 0 & Z <= z_D(c)) + ...
+        (C_D(c) * curve(bsp1(c), bsp2(c), xsp1(c), xsp2(c), xsp3(c), d_e_j) * g_plus * cfg.cal.time_plus_scale + ...
+        (1 - C_D(c)) * curve(bsp1(c), bsp2(c), xsp1(c), xsp2(c), xsp3(c), d_e_j) * g_plus * cfg.cal.time_plus_scale * z_D(c) ./ max(Z, z_D(c))) .* (Z > z_D(c))) .* Z;
+    de = zeros(1, 2);
+    for j = 1:2
+        dexj = sqrt(2 * a_9000 * cfg.leg.he(j, 1)) + sqrt(2 * a_9000 * cfg.leg.he(j, 2)) + (575.7e12 / wn)^THIRD;
+        if cfg.leg.len(j) < dexj
+            de(j) = 130e3 * cfg.leg.len(j) / dexj;
+        else
+            de(j) = 130e3 + cfg.leg.len(j) - dexj;
+        end
+    end
+    Yc = two_leg_quantiles_rev1([z_T(:); 0], @(Z) Ydev(Z, de(1)), @(Z) Ydev(Z, de(2)));
+    Yc = reshape(Yc(1:end - 1), size(z_T)) - Yc(end);
+    Y_T = (1 - cfg.leg.w) * Y_T + cfg.leg.w * Yc;
+end
 
 Y_S_temp = sigma_S^2 + Y_T.^2 ./ (7.8 + z_S.^2) + Y_L.^2 ./ (24.0 + z_S.^2);
 switch mdvar_internal
@@ -1269,6 +1305,62 @@ if strlength(ctype) > 0
     mobile_end = orig_end;
     if cfg.row.reversed, mobile_end = 3 - mobile_end; end
     h_mobile_m = h_m(mobile_end);
+end
+end
+
+
+function leg = two_leg_geometry(pfl, h_m, a_e, f_mhz)
+%TWO_LEG_GEOMETRY Common-crest legs for the two-leg time variability (research package H03; B12).
+%   leg.w is 0 unless both terminals' raw radio horizons (highest
+%   elevation angle on the effective Earth, as ITM's FindHorizons, before
+%   any smooth-earth replacement) are the same interior profile sample.
+%   Then: taper w = u+^2 / (1 + u+^2), u the smallest clearance, in
+%   first-Fresnel radii of each leg, of any leg sample below the ray from
+%   the terminal to the crest (Earth bulge in the chord frame), and of the
+%   bare crest above the terminal chord over the full-link radius at the
+%   crest; leg lengths; and leg effective heights h_s + max(0, z_end -
+%   z_fit) from a least-squares line on each leg's bare terrain, with the
+%   physical antenna height at the outer terminal and 0 at the crest.
+%   All as specified in the research package's H03 proposal.
+leg = struct('w', 0, 'he', zeros(2, 2), 'len', zeros(1, 2));
+np = fix(pfl(1)); xi = pfl(2);
+if np < 3, return, end
+g = pfl(3:np + 3); x = (0:np)' * xi; D = x(end);
+zt = g(1) + h_m(1); zr = g(end) + h_m(2);
+k = (2:np)';
+[~, it] = max((g(k) - zt) ./ x(k) - x(k) / (2 * a_e));
+[~, ir] = max((g(k) - zr) ./ (D - x(k)) - (D - x(k)) / (2 * a_e));
+it = k(it); ir = k(ir);
+if it ~= ir, return, end
+ic = it; xc = x(ic);
+% the crest must obstruct both terminals' straight ray (it is a horizon)
+th_los = (zr - zt) / D - D / (2 * a_e);
+if (g(ic) - zt) / xc - xc / (2 * a_e) <= th_los, return, end
+lambda = 299.792458 / f_mhz;
+zs = g + x .* (D - x) / (2 * a_e);                       % chord frame, Earth bulge added
+u = Inf;
+legs = {1:ic, ic:np + 1};
+ends = [zt, zs(ic); zs(ic), zr];
+for j = 1:2
+    ii = legs{j}; xa = x(ii(1)); xb = x(ii(end)); L = xb - xa;
+    in = ii(2:end - 1);
+    if isempty(in), continue, end
+    t = x(in) - xa;
+    ray = ends(j, 1) + (ends(j, 2) - ends(j, 1)) * t / L;
+    r1 = sqrt(lambda * t .* (L - t) / L);
+    u = min(u, min((ray - zs(in)) ./ r1));
+end
+hc = g(ic) - (zt * (D - xc) + zr * xc) / D;
+u = min(u, hc / sqrt(lambda * xc * (D - xc) / D));
+up = max(0, u);
+leg.w = up^2 / (1 + up^2);
+leg.len = [xc, D - xc];
+hs = [h_m(1), 0; 0, h_m(2)];
+for j = 1:2
+    ii = legs{j};
+    pfit = polyfit(x(ii), g(ii), 1);
+    z0 = polyval(pfit, x(ii(1))); z1 = polyval(pfit, x(ii(end)));
+    leg.he(j, :) = hs(j, :) + [max(0, g(ii(1)) - z0), max(0, g(ii(end)) - z1)];
 end
 end
 

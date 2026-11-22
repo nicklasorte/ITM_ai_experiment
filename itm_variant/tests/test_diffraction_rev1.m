@@ -607,6 +607,59 @@ rowx = struct('set', "VA", 'siting', "O", 'reversed', false);
 tc.verifyError(@() itm_ref(pfl, 7.3, 2, 1846, setfield(cn, 'row', rowx)), 'itmexp:cfg'); %#ok<SFLD>
 end
 
+function test_los_phase_curved(tc)
+% H02 (B12): ITU-R P.530-19 specular geometry. Flat-Earth limit equals
+% ITM's 2 h1 h2 / d phase; equal heights at half the smooth horizon give
+% the 9/16 ratio of the research package; the phase is reciprocal in
+% h1, h2; the specular point gives equal grazing angles u/d1 = v/d2; a
+% terminal below the tangent plane gives zero phase.
+wn = 1846 / 47.7;
+[p, ~, ~, d1] = los_phase_curved_rev1(30, 12, 20e3, 1e15, wn);
+tc.verifyEqual(p, wn * 2 * 30 * 12 / 20e3, 'RelTol', 1e-6);
+tc.verifyEqual(d1, 20e3 * 30 / 42, 'RelTol', 1e-6);
+ae = 8.5e6; h = 40; s = sqrt(2 * ae * h);
+p = los_phase_curved_rev1(h, h, s, ae, wn);
+tc.verifyEqual(p / (wn * 2 * h * h / s), 9 / 16, 'RelTol', 1e-9);
+[pa, ua, va, da] = los_phase_curved_rev1(60, 8, 25e3, ae, wn);
+[pb, ub, vb, db] = los_phase_curved_rev1(8, 60, 25e3, ae, wn);
+tc.verifyEqual(pa, pb, 'RelTol', 1e-9);
+tc.verifyEqual(da + db, 25e3, 'RelTol', 1e-9);
+tc.verifyEqual(ua / da, va / (25e3 - da), 'RelTol', 1e-6);   % equal grazing angles
+tc.verifyEqual([ua va], [vb ub], 'RelTol', 1e-9);
+tc.verifyEqual(los_phase_curved_rev1(2, 2, 2 * sqrt(2 * ae * 2) * 1.2, ae, wn), 0);
+% Off by default: ITM's line-of-sight loss is unchanged; on, it changes on a LOS path
+x = (0:30:30000)'; pfl = [numel(x) - 1; 30; 100 + 0 * x];
+c0 = params_exp(); c1 = c0; c1.los_phase = "curved_specular";
+a0 = itm_ref(pfl, 30, 10, 4000, c0); a1 = itm_ref(pfl, 30, 10, 4000, c1);   % line of sight (mode 1)
+tc.verifyGreaterThan(a0, 0);
+tc.verifyTrue(isfinite(a1));
+tc.verifyNotEqual(a0, a1);
+end
+
+function test_two_leg_variability(tc)
+% H03 (B12): the convolution of two normal legs Y_j = s_j Z is normal with
+% s = sqrt(s1^2 + s2^2); the 50 % value never changes; a smooth path (no
+% common crest) is unchanged; a clean single ridge has w > 0 and changes
+% the tails; the reversed path gives the same values.
+z = [-2.33; -1.28; 0; 1.28; 2.33];
+Y = two_leg_quantiles_rev1(z, @(Z) 3 * Z, @(Z) 4 * Z);
+tc.verifyEqual(Y, 5 * z, 'AbsTol', 0.02);
+S = settings_rev1();
+x = (0:30:120000)';
+g = 300 + 700 * max(0, 1 - abs(x - 50000) / 6000);              % one triangular ridge
+pfl = [numel(x) - 1; 30; g]; pflr = [numel(x) - 1; 30; flipud(g)];
+c0 = params_exp(); c1 = c0; c1.time_variability = "two_leg";
+rel = [1 10 50 90 99];
+f0 = @(p, c) itm_p2p_core_exp(10, 10, p, 450, rel, S.confidence, S.location, 5, 301, 0, S.epsilon, S.sigma, S.mdvar, false, [], c);
+fr = @(p, c) itm_p2p_core_exp(10, 10, p, 450, rel, S.confidence, S.location, 5, 301, 0, S.epsilon, S.sigma, S.mdvar, false, [], c);
+a0 = f0(pfl, c0); a1 = f0(pfl, c1);
+tc.verifyEqual(a1(3), a0(3), 'AbsTol', 1e-6);                     % 50 % (ITM's 50 % deviate is ~1e-9, not 0)
+tc.verifyGreaterThan(max(abs(a1 - a0)), 0.1);                     % tails change
+tc.verifyEqual(fr(pflr, c1), a1, 'AbsTol', 1e-6);                 % reversal
+ps = [numel(x) - 1; 30; 300 + 0 * x];                             % smooth: no common crest
+tc.verifyEqual(f0(ps, c1), f0(ps, c0), 'AbsTol', 1e-12);
+end
+
 function test_params_overrides(tc)
 % ITMEXP_OVERRIDES sets switches for one run without editing params_exp.m;
 % unknown fields, protected fields, wrong types, and bad JSON fail loud;

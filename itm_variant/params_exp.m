@@ -96,6 +96,15 @@ cfg.terminal_clutter_open = "none";
 %   "itm"               region from the smooth-earth horizons of the effective heights
 %   "profile_horizons"  a path whose profile blocks the direct ray is transhorizon
 cfg.line_of_sight = "itm";
+% Reflected-ray phase in ITM's line-of-sight term (B12, research package
+% H02): "itm" (flat-Earth h1 h2 product) or "curved_specular" (heights above
+% the tangent plane at the curved-Earth specular point, ITU-R P.530-19
+% eq. (121)-(126); los_phase_curved_rev1).
+cfg.los_phase = "itm";
+% Time variability (B12, research package H03): "itm" or "two_leg" (two legs
+% over a common crest, ITM's time curve per leg convolved; NBS TN 101
+% section 10.8; changes non-median percentiles only).
+cfg.time_variability = "itm";
 
 % Troposcatter loss and the diffraction/troposcatter switch (troposcatter_loss, longley_rice)
 cfg.troposcatter = "itm";
