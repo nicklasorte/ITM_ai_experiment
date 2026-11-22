@@ -785,6 +785,9 @@ function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, 
 %   "delta_deygout_isolated"  Deygout over the isolation-weighted edges,
 %       without P.526-11's empirical correction C
 %   "delta_bullington_uc"     Bullington without the eq. (57) correction
+% Batch B09 form:
+%   "delta_p526_cylinders_knife"  ITU-R P.526-16 section 4.4 (multiple
+%       isolated cylinders) with zero-radius cylinders, no empirical correction
 np = fix(pfl(1));
 xi = pfl(2);
 x = (0:np)' * xi;
@@ -830,6 +833,8 @@ switch cfg.diffraction
         method = "deygout_isolated";
     case "delta_bullington_uc"
         method = "bullington_uc";
+    case "delta_p526_cylinders_knife"
+        method = "p526_cylinders_knife";
     otherwise
         error('itmexp:cfg', 'Unknown delta form "%s".', cfg.diffraction);
 end

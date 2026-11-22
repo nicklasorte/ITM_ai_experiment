@@ -7,7 +7,8 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %   Inputs:
 %     method   "epstein_peterson" | "ep_isolated" | "p526_double_edge" | "string_ep" |
 %              "deygout" | "p526_cascaded" | "p526_cascaded_isolated" |
-%              "deygout_isolated" | "bullington" | "bullington_uc"
+%              "deygout_isolated" | "bullington" | "bullington_uc" |
+%              "p526_cylinders_knife"
 %     x_m      distance of each profile point from the transmitter (m),
 %              increasing, x_m(1) = 0, x_m(end) = path length
 %     z_m      height above sea level (m): z_m(1) and z_m(end) are the
@@ -103,6 +104,23 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %         the same real-terrain excess).
 %     "bullington_uc"  "bullington" without the correction of eq. (57):
 %         L = L_uc, eq. (52) or (56) (batch B07, same reason).
+%     "p526_cylinders_knife"  ITU-R P.526-16 (11/2025) section 4.4,
+%         multiple isolated cylinders, with zero-radius cylinders (T(m,n)
+%         = 0, the knife-edge limit the Recommendation states below eq.
+%         (36)); batch B09. Stretched string by eq. (44); consecutive string
+%         samples (spacing <= 250 m) form one obstruction with points w, x,
+%         y, z (Fig. 14); vertex by Attachment 1 eq. (107)-(115); cylinder
+%         height h by eq. (116); d1, d2 = s1, s2 the inter-vertex distances;
+%         nu by eq. (33); L'_i = J(nu_i), eq. (31). Sub-path losses L" on
+%         every line-of-sight section (w..x of the first cylinder, y..z of
+%         each) by Attachment 2 eq. (124)-(129), and on the whole path when
+%         the string has no obstruction. Spreading correction
+%         -20 log10 C_N, eq. (46)-(48). Total eq. (45). No empirical
+%         correction such as P.526-11's C. The rounded form (T(m,n) with R
+%         from Attachment 1 eq. (117)-(123)) isn't implemented: the sign of
+%         the Earth-curvature term in eq. (122) as printed gives a negative
+%         radius on a smooth Earth, so it waits for a check against
+%         independent reference code (TODO).
 %     "bullington"  Single equivalent edge at the intersection of the two
 %         horizon rays: ITU-R P.526-16 section 4.5.1, eq. (49)-(57),
 %         including the correction [1 - exp(-L_uc/6)] (10 + 0.02 d).
@@ -244,6 +262,9 @@ switch method
         else
             L_db = L_uc + (1 - exp(-L_uc / 6)) * (10 + 0.02 * (d / 1000));   % eq. (57), d in km
         end
+
+    case "p526_cylinders_knife"
+        [L_db, D.edges, D.nu, D.CN_db] = p526_cylinders(x_m, z_m, lambda, a_e_m);
 
     otherwise
         error('itmexp:multiedge', 'Unknown diffraction method "%s".', method);
@@ -434,3 +455,111 @@ d_a = x(k) - x(i1); d_b = x(i2) - x(k); d_ab = x(i2) - x(i1);
 clearance = (z(i1) * d_b + z(i2) * d_a) / d_ab - (z(k) + d_a .* d_b / (2 * a_e));
 tf = any(clearance >= 0.6 * sqrt(lambda * d_a .* d_b / d_ab));
 end
+
+function [L, verts, nus, CN_db] = p526_cylinders(x, z, lambda, a_e)
+% ITU-R P.526-16 section 4.4 with zero-radius cylinders. x, z: distance and
+% height above sea level of each sample, the first and last being the
+% antennas (section 4.4, second paragraph). Self-consistent units (m).
+n = numel(x);
+% Stretched string, eq. (44): each string point has the highest elevation
+% above the local horizontal seen from the previous string point.
+pts = 1; s = 1;
+while s < n
+    i = (s + 1:n)';
+    dsi = x(i) - x(s);
+    [~, j] = max((z(i) - z(s)) ./ dsi - dsi / (2 * a_e));
+    s = i(j);
+    pts(end + 1) = s; %#ok<AGROW>
+end
+mid = pts(2:end - 1);
+if isempty(mid)
+    % No obstruction: line of sight with sub-path diffraction over the
+    % whole path (Attachment 2, section 1, last paragraph)
+    L = subpath_loss(1, n, x, z, lambda, a_e);
+    verts = []; nus = []; CN_db = 0;
+    return
+end
+if any(diff(x) > 250)
+    error('itmexp:multiedge', ['p526_cylinders_knife groups consecutive string samples, ' ...
+        'which section 4.4 allows only for spacings of 250 m or less.']);
+end
+% Obstructions: runs of consecutive string samples (section 4.4)
+brk = [true, diff(mid) > 1];
+xs = mid(brk);                          % point x of each obstruction
+ys = mid([brk(2:end), true]);           % point y
+N = numel(xs);
+ws = [1, ys(1:end - 1)];                % w: previous string point or terminal (Fig. 14)
+zs = [xs(2:end), n];                    % z: next string point or terminal
+dv = zeros(1, N); hv = zeros(1, N);
+for k = 1:N
+    w = ws(k); xx = xs(k); y = ys(k); zz = zs(k);
+    d_wx = x(xx) - x(w); d_yz = x(zz) - x(y); d_wz = x(zz) - x(w); d_xy = x(y) - x(xx);
+    if xx == y
+        d_wv = d_wx;                                                        % eq. (111)
+        hv(k) = z(xx);                                                      % eq. (114)
+    else
+        a_w = (z(xx) - z(w)) / d_wx - d_wx / (2 * a_e);                     % eq. (108)
+        a_z = (z(y) - z(zz)) / d_yz - d_yz / (2 * a_e);                     % eq. (109)
+        a_ee = d_wz / a_e;                                                  % eq. (110)
+        th = a_w + a_z + a_ee;                                              % eq. (107)
+        if th * a_e >= d_xy
+            d_wv = ((a_z + a_ee / 2) * d_wz + z(zz) - z(w)) / th;           % eq. (112a)
+        else
+            d_wv = (d_wx + (x(y) - x(w))) / 2;                              % eq. (112b)
+        end
+        hv(k) = d_wv * a_w + z(w) + d_wv^2 / (2 * a_e);                     % eq. (115)
+    end
+    dv(k) = x(w) + d_wv;                                                    % vertex distance from the transmitter
+end
+% Inter-vertex distances s1, s2 (Fig. 13): to the previous and next vertex or terminal
+vpos = [x(1), dv, x(n)];
+s1 = vpos(2:end - 1) - vpos(1:end - 2);
+s2 = vpos(3:end) - vpos(2:end - 1);
+if any(s1 <= 0) || any(s2 <= 0)
+    error('itmexp:multiedge', 'p526_cylinders_knife: vertices out of order.');
+end
+L = 0; nus = zeros(1, N);
+for k = 1:N
+    w = ws(k); zz = zs(k);
+    d_wv = dv(k) - x(w); d_wz = x(zz) - x(w); d_vz = d_wz - d_wv;           % eq. (113)
+    h = hv(k) + d_wv * d_vz / (2 * a_e) - (z(w) * d_vz + z(zz) * d_wv) / d_wz;   % eq. (116)
+    nus(k) = h * sqrt(2 * (s1(k) + s2(k)) / (lambda * s1(k) * s2(k)));      % eq. (33), self-consistent units
+    L = L + knife_J(nus(k));                                                % L'_i, eq. (32) with T = 0
+end
+% Sub-path losses, eq. (45): w..x of the first cylinder and y..z of every cylinder
+L = L + subpath_loss(ws(1), xs(1), x, z, lambda, a_e);
+for k = 1:N
+    L = L + subpath_loss(ys(k), zs(k), x, z, lambda, a_e);
+end
+% Spreading correction, eq. (46)-(48); (s1)_i = (s2)_(i-1) for cascaded cylinders
+Pa = s1(1) * prod(s2) * (s1(1) + sum(s2));                                  % eq. (47)
+Pb = s1(1) * s2(N) * prod(s1 + s2);                                         % eq. (48)
+CN_db = -10 * log10(Pa / Pb);                                               % -20 log10 C_N, C_N = (Pa/Pb)^0.5
+L = L + CN_db;
+verts = dv;
+end
+
+function L = subpath_loss(u, v, x, z, lambda, a_e)
+% Sub-path diffraction loss on a line-of-sight section u..v, ITU-R P.526-16
+% Attachment 2 to Annex 1, eq. (124)-(129) and eq. (31).
+p = u + 1;
+while p < v && z(p) > z(p + 1)
+    p = p + 1;
+end
+q = v - 1;
+while q > u && z(q) > z(q - 1)
+    q = q - 1;
+end
+if p >= q
+    L = 0;                                  % p = q: no sub-path obstruction (p > q can't hold one either)
+    return
+end
+i = (p:q)';
+d_uv = x(v) - x(u); d_ui = x(i) - x(u); d_iv = x(v) - x(i);
+h_r = (z(u) * d_iv + z(v) * d_ui) / d_uv;                                  % eq. (127)
+h_t = z(i) + d_ui .* d_iv / (2 * a_e);                                     % eq. (128)
+F1 = sqrt(lambda * d_ui .* d_iv / d_uv);                                   % eq. (126)
+C_F = min((h_r - h_t) ./ F1);                                              % eq. (124), (125)
+L = knife_J(-C_F * sqrt(2));                                               % eq. (129), (31)
+end
+

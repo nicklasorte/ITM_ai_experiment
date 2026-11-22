@@ -38,7 +38,8 @@ cfg.diffraction = "itm";
 %   "delta_ep_isolated"      the delta construction with a multi-edge
 %                            obstruction loss in place of Bullington (B05)
 %   "delta_bullington_afo"   "delta_bullington" plus ITM's clutter term A_fo (B05 control)
-%   "delta_deygout_isolated" | "delta_bullington_uc"
+%   "delta_deygout_isolated" | "delta_bullington_uc" |
+%   "delta_p526_cylinders_knife" (ITU-R P.526-16 section 4.4, zero radius; B09)
 %                            the delta construction with the empirical
 %                            correction removed (P.526-11 C; P.526-16
 %                            eq. (57)), for use with terminal clutter (B07)

@@ -504,6 +504,62 @@ end
 tc.verifyEqual(a, 24.5, 'AbsTol', 0.051); tc.verifyEqual(R, 15);
 end
 
+function test_p526_cylinders_knife_single_and_double(tc)
+% ITU-R P.526-16 section 4.4 with zero-radius cylinders. One spike: the
+% loss is J(nu) at the spike (eq. (33), (31)); sub-path losses are 0 over
+% deep clearance and C_N = 1 for one cylinder. Two separated spikes: J of
+% each edge seen from its neighbors (vertex to vertex) plus -20 log C_N,
+% which for two cylinders equals eq. (39)'s L_c.
+lam = tc.TestData.lambda; ae = tc.TestData.flat; f = tc.TestData.f;
+[x, z] = spike_profile(30000, 12000, 100, 10);
+s1 = 12000; s2 = 18000;
+h = 100 - (10 * s2 + 10 * s1) / 30000;
+nu = h * sqrt(2 * 30000 / (lam * s1 * s2));
+[L, D] = multi_edge_diffraction_rev1("p526_cylinders_knife", x, z, f, ae);
+tc.verifyEqual(L, J_approx(nu), 'AbsTol', 1e-9);
+tc.verifyEqual(D.CN_db, 0, 'AbsTol', 1e-12);
+a = 9000; b = 9000; c = 12000;
+[x, z] = spike_profile(30000, [a a + b], [120 130], 10);
+h1 = 120 - (10 * b + 130 * a) / (a + b);
+h2 = 130 - (120 * c + 10 * b) / (b + c);
+nu1 = h1 * sqrt(2 * (a + b) / (lam * a * b));
+nu2 = h2 * sqrt(2 * (b + c) / (lam * b * c));
+Lc = 10 * log10((a + b) * (b + c) / (b * (a + b + c)));               % eq. (39)
+[L, D] = multi_edge_diffraction_rev1("p526_cylinders_knife", x, z, f, ae);
+tc.verifyEqual(D.CN_db, Lc, 'AbsTol', 1e-9);
+tc.verifyEqual(L, J_approx(nu1) + J_approx(nu2) + Lc, 'AbsTol', 1e-9);
+end
+
+function test_p526_cylinders_knife_los_continuity_reciprocity(tc)
+% Line of sight: only the sub-path loss of Attachment 2, J(-C_F sqrt(2)),
+% 0 with deep clearance. As a hill rises through the ray the loss changes
+% smoothly (largest step under 0.6 dB for 0.25 m height steps: the
+% sub-path term hands over to the cylinder term at grazing). Reversing the
+% path gives the same loss on a rough profile.
+lam = tc.TestData.lambda; ae = tc.TestData.flat; f = tc.TestData.f;
+x = (0:30:30000)'; z = zeros(size(x)); z(1) = 30; z(end) = 30;
+tc.verifyEqual(multi_edge_diffraction_rev1("p526_cylinders_knife", x, z, f, ae), 0);
+bump = exp(-((x - 15000) / 1500).^2);
+L = zeros(1, 161); H = 22:0.25:62;
+for k = 1:numel(H)
+    zz = H(k) * bump; zz(1) = 30; zz(end) = 30;
+    L(k) = multi_edge_diffraction_rev1("p526_cylinders_knife", x, zz, f, ae);
+end
+tc.verifyLessThan(max(abs(diff(L))), 0.6);
+tc.verifyGreaterThan(L(end), L(1));
+% Below the ray: equals J(-C_F sqrt(2)) at the most intruding point
+zz = 25 * bump; zz(1) = 30; zz(end) = 30;
+i = (2:numel(x) - 1)'; F1 = sqrt(lam * x(i) .* (30000 - x(i)) / 30000);
+CF = min((30 - zz(i)) ./ F1);
+tc.verifyEqual(multi_edge_diffraction_rev1("p526_cylinders_knife", x, zz, f, ae), J_approx(-CF * sqrt(2)), 'AbsTol', 1e-9);
+% Reciprocity on a rough profile with a curved Earth
+g = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+z = g; z(1) = z(1) + 12; z(end) = z(end) + 3;
+a = multi_edge_diffraction_rev1("p526_cylinders_knife", x, z, 450, 8.5e6);
+b = multi_edge_diffraction_rev1("p526_cylinders_knife", x, flipud(z), 450, 8.5e6);
+tc.verifyEqual(a, b, 'AbsTol', 1e-6);
+end
+
 function test_params_overrides(tc)
 % ITMEXP_OVERRIDES sets switches for one run without editing params_exp.m;
 % unknown fields, protected fields, wrong types, and bad JSON fail loud;
