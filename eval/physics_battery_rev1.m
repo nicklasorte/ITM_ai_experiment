@@ -17,6 +17,20 @@ function B = physics_battery_rev1(cfg, P2, profiles)
 %                   as the antenna rises; measured Phase 2 loss falls about
 %                   9 dB from 1 m to 8 m receivers (B06 reviewer pass;
 %                   added with Nick's approval, 2026-11-21)
+%     height_gain_real  REPORT ONLY (not part of B.pass; Nick, 2026-11-22).
+%                   Every Phase 2 row, each antenna raised by 10 m in turn:
+%                   the variant's change in loss minus the larger of stock's
+%                   change and 0, worst row, against a 1 dB limit
+%                   (within_limit). Report-only until a multi-edge method
+%                   without the principal-edge jump exists, because the kept
+%                   model (707) fails it and every experiment built on 707
+%                   would inherit the failure. Relative to stock
+%                   because two-ray interference makes loss rise with height
+%                   on many line-of-sight rows in stock ITM too (6,799 of
+%                   16,805 rows by more than 1 dB). Catches loss jumps that
+%                   the one-ridge synthetic sweep can't, such as a principal
+%                   edge switching in a multi-edge method (707: 51.7 dB).
+%                   Added with Nick's approval, 2026-11-22.
 %     reciprocity   swap the terminals and reverse the profile; 95th
 %                   percentile of |difference| on 300 real links:
 %                   variant <= max(0.1, baseline + 0.1) dB
@@ -28,7 +42,7 @@ function B = physics_battery_rev1(cfg, P2, profiles)
 S = settings_rev1();
 B = struct('pass', true, 'checks', struct());
 % cfg.row: row metadata (see run_eval_rev1). Synthetic sweeps have none.
-norow = struct('set', "", 'siting', "", 'reversed', false);
+norow = struct('set', "", 'siting', "", 'reversed', false, 'path_id', "");
 cfg.row = norow;
 fvar = @(htx, hrx, pfl, f, clim, n0, pol) itm_p2p_core_exp(htx, hrx, pfl, f, 50, S.confidence, ...
     S.location, clim, n0, pol, S.epsilon, S.sigma, S.mdvar, false, [], cfg);
@@ -83,7 +97,8 @@ for i = 1:numel(k)
     pfl = mk(p.h_m); pflr = mk(flipud(p.h_m(:)));
     row = norow;
     if all(ismember({'set', 'siting'}, P2.Properties.VariableNames))
-        row = struct('set', string(r.set), 'siting', string(r.siting), 'reversed', false);
+        row = struct('set', string(r.set), 'siting', string(r.siting), 'reversed', false, ...
+            'path_id', string(r.path_id));
     end
     rowr = row; rowr.reversed = true;
     a = fvar_row(r.htx_m, r.hrx_m, pfl, r.f_mhz, r.climate, r.N_0, r.pol, row);
@@ -94,6 +109,36 @@ for i = 1:numel(k)
     av(i) = a - r.fs_db; ab(i) = a0 - r.fs_db;
     finite_ok = finite_ok && isfinite(a) && isfinite(b) && isreal(a);
 end
+% ---- real-path height gain (all rows, both antennas raised 10 m) ----
+dh = 10;                                    % raise in metres
+xs = -Inf; xs_row = "";
+for i = 1:height(P2)
+    r = P2(i, :);
+    p = profiles(ids == r.path_id);
+    pfl = mk(p.h_m);
+    row = norow;
+    if all(ismember({'set', 'siting'}, P2.Properties.VariableNames))
+        row = struct('set', string(r.set), 'siting', string(r.siting), 'reversed', false, ...
+            'path_id', string(r.path_id));
+    end
+    h = [r.htx_m, r.hrx_m];
+    v0 = fvar_row(h(1), h(2), pfl, r.f_mhz, r.climate, r.N_0, r.pol, row);
+    b0 = fbase(h(1), h(2), pfl, r.f_mhz, r.climate, r.N_0, r.pol);
+    for e = 1:2
+        hh = h; hh(e) = hh(e) + dh;
+        dvh = fvar_row(hh(1), hh(2), pfl, r.f_mhz, r.climate, r.N_0, r.pol, row) - v0;
+        dbh = fbase(hh(1), hh(2), pfl, r.f_mhz, r.climate, r.N_0, r.pol) - b0;
+        finite_ok = finite_ok && isfinite(dvh) && isreal(dvh);
+        x = dvh - max(dbh, 0);
+        if x > xs
+            xs = x; xs_row = sprintf('%s f %g MHz, antenna %d', r.path_id, r.f_mhz, e);
+        end
+    end
+end
+% Report only: recorded in metrics.json and the summary, not in B.pass
+B.checks.height_gain_real = struct('worst_excess_db', xs, 'worst_row', string(xs_row), ...
+    'limit_db', 1, 'within_limit', xs <= 1, 'report_only', true);
+
 pv = prctile(dv, 95); pb = prctile(db, 95);
 ok = pv <= max(0.1, pb + 0.1);
 B.checks.reciprocity = struct('variant_p95_db', pv, 'baseline_p95_db', pb, 'pass', ok);

@@ -108,6 +108,11 @@ if ~isempty(P2)
         round(A.p2.worst_cell, 1), A.p2.censored_violation_pct, B0.p2.censored_violation_pct);
 end
 lines(end + 1) = sprintf("physics battery: %s", passfail(M.physics.pass));
+if isfield(M.physics, 'checks') && isfield(M.physics.checks, 'height_gain_real')
+    hg = M.physics.checks.height_gain_real;
+    lines(end + 1) = sprintf("  height gain on real paths (report only): worst excess %.1f dB (limit %g) at %s", ...
+        hg.worst_excess_db, hg.limit_db, hg.worst_row);
+end
 lines(end + 1) = sprintf("max |variant - baseline| = %.3g dB; runtime %.0f s", dmax, M.runtime_s);
 fprintf('%s\n', lines);
 
@@ -149,16 +154,20 @@ end
 % of the mobile terminal, which the profile alone can't give (open and
 % concealed twins share a profile). Rows without these columns (long-term)
 % get empty strings. The variant ignores cfg.row unless a switch uses it.
-% Added with Nick's approval, 2026-11-21 (batch B07).
+% Added with Nick's approval, 2026-11-21 (batch B07). path_id (every row,
+% Phase 2 and long-term) lets the variant look up inputs keyed by path, such
+% as the NLCD land cover in data/landcover/; added with Nick's approval,
+% 2026-11-22.
 meta = all(ismember({'set', 'siting'}, T.Properties.VariableNames));
 for i = 1:height(T)
     pr = profiles(ip(i));
     pfl = [numel(pr.h_m) - 1; pr.spacing_m; pr.h_m(:)];
     c = cfg;
     if meta
-        c.row = struct('set', string(T.set(i)), 'siting', string(T.siting(i)), 'reversed', false);
+        c.row = struct('set', string(T.set(i)), 'siting', string(T.siting(i)), 'reversed', false, ...
+            'path_id', string(T.path_id(i)));
     else
-        c.row = struct('set', "", 'siting', "", 'reversed', false);
+        c.row = struct('set', "", 'siting', "", 'reversed', false, 'path_id', string(T.path_id(i)));
     end
     a = itm_p2p_core_exp(T.htx_m(i), T.hrx_m(i), pfl, T.f_mhz(i), p, S.confidence, S.location, ...
         T.climate(i), T.N_0(i), T.pol(i), S.epsilon, S.sigma, S.mdvar, false, [], c);
