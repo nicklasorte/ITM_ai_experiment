@@ -1,0 +1,4 @@
+paired bootstrap: 706-bullington-uc-clutter vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +4.19 dB  (SD 0.81; 95% interval +2.10 to +5.31)  PASS
+  screened gain    +2.45 dB  (SD 0.58; 95% interval +1.13 to +3.39)  PASS
+  gain = best minus new; positive means the new run is better

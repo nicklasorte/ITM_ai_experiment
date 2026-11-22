@@ -1,0 +1,18 @@
+experiment 706-bullington-uc-clutter   (matlab_itm 9bd6a4e, 21-Nov-2026 20:05:19)
+composite  11.8 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   15.7   (baseline 18.3)
+  long-term level RMS             14.6   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  10.9 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 11.3  mean -4.8   (baseline 13.3)
+  site R2 RMS 23.6  mean -18.9   (baseline 28.6)
+  site R3 RMS 7.9  mean -3.9   (baseline 9.0)
+  site VA RMS 15.1  mean -9.2   (baseline 15.4)
+  worst cell 32.0   censored violations 82.8% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 110 dB; runtime 8 s
+
+paired bootstrap: 706-bullington-uc-clutter vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +4.19 dB  (SD 0.81; 95% interval +2.10 to +5.31)  PASS
+  screened gain    +2.45 dB  (SD 0.58; 95% interval +1.13 to +3.39)  PASS
+  gain = best minus new; positive means the new run is better

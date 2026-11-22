@@ -154,6 +154,68 @@ bottom.
 - Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
 - Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
+### 701-cascaded-isolated-clutter
+- Date: 2026-11-21. Batch B07. Parent: 000-baseline (best). Tier 2. Runs after PR #3 merged (evaluator passes `cfg.row`); Mac `eval/` MD5s match the tested scratch copy.
+- Change: `cfg.diffraction = "delta_cascaded_isolated";`, `cfg.diffraction_bound = "itm_troposcatter_line";`, `cfg.terminal_clutter = "p2108_height_gain";`
+- Source: ITU-R P.2108-1 section 3.1 eq. (2a)-(2g) at the mobile terminal of concealed (`C`) Phase 2 rows, trees/forest (R = 15 m); B06 sources for the rest. No free parameters.
+- Result: composite 12.49 dB (stock 16.02); screened 11.1; Phase 2 cell 13.2; long-term level 19.1; shape 5.2. Site RMS R1 10.7 (mean +4.5), R2 17.7 (mean +0.2), R3 6.8 (mean +0.4), VA 13.1 (mean -2.3). Worst cell 27.4. Censored 21.4 %. Paired gain +3.54 (95 % +2.32 to +4.44); screened +2.26 (+1.62 to +2.86).
+- Physics battery: PASS (merged PR #2 battery, with the height-gain check).
+- By edge count (604 in brackets), R2 dead rows violated: 0-1 100.0 % [100.0]; 2 29.9 % [29.9]; 3 4.3 % [14.9]; 4+ 9.6 % [11.7]. Measured-row mean error: -12.2, -4.9, +13.3, +7.8 dB.
+- Siting split, concealed mean error (604 in brackets): R1 C clear +1.7 [-16.9], obstructed +11.6 [-8.1]; R2 C clear -19.9 [-39.9], obstructed -11.5 [-29.4]; VA C clear -2.6 [-14.7], obstructed +6.2 [-4.9]. Open and `A` rows identical to 604, as designed. VA concealed censored violated 116 of 386 [267].
+- Gates: battery pass; composite and screened gains above 0.3 dB with intervals above zero; no site worse than stock; censored 21.4 % <= 29.0 %; no new free parameters. **Passes every gate; held for the reviewer pass** (B07.md: siting input, C to trees/forest mapping, and the extension above 3 GHz are design choices).
+- Predictions: Held: composite 12.5 (12.3-12.7); screened 11.1 (10.9-11.3); censored 21.4 (19-25); VA concealed violations 116 (80-160); Phase 2 cell 13.2 (13.0-13.8); LT level 19.1; concealed means R1 +9.0 (+4 to +10), R2 -13.2 (-20 to -8), VA +4.0 (0 to +8); site means R1 +4.5, R2 +0.2, R3 +0.4; R3 RMS 6.8 unchanged; battery pass. Missed: VA mean -2.3 (-2 to +0.5); VA RMS 13.1 (11-12.5); R2 by-edge, 2-edge rows unchanged (predicted 2-6 points lower) and 3-edge rows 10.6 points lower (more than predicted).
+- Note: R1 concealed obstructed rows overshoot (+11.6 dB): the clutter term stacks on 604's multi-edge overshoot there (R1 open obstructed is already +6.3).
+
+### 704-cascaded-isolated-constant (control)
+- Date: 2026-11-21. Batch B07. Parent: 000-baseline. Tier 2.
+- Change: as 701 but `cfg.terminal_clutter = "constant";` and `cfg.terminal_clutter_db = 16.75;` (the P.2108 term's mean on the 2,272 concealed rows, computed from the model, not fitted to measurements).
+- Result: composite 12.58 dB; screened 11.2; Phase 2 cell 13.5; long-term level 19.1; shape 5.2. Site RMS R1 10.7 (mean +4.2), R2 18.0 (mean +0.1), R3 6.8 (mean +0.4), VA 14.0 (mean -0.7). Worst cell 28.7. Censored 23.1 %. Paired gain +3.45 (95 % +2.25 to +4.33); screened +2.17 (+1.53 to +2.77).
+- Physics battery: PASS.
+- Siting split, concealed mean error: R1 C clear -0.2, obstructed +8.7; R2 C clear -23.2, obstructed -12.6; VA C clear +2.0, obstructed +11.8.
+- Gates: passes every gate. Held with 701 as its control for the reviewer pass.
+- Predictions: Held: composite within 0.4 dB of 701 and worse (+0.09); VA RMS 0.5-1.5 dB worse (+0.9); censored within 3 points (+1.7); battery pass.
+- Reading: the P.2108 frequency and height shape is worth only 0.1 dB of composite and 0.3 dB of Phase 2 cell RMS over a constant of the same mean. It does better at VA (RMS 13.1 vs 14.0): the constant overshoots VA concealed obstructed rows by 11.8 dB. Most of 701's gain over 604 is the level of the concealed-site loss.
+
+### 702-deygout-isolated-clutter
+- Date: 2026-11-21. Batch B07. Parent: 000-baseline. Tier 2.
+- Change: `cfg.diffraction = "delta_deygout_isolated";`, bound, `cfg.terminal_clutter = "p2108_height_gain";`
+- Result: composite 11.83 dB; screened 10.7; Phase 2 cell 13.7; long-term level 16.6; shape 5.2. Site RMS R1 10.1 (mean -1.1), R2 18.7 (mean -9.6), R3 6.6 (mean -2.4), VA 13.8 (mean -4.0). Worst cell 30.9. Censored 29.7 %. Paired gain +4.20 (95 % +2.68 to +5.26); screened +2.71 (+1.73 to +3.49).
+- Physics battery: PASS. R3 RMS 6.6, unchanged from 705 (clutter inert on R3).
+- By edge count, R2 dead rows violated: 100.0 / 36.3 / 21.0 / 19.7 %; measured-row mean error -18.9 / -15.6 / +1.2 / -3.0 dB.
+- Siting split: R1 C obstructed +3.3; R2 C obstructed -20.0; VA C obstructed +3.7; R2 O obstructed -9.9 (280 of 1,078 censored violated).
+- Decision: reject (censored 29.7 % > 29.0 %, by 0.7 points). Lowest composite of any run that keeps censored near stock. Pareto front, cell elite; archived as `arc/702-deygout-isolated-clutter`.
+- Predictions: Held: R2 3 and 4+ edge rows +1.2/-3.0 (-3 to +3); censored 29.7 (28-40); LT level 16.6 (15-18); composite 11.8 (11.8-12.6); screened 10.7 (10.5-11.3); battery pass. Missed: R2 open obstructed -9.9 (-8 to -3); R2 open violations 280 (300-600).
+
+### 703-bullington-clutter (control)
+- Date: 2026-11-21. Batch B07. Parent: 000-baseline. Tier 2.
+- Change: `cfg.diffraction = "delta_bullington";`, bound, `cfg.terminal_clutter = "p2108_height_gain";`
+- Result: composite 10.96 dB; screened 9.7; Phase 2 cell 12.7; long-term level 15.0; shape 5.2. Site RMS R1 8.9 (mean +0.7), R2 17.4 (mean -9.7), R3 6.4 (mean -1.0), VA 13.5 (mean -6.3). Worst cell 27.0. Censored 55.0 %. Paired gain +5.06 (95 % +3.21 to +5.99); screened +3.70 (+2.34 to +4.56).
+- Physics battery: PASS.
+- By edge count, R2 dead rows violated: 100.0 / 49.0 / 44.4 / 79.2 %; measured-row mean error -12.8 / -12.9 / -1.3 / -9.6 dB. R2 open obstructed censored violated 729 of 1,078.
+- Decision: reject (censored 55.0 %). Lowest composite in the archive. Pareto front, cell elite; archived as `arc/703-bullington-clutter`.
+- Predictions: Held: censored 55.0 (48-58); LT level 15.0 (14.5-15.5); composite 11.0 (10.8-11.5); screened 9.7 (9.5-10.2); battery pass. Missed: Phase 2 cell 12.7 (13.0-13.6, better than predicted).
+
+### 706-bullington-uc-clutter
+- Date: 2026-11-21. Batch B07. Parent: 000-baseline. Tier 2.
+- Change: `cfg.diffraction = "delta_bullington_uc";`, bound, `cfg.terminal_clutter = "p2108_height_gain";`
+- Result: composite 11.84 dB; screened 10.9; Phase 2 cell 15.7; long-term level 14.6; shape 5.2. Site RMS R1 11.3 (mean -4.8), R2 23.6 (mean -18.9), R3 7.9 (mean -3.9), VA 15.1 (mean -9.2). Worst cell 32.0. Censored 82.8 %. Paired gain +4.19 (95 % +2.10 to +5.31); screened +2.45 (+1.13 to +3.39).
+- Physics battery: PASS.
+- By edge count, R2 dead rows violated: 100.0 / 100.0 / 90.7 / 99.3 %. R2 open obstructed censored violated 1,078 of 1,078.
+- Decision: reject (censored 82.8 %). Pareto front (best long-term level, 14.6), cell elite; archived as `arc/706-bullington-uc-clutter`.
+- Predictions: Held: composite 11.8 (10.8-12.0); battery pass. Missed: censored 82.8 (58-70): without eq. (57) the single-edge form is optimistic on every obstructed class.
+
+### B07 worker summary
+- Date: 2026-11-21. All six runs. 705 ran first, before PR #3 was merged (the 705-only case); 701, 704, 702, 703, 706 ran after the merge, in plan order. One infra event: the MCP call that launched 706 timed out waiting for a reply; the batch job had started (job 186) and finished normally, so it was not relaunched and no retry was needed. Mac `params_exp.m` restored to the defaults (MD5 8b0f92c53f7791f59aa7e57b5cbfb4ea). No stop condition hit: no errors, battery results as tabled, R3 RMS unchanged in the clutter runs that have a no-clutter twin (701 vs 604, 702 vs 705), every run under 2 minutes.
+- **701 passes every gate and is held** for the three-reviewer pass: composite 12.5, screened 11.1, censored 21.4 % (stock 28.0 %), battery PASS with the height-gain check, no free parameters. **704 (constant control) also passes** and is held with it.
+- Rejected on the censored gate: 705 (39.7 %), 702 (29.7 %, composite 11.8), 703 (55.0 %, composite 11.0), 706 (82.8 %). 702, 703, 706 archived; 705 is no longer on the front (702 beats it on all four objectives) but its archive branch stays.
+- Reading:
+  - The concealed-site term does what it was planned to do: concealed-row bias at VA and R1 moves from -5 to -17 dB to about -3 to +12 dB, and VA concealed censored violations fall from 267 to 116, without touching open rows.
+  - The P.2108 shape barely beats a constant of the same mean (704: 0.1 dB composite, 0.9 dB VA RMS). The data support "concealed sites have about 17 dB more loss"; they only weakly support the frequency and height shape.
+  - Removing P.526-11's C (702) fixes the multi-edge overshoot on open obstructed paths and gives the best composite under about 30 % censored, but it misses the gate by 0.7 points; R2 open obstructed rows become 10 dB optimistic.
+  - R1 concealed obstructed rows overshoot by 11.6 dB in 701: the clutter term stacks on the remaining multi-edge overshoot there. 702 brings them to +3.3.
+  - Still open, untouched by any B07 change: R2 open clear paths (-17 dB) and VA open clear paths (-9 dB).
+- Archive note: the MAP-Elites cell key doesn't include `cfg.terminal_clutter`, so 701 replaces 604 as the elite of the `delta_cascaded_isolated` cell instead of opening a new cell. That is an evaluator matter, not changed here.
+
 ### 705-deygout-isolated
 - Date: 2026-11-21. Batch B07. Parent: 000-baseline (best). Tier 2. Run before PR #3 is merged (the 705-only case in B07.md); 701-704 and 706 wait for it.
 - Change: `cfg.diffraction = "delta_deygout_isolated";` and `cfg.diffraction_bound = "itm_troposcatter_line";`

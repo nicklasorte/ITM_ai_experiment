@@ -1,0 +1,4 @@
+paired bootstrap: 702-deygout-isolated-clutter vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +4.20 dB  (SD 0.66; 95% interval +2.68 to +5.26)  PASS
+  screened gain    +2.71 dB  (SD 0.43; 95% interval +1.73 to +3.49)  PASS
+  gain = best minus new; positive means the new run is better

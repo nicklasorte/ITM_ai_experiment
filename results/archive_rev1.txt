@@ -2,23 +2,26 @@ experiment archive (data version 06d9f440607a)
 objectives, all minimized: Phase 2 cell RMS | long-term level RMS | long-term shape RMS | censored violations %
 
 Pareto front (eligible runs no other run beats on all four):
+  703-bullington-clutter             composite  11.0 |  12.7  15.0   5.2  55.0%   cell: delta_bullington/itm/itm/itm/itm | 0
   502-delta-bullington-afo           composite  11.1 |  12.9  15.4   5.1  47.2%   cell: delta_bullington_afo/itm/itm/itm/itm | 0
   603-delta-bullington-afo-bounded   composite  11.2 |  12.7  15.6   5.1  49.6%   cell: delta_bullington_afo/itm/itm/itm/itm | 0
   401-delta-bullington-p452          composite  11.5 |  14.2  15.0   5.2  67.6%   cell: delta_bullington/itm/itm/itm/itm | 0
-  705-deygout-isolated               composite  12.3 |  15.2  16.6   5.2  39.7%   cell: delta_deygout_isolated/itm/itm/itm/itm | 0
+  702-deygout-isolated-clutter       composite  11.8 |  13.7  16.6   5.2  29.7%   cell: delta_deygout_isolated/itm/itm/itm/itm | 0
+  706-bullington-uc-clutter          composite  11.8 |  15.7  14.6   5.2  82.8%   cell: delta_bullington_uc/itm/itm/itm/itm | 0
   505-delta-ep-isolated              composite  12.4 |  18.0  14.0   5.2  91.3%   cell: delta_ep_isolated/itm/itm/itm/itm | 0
-  604-delta-cascaded-isolated-bounded composite  12.8 |  14.1  19.1   5.2  31.5%   cell: delta_cascaded_isolated/itm/itm/itm/itm | 0
+  701-cascaded-isolated-clutter      composite  12.5 |  13.2  19.1   5.2  21.4%   cell: delta_cascaded_isolated/itm/itm/itm/itm | 0
   601-delta-cascaded-isolated-afo-bounded composite  13.4 |  14.2  20.7   5.1  25.8%   cell: delta_cascaded_isolated_afo/itm/itm/itm/itm | 0
   R02-constrained-recalibration      composite  15.9 |  18.3  24.4   5.1  28.0%   cell: itm/itm/itm/itm/itm +refit | 6+
   602-delta-cascaded-isolated-afo    composite  18.6 |  15.0  35.7   5.1  20.1%   cell: delta_cascaded_isolated_afo/itm/itm/itm/itm | 0
 
 MAP-Elites cells (structure | free parameters): elite by composite
+  delta_bullington/itm/itm/itm/itm | 0               703-bullington-clutter (11.0)
   delta_bullington_afo/itm/itm/itm/itm | 0           502-delta-bullington-afo (11.1)
-  delta_bullington/itm/itm/itm/itm | 0               401-delta-bullington-p452 (11.5)
   delta_bullington_p526/itm/itm/itm/itm | 0          402-delta-bullington-p526 (11.5)
-  delta_deygout_isolated/itm/itm/itm/itm | 0         705-deygout-isolated (12.3)
+  delta_deygout_isolated/itm/itm/itm/itm | 0         702-deygout-isolated-clutter (11.8)
+  delta_bullington_uc/itm/itm/itm/itm | 0            706-bullington-uc-clutter (11.8)
   delta_ep_isolated/itm/itm/itm/itm | 0              505-delta-ep-isolated (12.4)
-  delta_cascaded_isolated/itm/itm/itm/itm | 0        604-delta-cascaded-isolated-bounded (12.8)
+  delta_cascaded_isolated/itm/itm/itm/itm | 0        701-cascaded-isolated-clutter (12.5)
   delta_cascaded_isolated_afo/itm/itm/itm/itm | 0    601-delta-cascaded-isolated-afo-bounded (13.4)
   ep_isolated/itm/itm/itm/itm | 0                    201-ep-isolated-blocked (13.7)
   p526_double_edge/itm/itm/itm/itm | 0               202-p526-double-edge-blocked (13.8)
@@ -27,10 +30,10 @@ MAP-Elites cells (structure | free parameters): elite by composite
   itm/itm/itm/itm/itm | 0                            000-baseline (16.0)
   itm/profile_horizons/itm/itm/itm | 0               105-profile-horizon-region (16.6)
 
-Reference models (from 705-deygout-isolated):
+Reference models (from 706-bullington-uc-clutter):
   baseline composite  16.0 |  18.3  24.6   5.2  28.0%   beaten on all four by: 601-delta-cascaded-isolated-afo-bounded
-  p452     composite  14.2 |  14.1  18.5   9.9  65.6%   beaten on all four by: 502-delta-bullington-afo;603-delta-bullington-afo-bounded
-  p2001    composite  14.0 |  14.1  21.2   6.6  65.7%   beaten on all four by: 502-delta-bullington-afo;603-delta-bullington-afo-bounded
+  p452     composite  14.2 |  14.1  18.5   9.9  65.6%   beaten on all four by: 502-delta-bullington-afo;603-delta-bullington-afo-bounded;702-deygout-isolated-clutter;703-bullington-clutter
+  p2001    composite  14.0 |  14.1  21.2   6.6  65.7%   beaten on all four by: 502-delta-bullington-afo;603-delta-bullington-afo-bounded;701-cascaded-isolated-clutter;702-deygout-isolated-clutter;703-bullington-clutter
 
 Not eligible:
   101-ep-two-horizon                 physics fail

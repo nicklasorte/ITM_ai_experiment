@@ -1,0 +1,18 @@
+experiment 704-cascaded-isolated-constant   (matlab_itm 9bd6a4e, 21-Nov-2026 20:00:51)
+composite  12.6 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   13.5   (baseline 18.3)
+  long-term level RMS             19.1   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  11.2 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 10.7  mean +4.2   (baseline 13.3)
+  site R2 RMS 18.0  mean +0.1   (baseline 28.6)
+  site R3 RMS 6.8  mean +0.4   (baseline 9.0)
+  site VA RMS 14.0  mean -0.7   (baseline 15.4)
+  worst cell 28.7   censored violations 23.1% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 77.5 dB; runtime 10 s
+
+paired bootstrap: 704-cascaded-isolated-constant vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +3.45 dB  (SD 0.54; 95% interval +2.25 to +4.33)  PASS
+  screened gain    +2.17 dB  (SD 0.32; 95% interval +1.53 to +2.77)  PASS
+  gain = best minus new; positive means the new run is better
