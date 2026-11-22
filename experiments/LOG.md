@@ -185,6 +185,14 @@ bottom.
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
 
+### Tooling: parallel runs and run records (before B09)
+- Date: 2026-11-21. Asked for by Nick to cut batch time. No scored run; no score change.
+- `params_exp.m` reads optional per-run overrides from the environment variable `ITMEXP_OVERRIDES` (a JSON object of existing switch fields; `version`, `cal`, and unknown fields, wrong types, or bad JSON fail loud). The raw text is stored in `cfg.overrides`, which goes into `metrics.json`. Unset, every value is unchanged (new test `test_params_overrides`; 34 of 34 tests pass). Default `params_exp.m` MD5 now 1d2804dc4b525a84b21577c3cf9e78d2.
+- `experiments/batches/launch_runs_rev1.m` submits one `run_eval_rev1` batch job per experiment, each with its own overrides, 5 s apart; it checks every override and refuses an existing tag first. `collect_runs_rev1.m` waits up to 60 s per call, prints each summary and any error, and rebuilds the archive once when all are done (parallel runs each refresh it and can race). The worker no longer edits or restores `params_exp.m`.
+- Check: 707 and 708 rerun in parallel under scratch tags reproduce the logged Phase 2 predictions exactly (max difference 0 dB on every row); two runs took 1 min 43 s from first submit, against about 2 min 50 s in sequence. Local cluster: 8 workers. The scratch runs, and the B08 parity run that had entered the archive CSV, were moved to `_to_delete/scratch_runs/` on the Mac and the archive rebuilt without them.
+- `experiments/batches/record_run_rev1.py <tag> --plan <B..md> --best <tag> --decision "..." [--write]` drafts the results.tsv row from `summary.txt` and the LOG entry (plan Change and Predicted lines, results, censored by site, by-edge, siting split); `--write` appends the row and refuses a duplicate ID. The worker still writes the prediction check. Checked on 707: the row matches the logged one.
+- Worker procedure from B09: settings go in the launcher's override strings, not in `params_exp.m`; runs in a batch go in parallel unless the plan says one run depends on another.
+
 ### KEEP 707-cascaded-isolated-clutter-at-r (first keep)
 - Date: 2026-11-21. Follow-up reviews by the three B07 reviewers: KEEP 707, KEEP 707, KEEP 707 (3 of 3). Reports: `experiments/B07-reviewer-pass/reviewer1_b08.md`, `reviewer2_b08.md`, `reviewer3_b08.md`.
 - Merged into `best` (new branch, created from `exp/707-cascaded-isolated-clutter-at-r`: main plus the five switch lines). Main keeps stock defaults, so the parity check in CLAUDE.md still applies to main. Next batches branch from `best` and score with `Best="707-cascaded-isolated-clutter-at-r"`.

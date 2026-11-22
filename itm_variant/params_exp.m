@@ -111,4 +111,44 @@ cfg.cal = struct( ...
     'los_w_scale', 1, ...         % scale on f*dh/d in the line-of-sight blend weight (ITM v1.4: 1)
     'time_minus_scale', 1, ...    % scale on sigma_T for z_T < 0, enhancement side (ITM v1.4: 1)
     'time_plus_scale', 1);        % scale on sigma_T for z_T >= 0, fading side (ITM v1.4: 1)
+
+% Per-run overrides (B09 tooling). A batch job can set the environment
+% variable ITMEXP_OVERRIDES to a JSON object of switch values, for example
+%   {"diffraction":"delta_cascaded_isolated","terminal_clutter":"p2108_height_gain"}
+% so several experiments run at once without editing this file. Only
+% existing top-level fields can be set (not version or cal), each value
+% must have the field's type, and the raw text is kept in cfg.overrides,
+% which run_eval_rev1 writes to metrics.json. Unset or empty: no change.
+cfg.overrides = "";
+cfg = apply_overrides(cfg, string(getenv('ITMEXP_OVERRIDES')));
+end
+
+function cfg = apply_overrides(cfg, txt)
+if strlength(strtrim(txt)) == 0
+    return
+end
+try
+    o = jsondecode(char(txt));
+catch err
+    error('itmexp:overrides', 'ITMEXP_OVERRIDES is not valid JSON: %s', err.message);
+end
+if ~isstruct(o) || ~isscalar(o)
+    error('itmexp:overrides', 'ITMEXP_OVERRIDES must be one JSON object.');
+end
+for f = string(fieldnames(o))'
+    if ~isfield(cfg, f) || any(f == ["version" "cal" "overrides"])
+        error('itmexp:overrides', 'ITMEXP_OVERRIDES sets unknown or protected field "%s".', f);
+    end
+    v = o.(f);
+    if isstring(cfg.(f))
+        if ~(ischar(v) || isstring(v)), error('itmexp:overrides', 'Field "%s" needs a string.', f); end
+        cfg.(f) = string(v);
+    elseif isnumeric(cfg.(f))
+        if ~(isnumeric(v) && isscalar(v) && isfinite(v)), error('itmexp:overrides', 'Field "%s" needs a finite number.', f); end
+        cfg.(f) = double(v);
+    else
+        error('itmexp:overrides', 'Field "%s" can''t be overridden.', f);
+    end
+end
+cfg.overrides = txt;
 end

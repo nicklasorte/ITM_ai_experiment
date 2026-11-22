@@ -504,6 +504,27 @@ end
 tc.verifyEqual(a, 24.5, 'AbsTol', 0.051); tc.verifyEqual(R, 15);
 end
 
+function test_params_overrides(tc)
+% ITMEXP_OVERRIDES sets switches for one run without editing params_exp.m;
+% unknown fields, protected fields, wrong types, and bad JSON fail loud;
+% unset gives the defaults.
+old = getenv('ITMEXP_OVERRIDES');
+restore = onCleanup(@() setenv('ITMEXP_OVERRIDES', old));
+setenv('ITMEXP_OVERRIDES', '');
+c0 = params_exp();
+tc.verifyEqual(c0.overrides, "");
+setenv('ITMEXP_OVERRIDES', '{"diffraction":"delta_cascaded_isolated","terminal_clutter_db":16.75}');
+c1 = params_exp();
+tc.verifyEqual(c1.diffraction, "delta_cascaded_isolated");
+tc.verifyEqual(c1.terminal_clutter_db, 16.75);
+tc.verifyEqual(rmfield(c1, ["diffraction" "terminal_clutter_db" "overrides"]), ...
+    rmfield(c0, ["diffraction" "terminal_clutter_db" "overrides"]));
+for bad = ["{""nonsense"":1}" "{""version"":2}" "{""diffraction"":3}" "{""terminal_clutter_db"":""x""}" "{not json" "[1,2]"]
+    setenv('ITMEXP_OVERRIDES', char(bad));
+    tc.verifyError(@() params_exp(), 'itmexp:overrides', char(bad));
+end
+end
+
 function test_p2108_hold3(tc)
 % "hold3": above 3 GHz, A_h equals its value at 3 GHz; at or below 3 GHz it
 % equals "recommendation".
