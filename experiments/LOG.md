@@ -154,6 +154,24 @@ bottom.
 - Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
 - Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
+### B07 reviewer pass on 701 and 704 (three independent reviewers, 2-of-3 rule)
+- Date: 2026-11-21. Reports: `experiments/B07-reviewer-pass/reviewer1.md`, `reviewer2.md`, `reviewer3.md`. Verdicts: HOLD, HOLD, HOLD (3 of 3). **701 and 704 stay held; neither is kept.**
+- Agreed by all three, with numbers in the reports:
+  - **701 applies P.2108-1 section 3.1 to the wrong base loss.** The Recommendation adds A_h to basic transmission loss "calculated to/from the height of the representative clutter height used" (section 3.1 and Table 1; checked against the PDF by the worker), and A_h = 0 when h >= R. 701 runs ITM at the real mobile height (2 to 14.5 m) and then adds A_h, so the gain from h up to R = 15 m is counted twice. On open/concealed twin paths, P.2108 matches the measured concealed-minus-open excess on clear paths (within 2.5 dB) but overshoots obstructed paths by 9 to 10 dB; VA 2 m concealed rows are 6 to 15 dB too pessimistic.
+  - **The frequency shape is supported; the height shape isn't.** Measured concealed-minus-open excess rises 9.8 to 10.7 dB per decade (P.2108 about 9.4). Averaging A_h over heights within site and band loses nothing (Phase 2 cell 13.20 vs 13.19); shuffling it within site costs 0.48 dB.
+  - **701 beats 704 by 0.09 dB composite** in a paired bootstrap (SD about 0.04; 95 % interval +0.01 to +0.17): real but well under the 0.3 dB keep threshold. The ~0.5 dB SD in the brief was the unpaired SD against stock. 704's 16.75 dB is the P.2108 mean, so 704 isn't an independent model and can't be kept on its own.
+  - **Rows above 3 GHz carry about 64-65 % of 701's gain,** but the "extend" rule itself adds nothing: holding A_h at its 3 GHz value scores the same (13.20 vs 13.19). The NTIA/ITS reference code rejects input above 3 GHz.
+  - **The censored gate pass comes entirely from concealed rows** (violated 67.7 % to 26.1 %; open rows unchanged). Reviewer 1: about half of the 207 removed violations are VA 2 m concealed rows that are now about 8 dB too pessimistic (the double count). Reviewer 3: removing the concealed-group pessimism still leaves 23.0 %, under the gate. R2 censored is 14.5 % against 6.8 % for stock (inherited from 604), so a per-site check would fail.
+  - **Inputs:** mapping C to trees/forest (R = 15 m) is the best category (urban identical; dense urban 13.42, suburban 13.28); A behaves like O on twin paths (A minus O 0.6 to 3.9 dB, C minus O 6.7 to 11 dB); mobile end correct. At VA, concealed siting is confounded with the 2 m receiver (654 of 661 2 m rows are concealed).
+  - **Clutter and terrain shadow don't add simply:** measured concealed excess is smaller on obstructed paths (R1 16.1 clear vs 10.7 obstructed; R2 21.2 vs 8.0). 702's +3.3 dB on R1 concealed obstructed rows comes from offsetting errors, not better physics.
+- Record corrections:
+  - The NTIA/ITS file has 18 valid height-gain test vectors, not 16; the unit test checks 6. Reviewers' ports match all 18 within 0.05 dB. Correction noted in B07.md.
+  - The 704 reading above credits "frequency and height" shape; the reviewers show the shape gain is frequency alone.
+  - The 701 note attributes the R1 concealed obstructed overshoot (+11.6 dB) to stacking on 604's multi-edge overshoot. About 6.3 dB is that; about 5.5 dB is P.2108 above the measured excess, mostly from the double count.
+- Required before any keep (all three): rerun 701 with ITM evaluated at max(h, R) at the concealed mobile end, then add A_h (no new parameter); report censored violations by site; report the run with A_h held at its 3 GHz value above 3 GHz; add a MATLAB test of all 18 NTIA vectors. Reviewer 3's rough port estimates the corrected run at Phase 2 cell 13.13 and censored 22.0 %, which needs a MATLAB rerun.
+- Suggested next experiments: 701 with the base loss at R (all three); 702's base with the corrected term (reviewer 1); the concealed obstacle as an extra edge inside the multi-edge sum, per P.526-16 section 4 (reviewer 2); a vegetation control per ITU-R P.833-10 (reviewers 1 and 2).
+- For Nick: the per-site censored check (R2 at 14.5 % vs 6.8 %) is again the open framework decision.
+
 ### 701-cascaded-isolated-clutter
 - Date: 2026-11-21. Batch B07. Parent: 000-baseline (best). Tier 2. Runs after PR #3 merged (evaluator passes `cfg.row`); Mac `eval/` MD5s match the tested scratch copy.
 - Change: `cfg.diffraction = "delta_cascaded_isolated";`, `cfg.diffraction_bound = "itm_troposcatter_line";`, `cfg.terminal_clutter = "p2108_height_gain";`
