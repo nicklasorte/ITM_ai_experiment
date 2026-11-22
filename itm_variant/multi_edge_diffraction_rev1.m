@@ -6,7 +6,8 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %
 %   Inputs:
 %     method   "epstein_peterson" | "ep_isolated" | "p526_double_edge" | "string_ep" |
-%              "deygout" | "p526_cascaded" | "p526_cascaded_isolated" | "bullington"
+%              "deygout" | "p526_cascaded" | "p526_cascaded_isolated" |
+%              "deygout_isolated" | "bullington" | "bullington_uc"
 %     x_m      distance of each profile point from the transmitter (m),
 %              increasing, x_m(1) = 0, x_m(end) = path length
 %     z_m      height above sea level (m): z_m(1) and z_m(end) are the
@@ -94,6 +95,14 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %         grows from zero as its valley opens. At most three edges are
 %         counted, as in the Recommendation. On a smooth Earth the weights
 %         are 0 and the loss is J(nu_p) + T C.
+%     "deygout_isolated"  The edges and weights of "p526_cascaded_isolated"
+%         summed as in Deygout (1966): L = J(nu_p) + w_t J(nu_t) + w_r
+%         J(nu_r), without the empirical correction C = 10 + 0.04 D and
+%         the factor T of P.526-11 eq. (50a)-(52) (batch B07: with a
+%         terminal clutter term present, C would be a second allowance for
+%         the same real-terrain excess).
+%     "bullington_uc"  "bullington" without the correction of eq. (57):
+%         L = L_uc, eq. (52) or (56) (batch B07, same reason).
 %     "bullington"  Single equivalent edge at the intersection of the two
 %         horizon rays: ITU-R P.526-16 section 4.5.1, eq. (49)-(57),
 %         including the correction [1 - exp(-L_uc/6)] (10 + 0.02 d).
@@ -164,15 +173,19 @@ switch method
     case "string_ep"
         [L_db, D.edges, D.nu] = string_ep(x_m, z_m, lambda, a_e_m);
 
-    case "p526_cascaded_isolated"
+    case {"p526_cascaded_isolated", "deygout_isolated"}
         [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
         if nu_p > -0.78
             Jp = knife_J(nu_p);
             [L_t, t, nu_t, w_t] = isolated_secondary(1, p, p, x_m, z_m, lambda, a_e_m);
             [L_r, r, nu_r, w_r] = isolated_secondary(p, n, p, x_m, z_m, lambda, a_e_m);
-            C = 10.0 + 0.04 * (x_m(n) / 1000);               % P.526-11 eq. (51), D in km
-            T = 1.0 - exp(-Jp / 6.0);                        % P.526-11 eq. (52)
-            L_db = Jp + T * (L_t + L_r + C);                 % eq. (50a) with weighted secondary edges
+            if method == "deygout_isolated"
+                L_db = Jp + L_t + L_r;                       % Deygout 1966, weighted secondary edges
+            else
+                C = 10.0 + 0.04 * (x_m(n) / 1000);           % P.526-11 eq. (51), D in km
+                T = 1.0 - exp(-Jp / 6.0);                    % P.526-11 eq. (52)
+                L_db = Jp + T * (L_t + L_r + C);             % eq. (50a) with weighted secondary edges
+            end
             D.edges = [t p r]; D.nu = [nu_t nu_p nu_r]; D.weight = [w_t 1 w_r];
         else
             L_db = 0;                                        % P.526-11 eq. (50b)
@@ -198,7 +211,7 @@ switch method
             D.edges = p; D.nu = nu_p;
         end
 
-    case "bullington"
+    case {"bullington", "bullington_uc"}
         % ITU-R P.526-16 section 4.5.1. The Recommendation works in km and m
         % with C_e = 1/r_e; here all lengths are metres, so its
         % 500 C_e d_i (d - d_i) is d_i (d - d_i) / (2 a_e) and its
@@ -226,7 +239,11 @@ switch method
             D.nu = nu; D.d_b_m = d_b;
         end
         L_uc = knife_J(nu);                                                  % eq. (52), (56)
-        L_db = L_uc + (1 - exp(-L_uc / 6)) * (10 + 0.02 * (d / 1000));       % eq. (57), d in km
+        if method == "bullington_uc"
+            L_db = L_uc;                                                     % eq. (52) or (56) alone (B07)
+        else
+            L_db = L_uc + (1 - exp(-L_uc / 6)) * (10 + 0.02 * (d / 1000));   % eq. (57), d in km
+        end
 
     otherwise
         error('itmexp:multiedge', 'Unknown diffraction method "%s".', method);

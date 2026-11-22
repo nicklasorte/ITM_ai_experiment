@@ -470,3 +470,99 @@ end
 cx = params_exp(); cx.diffraction = "delta_bullington"; cx.diffraction_bound = "nonsense";
 tc.verifyError(@() itm_ref(pfl, 12, 3, 450, cx), 'itmexp:cfg');
 end
+
+function test_p2108_matches_ntia_test_vectors(tc)
+% NTIA/ITS P.2108 test vectors (github.com/NTIA/p2108-test-data,
+% HeightGainTerminalCorrectionModelTestData.csv): the rows with the
+% default street width 27 m and the Table 3 clutter height. Columns:
+% f (GHz), h (m), clutter type (1-6), A_h (dB, published to 0.1 dB).
+V = [1.5 2 1 16;
+    1.5 2 2 16;
+    1.5 2 3 20.5;
+    1.5 2 4 24.5;
+    1.5 2 5 24.5;
+    1.5 2 6 27.1];
+names = ["water_sea" "open_rural" "suburban" "urban" "trees_forest" "dense_urban"];
+for i = 1:size(V, 1)
+    a = p2108_height_gain_rev1(V(i, 1) * 1000, V(i, 2), names(V(i, 3)), "recommendation");
+    tc.verifyEqual(a, V(i, 4), 'AbsTol', 0.051, sprintf('row %d', i));
+end
+end
+
+function test_p2108_range_and_height(tc)
+% Outside 0.03-3 GHz: error under "recommendation", allowed above 3 GHz
+% under "extend". Loss is zero at or above R and falls as h rises.
+tc.verifyError(@() p2108_height_gain_rev1(4000, 2, "trees_forest", "recommendation"), 'itmexp:p2108');
+tc.verifyError(@() p2108_height_gain_rev1(20, 2, "trees_forest", "extend"), 'itmexp:p2108');
+tc.verifyError(@() p2108_height_gain_rev1(1000, 0, "trees_forest", "extend"), 'itmexp:p2108');
+tc.verifyError(@() p2108_height_gain_rev1(1000, 2, "shrubs", "extend"), 'itmexp:p2108');
+tc.verifyEqual(p2108_height_gain_rev1(9190, 15, "trees_forest", "extend"), 0);
+h = 1:0.5:15;
+for f = [230 1846 9190]
+    a = arrayfun(@(x) p2108_height_gain_rev1(f, x, "trees_forest", "extend"), h);
+    tc.verifyLessThanOrEqual(max(diff(a)), 1e-12, sprintf('f %g', f));
+end
+% Extending eq. (2a): at 4.6 GHz and 2 m the value follows the formula
+nu = 0.342 * sqrt(4.595) * sqrt(13 * atan(13 / 27) * 180 / pi);
+tc.verifyEqual(p2108_height_gain_rev1(4595, 2, "trees_forest", "extend"), J_approx(nu) - 6.03, 'AbsTol', 1e-9);
+end
+
+function test_b07_obstruction_methods(tc)
+% "deygout_isolated" = J_p + weighted secondary edges, no C or T;
+% "bullington_uc" = Bullington without eq. (57).
+[x, z] = spike_profile(30000, [9000 18000], [60 120], 10);
+lam = tc.TestData.lambda;
+nu_p = (120 - 10) * sqrt(2 * 30000 / (lam * 18000 * 12000));
+h_t = 60 - (10 + (120 - 10) * 9000 / 18000);
+nu_t = h_t * sqrt(2 * 18000 / (lam * 9000 * 9000));
+L = multi_edge_diffraction_rev1("deygout_isolated", x, z, tc.TestData.f, tc.TestData.flat);
+tc.verifyEqual(L, J_approx(nu_p) + J_approx(nu_t), 'AbsTol', 1e-9);
+[x, z] = spike_profile(30000, 12000, 80, 10);
+[Lb, D] = multi_edge_diffraction_rev1("bullington", x, z, tc.TestData.f, tc.TestData.flat);
+Lu = multi_edge_diffraction_rev1("bullington_uc", x, z, tc.TestData.f, tc.TestData.flat);
+tc.verifyEqual(Lu, J_approx(D.nu), 'AbsTol', 1e-9);
+tc.verifyEqual(Lb - Lu, (1 - exp(-Lu / 6)) * (10 + 0.02 * 30), 'AbsTol', 1e-9);
+% Reciprocal on a rough profile
+x = (0:30:60000)';
+g = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+z = g; z(1) = z(1) + 12; z(end) = z(end) + 3;
+for m = ["deygout_isolated" "bullington_uc"]
+    a = multi_edge_diffraction_rev1(m, x, z, 450, 8.5e6); b = multi_edge_diffraction_rev1(m, x, flipud(z), 450, 8.5e6);
+    tc.verifyEqual(a, b, 'AbsTol', 1e-6, m);
+end
+end
+
+function test_terminal_clutter_hook(tc)
+% On a concealed Phase 2 row the clutter term adds exactly the P.2108 loss
+% at the mobile terminal's height (transmitter in R1-R3, receiver in VA);
+% the reversed call (terminals swapped, row.reversed = true) gives the same
+% total; open rows get nothing; the constant control adds its constant; a
+% clutter setting without cfg.row fails loud.
+x = (0:30:30000)';
+g = 200 + 40 * sin(2 * pi * x / 7300) + 120 * exp(-((x - 14000) / 1200).^2);
+pfl = [numel(x) - 1; 30; g]; pflr = [numel(x) - 1; 30; flipud(g)];
+c0 = params_exp(); c1 = c0; c1.terminal_clutter = "p2108_height_gain";
+c2 = c0; c2.terminal_clutter = "constant"; c2.terminal_clutter_db = 7.5;
+f = 1846;
+for set_ = ["R2" "VA"]
+    row = struct('set', set_, 'siting', "C", 'reversed', false);
+    rowr = row; rowr.reversed = true;
+    htx = 7.3; hrx = 2;
+    if set_ == "VA", hm = hrx; else, hm = htx; end
+    A = p2108_height_gain_rev1(f, hm, "trees_forest", "extend");
+    tc.verifyGreaterThan(A, 0);
+    d = itm_ref(pfl, htx, hrx, f, setfield(c1, 'row', row)) - itm_ref(pfl, htx, hrx, f, c0); %#ok<SFLD>
+    tc.verifyEqual(d, A, 'AbsTol', 1e-9, set_);
+    dr = itm_ref(pflr, hrx, htx, f, setfield(c1, 'row', rowr)) - itm_ref(pflr, hrx, htx, f, c0); %#ok<SFLD>
+    tc.verifyEqual(dr, A, 'AbsTol', 1e-9, set_ + " reversed");
+    d2 = itm_ref(pfl, htx, hrx, f, setfield(c2, 'row', row)) - itm_ref(pfl, htx, hrx, f, c0); %#ok<SFLD>
+    tc.verifyEqual(d2, 7.5, 'AbsTol', 1e-9);
+    cx = setfield(c1, 'row', row); cx.terminal_clutter = "nonsense"; %#ok<SFLD>
+    tc.verifyError(@() itm_ref(pfl, htx, hrx, f, cx), 'itmexp:cfg');
+end
+row = struct('set', "R1", 'siting', "O", 'reversed', false);
+tc.verifyEqual(itm_ref(pfl, 7.3, 2, f, setfield(c1, 'row', row)), itm_ref(pfl, 7.3, 2, f, c0)); %#ok<SFLD>
+tc.verifyError(@() itm_ref(pfl, 7.3, 2, f, c1), 'itmexp:cfg');
+% At defaults a row field changes nothing
+tc.verifyEqual(itm_ref(pfl, 7.3, 2, f, setfield(c0, 'row', row)), itm_ref(pfl, 7.3, 2, f, c0)); %#ok<SFLD>
+end

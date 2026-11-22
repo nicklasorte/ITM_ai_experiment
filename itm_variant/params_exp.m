@@ -38,6 +38,10 @@ cfg.diffraction = "itm";
 %   "delta_ep_isolated"      the delta construction with a multi-edge
 %                            obstruction loss in place of Bullington (B05)
 %   "delta_bullington_afo"   "delta_bullington" plus ITM's clutter term A_fo (B05 control)
+%   "delta_deygout_isolated" | "delta_bullington_uc"
+%                            the delta construction with the empirical
+%                            correction removed (P.526-11 C; P.526-16
+%                            eq. (57)), for use with terminal clutter (B07)
 %   "delta_cascaded_isolated" | "delta_cascaded_isolated_afo"
 %                            the delta construction with ITU-R P.526-11
 %                            section 4.4.2 and isolation-weighted secondary
@@ -60,6 +64,20 @@ cfg.diffraction_region = "transhorizon";
 %   "itm_troposcatter_line"  on every transhorizon path, the loss can't
 %                            exceed ITM's troposcatter line at d (B06)
 cfg.diffraction_bound = "none";
+
+% Terminal clutter at the Phase 2 mobile terminal, siting "C" only (B07)
+%   "none"               no clutter term
+%   "p2108_height_gain"  ITU-R P.2108-1 section 3.1
+%   "constant"           cfg.terminal_clutter_db on the same rows (control)
+% Type: a P.2108 Table 3 clutter type. "C" means "immediately behind a
+% grove of trees or a building" (Phase 2 readme), mapped to
+% "trees_forest" (R = 15 m), a design choice.
+% Frequency rule: "recommendation" (error outside 0.03-3 GHz) or "extend"
+% (no upper limit; a design choice, see p2108_height_gain_rev1).
+cfg.terminal_clutter = "none";
+cfg.terminal_clutter_type = "trees_forest";
+cfg.terminal_clutter_frange = "extend";
+cfg.terminal_clutter_db = 0;
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights

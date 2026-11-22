@@ -154,6 +154,15 @@ bottom.
 - Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
 - Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
+### B07 planned (planner note)
+- Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B07.md`. No scored run yet.
+- Siting codes from the Phase 2 readme: `O` open (clear foreground at the mobile terminal), `C` concealed (immediately behind a grove of trees or a building), `A` undefined. Mobile terminal: transmitter in R1-R3, receiver in VA. Mapping `C` → P.2108 trees/forest; `O` and `A` → 0.
+- New code, no free parameters: ITU-R P.2108-1 section 3.1 (`p2108_height_gain_rev1`; matches the 16 NTIA/ITS test vectors), applied above 3 GHz by a documented "extend" rule (design choice); `cfg.terminal_clutter` with a constant-offset control; `"deygout_isolated"` and `"bullington_uc"` (no P.526-11 C, no eq. (57)) and their delta forms. Tests 31 of 31. Parity at defaults 5.0e-13 dB (long-term), 6.8e-13 dB (Phase 2 sample). Default `params_exp.m` MD5 now 8b0f92c53f7791f59aa7e57b5cbfb4ea.
+- Blocker: 71 of 108 concealed paths share a terrain profile with their open twin, so the variant needs the row's siting from the evaluator (`cfg.row`). That `eval/` change needs Nick's approval and wasn't made. Without it only experiment 705 can run; the clutter settings error by design.
+- Battery (code only, with PR #2's height-gain check): all four diffraction settings pass.
+- Logged-run evidence (604): concealed rows 5-40 dB too optimistic, worse at high frequency; open clear paths at R2 (-17 dB) and VA (-9 dB) also too optimistic, which clutter can't reach.
+- A three-reviewer pass is required before any keep.
+
 ### Decisions from Nick after the B06 reviewer pass
 - Date: 2026-11-21.
 - Scope: the team is open to changing, removing, or adding any part of ITM.

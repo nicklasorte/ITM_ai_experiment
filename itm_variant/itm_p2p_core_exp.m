@@ -129,6 +129,50 @@ if delta
     end
 end
 
+% Terminal clutter at the Phase 2 mobile terminal (batch B07). An end
+% loss added to the reference attenuation, after any bound on the
+% diffraction loss, so it also enters the variability soft limit as the
+% reference attenuation does. Only Phase 2 rows with siting "C"
+% (concealed: "immediately behind a grove of trees or a building",
+% data/raw/its_phase2.zip phase_2.txt) get it; open ("O"), undocumented
+% ("A"), long-term, and synthetic rows get 0.
+% The row's set and siting come from the evaluator in cfg.row (fields set,
+% siting, reversed; eval change proposed in PR #3), because open and
+% concealed twins share one terrain profile and can't be told apart from
+% the call arguments. The mobile terminal is the transmitter (end 1) in
+% sets R1, R2, R3 (fixed receiver site in r1path.txt-r3path.txt) and the
+% receiver (end 2) in VA (seven fixed transmitter sites in vapath.txt);
+% reversed = true (terminals swapped, as in the reciprocity check) swaps it.
+%   "p2108_height_gain"  ITU-R P.2108-1 section 3.1, clutter type
+%       cfg.terminal_clutter_type at the mobile terminal's height
+%   "constant"           cfg.terminal_clutter_db on the same rows, with no
+%       frequency or height dependence (control; B06 reviewers' ablation)
+if isfield(cfg, 'terminal_clutter') && cfg.terminal_clutter ~= "none"
+    if area
+        error('itmexp:cfg', 'Terminal clutter needs a terrain profile; area mode has none.');
+    end
+    if ~isfield(cfg, 'row')
+        error('itmexp:cfg', ['Terminal clutter needs the row metadata cfg.row from the evaluator ' ...
+            '(eval change in PR #3). Without it every row would silently get 0.']);
+    end
+    mobile_end = 0;
+    if cfg.row.siting == "C"
+        if cfg.row.set == "VA", mobile_end = 2; else, mobile_end = 1; end
+        if cfg.row.reversed, mobile_end = 3 - mobile_end; end
+    end
+    if mobile_end > 0
+        switch cfg.terminal_clutter
+            case "p2108_height_gain"
+                A_ref_db = A_ref_db + p2108_height_gain_rev1(f_mhz, h_m(mobile_end), ...
+                    cfg.terminal_clutter_type, cfg.terminal_clutter_frange);
+            case "constant"
+                A_ref_db = A_ref_db + cfg.terminal_clutter_db;
+            otherwise
+                error('itmexp:cfg', 'Unknown cfg.terminal_clutter "%s".', cfg.terminal_clutter);
+        end
+    end
+end
+
 A_fs_db = free_space_loss(d_m, f_mhz);
 
 % ITM 1.2.2 mode code: horizons from int(d - d_L), C truncation toward zero
@@ -736,6 +780,10 @@ function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, 
 %   "delta_cascaded_isolated"      ITU-R P.526-11 section 4.4.2 with secondary
 %       edges weighted by isolation ("p526_cascaded_isolated")
 %   "delta_cascaded_isolated_afo"  the same plus ITM's A_fo
+% Batch B07 forms (no A_fo; B06 reviewer pass):
+%   "delta_deygout_isolated"  Deygout over the isolation-weighted edges,
+%       without P.526-11's empirical correction C
+%   "delta_bullington_uc"     Bullington without the eq. (57) correction
 np = fix(pfl(1));
 xi = pfl(2);
 x = (0:np)' * xi;
@@ -777,6 +825,10 @@ switch cfg.diffraction
         method = "ep_isolated";
     case {"delta_cascaded_isolated", "delta_cascaded_isolated_afo"}
         method = "p526_cascaded_isolated";
+    case "delta_deygout_isolated"
+        method = "deygout_isolated";
+    case "delta_bullington_uc"
+        method = "bullington_uc";
     otherwise
         error('itmexp:cfg', 'Unknown delta form "%s".', cfg.diffraction);
 end
