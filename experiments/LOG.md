@@ -154,6 +154,13 @@ bottom.
 - Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
 - Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
+### Decisions from Nick after the B06 reviewer pass
+- Date: 2026-11-21.
+- Scope: the team is open to changing, removing, or adding any part of ITM.
+- Terminal clutter input: B07 may map the existing Phase 2 `siting` column (C, O) to an ITU-R P.2108 clutter category. No new data source.
+- Physics battery: add a height-gain check (net loss change over the 1-30 m receiver sweep must not exceed max(stock, 0) + 1 dB). Proposed as PR #2 (branch `battery-height-gain-rev1`) because agent commits can't edit `eval/`; it takes effect when Nick merges it. On the sweep, both `_afo` forms fail it (+5.9 and +5.8 dB) and the forms without A_fo pass (+0.2 dB).
+- Housekeeping: the remote branch `exp/601-delta-cascaded-isolated-afo-bounded` couldn't be deleted from this session (HTTP 403); the same commit is on `arc/601-delta-cascaded-isolated-afo-bounded`.
+
 ### B06 reviewer pass on A_fo, 502, and 601 (three independent reviewers, 2-of-3 rule)
 - Date: 2026-11-21. Three fresh agents, same brief (B06.md), no shared work. Reports: `experiments/B06-reviewer-pass/reviewer1.md`, `reviewer2.md`, `reviewer3.md`. The reviewers worked from 401, 502, and 601; the controls 602-605 finished after they started.
 - Agreed (3 of 3):
