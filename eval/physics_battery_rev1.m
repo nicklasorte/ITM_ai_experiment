@@ -17,9 +17,14 @@ function B = physics_battery_rev1(cfg, P2, profiles)
 %                   as the antenna rises; measured Phase 2 loss falls about
 %                   9 dB from 1 m to 8 m receivers (B06 reviewer pass;
 %                   added with Nick's approval, 2026-11-21)
-%     height_gain_real  every Phase 2 row, each antenna raised by 10 m in turn:
+%     height_gain_real  REPORT ONLY (not part of B.pass; Nick, 2026-11-22).
+%                   Every Phase 2 row, each antenna raised by 10 m in turn:
 %                   the variant's change in loss minus the larger of stock's
-%                   change and 0, worst row: <= 1 dB. Relative to stock
+%                   change and 0, worst row, against a 1 dB limit
+%                   (within_limit). Report-only until a multi-edge method
+%                   without the principal-edge jump exists, because the kept
+%                   model (707) fails it and every experiment built on 707
+%                   would inherit the failure. Relative to stock
 %                   because two-ray interference makes loss rise with height
 %                   on many line-of-sight rows in stock ITM too (6,799 of
 %                   16,805 rows by more than 1 dB). Catches loss jumps that
@@ -128,9 +133,9 @@ for i = 1:height(P2)
         end
     end
 end
-ok = xs <= 1;
-B.checks.height_gain_real = struct('worst_excess_db', xs, 'worst_row', string(xs_row), 'pass', ok);
-B.pass = B.pass && ok;
+% Report only: recorded in metrics.json and the summary, not in B.pass
+B.checks.height_gain_real = struct('worst_excess_db', xs, 'worst_row', string(xs_row), ...
+    'limit_db', 1, 'within_limit', xs <= 1, 'report_only', true);
 
 pv = prctile(dv, 95); pb = prctile(db, 95);
 ok = pv <= max(0.1, pb + 0.1);
