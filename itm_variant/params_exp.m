@@ -26,7 +26,7 @@ cfg.version = 1;
 % The last four replace the knife-edge part of ITM's diffraction loss with a
 % profile-based loss at the path's own distance, on transhorizon paths
 % (multi_edge_diffraction_rev1; experiments/batches/B01.md).
-cfg.diffraction = "itm";
+cfg.diffraction = "delta_cascaded_isolated";
 %   "ep_isolated"       Epstein-Peterson; horizon obstacles merged unless
 %                       isolated (ITU-R P.526-16 section 2.5)
 %   "p526_double_edge"  ITU-R P.526-16 section 4.3 (with Lc where valid)
@@ -59,7 +59,7 @@ cfg.diffraction_region = "transhorizon";
 %                            ITM changes region)
 %   "itm_troposcatter_line"  on every transhorizon path, the loss can't
 %                            exceed ITM's troposcatter line at d (B06)
-cfg.diffraction_bound = "none";
+cfg.diffraction_bound = "itm_troposcatter_line";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights
