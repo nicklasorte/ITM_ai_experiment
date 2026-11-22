@@ -86,7 +86,7 @@ bottom.
   - edges 3: 7.2 % of 376; +17.0 dB
   - edges 4+: 5.2 % of 563; +12.9 dB
 - Acceptance rule (FRAMEWORK.md): battery PASS; composite gain +2.7 and screened gain +1.5 (each at least 0.3); both paired intervals above zero; no site RMS worse by more than 0.5 dB (R3 9.1 vs 9.0, others better); censored 25.8 % (at most 29.0 %); no new free parameters. Every gate passes.
-- Decision: HELD, not merged. B06.md requires the three-reviewer pass on A_fo (possible double counting with the obstruction loss) before any `_afo` run is kept. On the Pareto front; beats stock ITM on all four archive objectives (cell 14.2 vs 18.3, level 20.7 vs 24.6, shape 5.1 vs 5.2, censored 25.8 vs 28.0 %). Branch `exp/601-delta-cascaded-isolated-afo-bounded` holds the two switch lines. 603, 604, 602, and 605 were not run (the plan says to hand back).
+- Decision (after the reviewer pass, 3 of 3): reject; not merged. Originally held: B06.md required the three-reviewer pass on A_fo (possible double counting with the obstruction loss) before any `_afo` run is kept. On the Pareto front; beats stock ITM on all four archive objectives (cell 14.2 vs 18.3, level 20.7 vs 24.6, shape 5.1 vs 5.2, censored 25.8 vs 28.0 %). Branch `exp/601-delta-cascaded-isolated-afo-bounded` holds the two switch lines. 603, 604, 602, and 605 were not run (the plan says to hand back).
 - Predictions: held: battery pass; composite gain over stock with the interval above zero; 0-1 edge dead rows 68 % (predicted 60-75); 2 edges 22.5 % (15-25). Missed: composite 13.4 (predicted 11.0-12.5); censored 25.8 % (predicted 36-44, passes the gate); R2 mean +3.8 (predicted -3 to +3, slightly above); 3 edges 7.2 % (predicted 20-40) and 4+ edges 5.2 % (10-35), both lower than predicted; Phase 2 cell 14.2 (12.5-14.5 held); long-term level 20.7 (predicted 14-17).
 - Worker note: R1 and R3 means are +6.2 and +5.9 dB (the variant predicts more loss than measured on average at those sites), and 3 and 4+ edge measured rows are +17 and +13 dB high. The variant is now pessimistic where 502 was optimistic; the planner should check whether that trade is physical.
 
@@ -153,6 +153,26 @@ bottom.
 - Decision: reject (physics fail, as listed).
 - Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
 - Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
+
+### B06 reviewer pass on A_fo, 502, and 601 (three independent reviewers, 2-of-3 rule)
+- Date: 2026-11-21. Three fresh agents, same brief (B06.md), no shared work. Reports: `experiments/B06-reviewer-pass/reviewer1.md`, `reviewer2.md`, `reviewer3.md`. The reviewers worked from 401, 502, and 601; the controls 602-605 finished after they started.
+- Agreed (3 of 3):
+  1. **Remove A_fo from the delta forms.** Its source (Longley and Rice 1968, ESSA ERL 79-ITS 67, eq. (3.38c); Hufford's ITM algorithm paper) calls it a "clutter factor" and gives no data basis. It grows with h1 h2, the opposite of terminal clutter loss.
+  2. **601 is not kept.** Two say hold, one says reject; all three say don't merge. Decision: reject. It stays on the Pareto front.
+  3. The brief was wrong on one point: A_fo sits outside the max(·), so 502 - 401 equals A_fo on every row (checked on 16,805 rows to 0.007 dB), not only where the max(·) is inactive.
+  4. A_fo's frequency shape doesn't match the missing loss. The loss 401 misses rises about 13 dB per decade at R2 and VA and 0-3 dB per decade at R1 and R3; A_fo rises about 4.4 dB per decade everywhere.
+  5. A_fo's gain is all at R2 and VA (388 of the 416 censored rows it fixes). R3 gets worse (RMS 6.1 to 8.0 dB, mean -0.6 to +4.6 dB).
+  6. The delta forms stack empirical allowances for real terrain that were fitted without each other: Bullington eq. (57) or P.526-11 eq. (51) C, plus A_fo, plus (601) the secondary edges.
+  7. A_fo is a stand-in for a site-specific loss near the terminals that rises with frequency (likely vegetation or clutter). The proposed replacement is a published terminal clutter term (ITU-R P.2108; P.833 for vegetation), with the equations read before coding.
+- Agreed (2 of 3):
+  8. Most of A_fo's value is a level offset. A constant 5.46 dB on 401 gets 80 % of its RMS gain, and shuffling A_fo between paths within a site gets 64-100 % (reviewers 1 and 3).
+  9. 601's multi-edge gain within an edge count is close to a uniform shift. The censored gate is cheap to pass with uniform pessimism: stock ITM plus 2.9 dB reaches 25.3 % (reviewers 1 and 2; reviewer 3 finds it partly real: AUC 0.887 to 0.916 and better than a constant shift of 502).
+- Single-reviewer findings, recorded but not acted on:
+  - Reviewer 2: with path and frequency fixed, raising h1 h2 (receiver 1 m to 8 m) lowers measured loss by 8.7 dB; 401 lowers it 3.3 dB, stock ITM 2.4 dB, and 502 *raises* it 0.5 dB. The physics battery checks only for jumps on the height sweep, not direction.
+  - Reviewer 1: the missing frequency slope at R2 and VA is about the same on clear and obstructed paths, so it isn't diffraction. Reviewer 3 instead ties R2's part to separated ridges (D03).
+  - Reviewer 1: a per-site clutter category may count as changing inputs, which the rules forbid; ask Nick.
+- The controls agree: 604 (601 without A_fo) composite 12.8, censored 31.5 %, R3 mean +0.4 dB.
+- Actions: 601 rejected. A_fo is not used in further delta forms unless a later run replaces it with a cited term. The next batch tests the replacement and the empirical-correction stacking. Two decisions go to Nick (framework items the agents can't edit): a height-direction battery check, and whether a terminal clutter category from the existing `siting` column or public land cover is an allowed input.
 
 ### B06 worker summary
 - Date: 2026-11-21. One run (601) of five. 601 passes every gate and uses A_fo, so it is held for the reviewer pass (B06.md) and the batch is handed back; 603, 604, 602, and 605 were not run. No infra retries. Mac `params_exp.m` restored to the defaults (MD5 e9b334fa5d68c11e0159ace40f027ae4).
