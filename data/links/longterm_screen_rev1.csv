@@ -1,14 +1,36 @@
 link_id,path_id,obs_m,reason
 LT0297_0173,LT_LT0297,158.21,record LOS; 30 m profile blocked
 LT0297_0174,LT_LT0297,158.21,record LOS; 30 m profile blocked
+LT0451_0237,LT_LT0451,11.52,terminal below nearby terrain: rx horizon 0.09 km at 128 mrad
+LT1404_0454,LT_LT1404,26.52,terminal below nearby terrain: rx horizon 0.42 km at 63 mrad
+LT1404_0455,LT_LT1404,26.52,terminal below nearby terrain: rx horizon 0.42 km at 63 mrad
+LT1404_0456,LT_LT1404,26.52,terminal below nearby terrain: rx horizon 0.42 km at 63 mrad
+LT1404_0457,LT_LT1404,26.52,terminal below nearby terrain: rx horizon 0.42 km at 63 mrad
+LT1536_0494,LT_LT1536,3.74,terminal below nearby terrain: tx horizon 0.03 km at 125 mrad
 LT1978_0612,LT_LT1978,5.10,record LOS; 30 m profile blocked
 LT2100_0740,LT_LT2100,5.99,record LOS; 30 m profile blocked
+LT2116_0747,LT_LT2116,12.70,terminal below nearby terrain: rx horizon 0.09 km at 141 mrad
+LT2116_0748,LT_LT2116,12.70,terminal below nearby terrain: rx horizon 0.09 km at 141 mrad
+LT2116_0749,LT_LT2116,12.70,terminal below nearby terrain: rx horizon 0.09 km at 141 mrad
+LT2116_0750,LT_LT2116,12.70,terminal below nearby terrain: rx horizon 0.09 km at 141 mrad
+LT2116_0751,LT_LT2116,12.70,terminal below nearby terrain: rx horizon 0.09 km at 141 mrad
+LT2116_0752,LT_LT2116,12.70,terminal below nearby terrain: rx horizon 0.09 km at 141 mrad
+LT2116_0753,LT_LT2116,12.70,terminal below nearby terrain: rx horizon 0.09 km at 141 mrad
 LT2134_0764,LT_LT2134,1.05,record LOS; 30 m profile blocked
+LT2233_0861,LT_LT2233,33.70,terminal below nearby terrain: tx horizon 0.45 km at 75 mrad
+LT2236_0864,LT_LT2236,16.47,terminal below nearby terrain: rx horizon 0.15 km at 110 mrad
 LT2239_0867,LT_LT2239,110.30,record LOS; 30 m profile blocked
+LT2240_0868,LT_LT2240,16.21,terminal below nearby terrain: tx horizon 0.18 km at 90 mrad
+LT2241_0869,LT_LT2241,35.92,terminal below nearby terrain: tx horizon 0.09 km at 399 mrad
 LT2243_0871,LT_LT2243,16.56,record LOS; 30 m profile blocked
 LT2244_0872,LT_LT2244,17.05,record LOS; 30 m profile blocked
+LT2246_0874,LT_LT2246,35.38,terminal below nearby terrain: rx horizon 0.24 km at 147 mrad
 LT2350_0959,LT_LT2350,9.58,record LOS; 30 m profile blocked
 LT2350_0961,LT_LT2350,5.17,record LOS; 30 m profile blocked
+LT2360_0970,LT_LT2360,42.00,terminal below nearby terrain: tx horizon 0.30 km at 140 mrad
+LT2360_0971,LT_LT2360,42.00,terminal below nearby terrain: tx horizon 0.30 km at 140 mrad
+LT2360_0972,LT_LT2360,42.00,terminal below nearby terrain: tx horizon 0.30 km at 140 mrad
+LT2360_0973,LT_LT2360,42.00,terminal below nearby terrain: tx horizon 0.30 km at 140 mrad
 LT2405_1020,LT_LT2405,6.65,record LOS; 30 m profile blocked
 LT2444_1052,LT_LT2444,10.69,record LOS; 30 m profile blocked
 LT2444_1053,LT_LT2444,10.69,record LOS; 30 m profile blocked
