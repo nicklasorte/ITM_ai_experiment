@@ -26,7 +26,7 @@ cfg.version = 1;
 % The last four replace the knife-edge part of ITM's diffraction loss with a
 % profile-based loss at the path's own distance, on transhorizon paths
 % (multi_edge_diffraction_rev1; experiments/batches/B01.md).
-cfg.diffraction = "itm";
+cfg.diffraction = "delta_bullington_uc";
 %   "ep_isolated"       Epstein-Peterson; horizon obstacles merged unless
 %                       isolated (ITU-R P.526-16 section 2.5)
 %   "p526_double_edge"  ITU-R P.526-16 section 4.3 (with Lc where valid)
@@ -63,7 +63,7 @@ cfg.diffraction_region = "transhorizon";
 %                            ITM changes region)
 %   "itm_troposcatter_line"  on every transhorizon path, the loss can't
 %                            exceed ITM's troposcatter line at d (B06)
-cfg.diffraction_bound = "none";
+cfg.diffraction_bound = "itm_troposcatter_line";
 
 % Terminal clutter at the Phase 2 mobile terminal, siting "C" only (B07)
 %   "none"               no clutter term
@@ -74,7 +74,7 @@ cfg.diffraction_bound = "none";
 % "trees_forest" (R = 15 m), a design choice.
 % Frequency rule: "recommendation" (error outside 0.03-3 GHz) or "extend"
 % (no upper limit; a design choice, see p2108_height_gain_rev1).
-cfg.terminal_clutter = "none";
+cfg.terminal_clutter = "p2108_height_gain";
 cfg.terminal_clutter_type = "trees_forest";
 cfg.terminal_clutter_frange = "extend";
 cfg.terminal_clutter_db = 0;
