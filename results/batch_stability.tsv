@@ -4,3 +4,4 @@ B02	2026-11-21	2	0	0	0	2	0	13.7 (201, rejected)	-2.2	continuity fixed but censor
 B03	2026-11-21	1	0	0	0	1	0	15.9 (301, rejected)	0.0	three of four phased settings failed the battery in the planner check
 B04	2026-11-21	2	0	0	0	2	0	11.5 (401, rejected)	-4.4	delta-Bullington reproduces the ITU censored pattern (97 % overlap with P.2001)
 B05	2026-11-21	6	0	0	4	2	0	11.1 (502, rejected)	-4.8	A_fo restored in the delta construction cuts censored 67.6 to 47.2 %; ridge counting removes optimism but stacks unbounded loss; 502 and 505 archived
+B06	2026-11-21	5	0	0	1	2	0	13.4 (601, held for reviewer pass)	-2.6	601 passes every gate (held); 604 without A_fo misses censored by 2.5 points; bound needed (602); 604 archived

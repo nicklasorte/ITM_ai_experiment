@@ -1,0 +1,4 @@
+paired bootstrap: 605-delta-p526-cascaded-bounded vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +2.59 dB  (SD 0.44; 95% interval +1.58 to +3.36)  PASS
+  screened gain    +1.67 dB  (SD 0.30; 95% interval +1.05 to +2.24)  PASS
+  gain = best minus new; positive means the new run is better

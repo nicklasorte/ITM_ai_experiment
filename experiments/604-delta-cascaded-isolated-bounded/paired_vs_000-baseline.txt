@@ -1,0 +1,4 @@
+paired bootstrap: 604-delta-cascaded-isolated-bounded vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +3.25 dB  (SD 0.54; 95% interval +1.98 to +4.20)  PASS
+  screened gain    +1.97 dB  (SD 0.33; 95% interval +1.28 to +2.62)  PASS
+  gain = best minus new; positive means the new run is better

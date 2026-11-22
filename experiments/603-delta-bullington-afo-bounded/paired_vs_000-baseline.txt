@@ -1,0 +1,4 @@
+paired bootstrap: 603-delta-bullington-afo-bounded vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +4.86 dB  (SD 0.62; 95% interval +3.34 to +5.72)  PASS
+  screened gain    +3.73 dB  (SD 0.51; 95% interval +2.59 to +4.48)  PASS
+  gain = best minus new; positive means the new run is better

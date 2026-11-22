@@ -1,0 +1,18 @@
+experiment 604-delta-cascaded-isolated-bounded   (matlab_itm 9bd6a4e, 21-Nov-2026 18:59:21)
+composite  12.8 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   14.1   (baseline 18.3)
+  long-term level RMS             19.1   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  11.4 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 11.0  mean +2.2   (baseline 13.3)
+  site R2 RMS 19.4  mean -1.4   (baseline 28.6)
+  site R3 RMS 6.8  mean +0.4   (baseline 9.0)
+  site VA RMS 13.7  mean -5.2   (baseline 15.4)
+  worst cell 31.1   censored violations 31.5% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 77.5 dB; runtime 8 s
+
+paired bootstrap: 604-delta-cascaded-isolated-bounded vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +3.25 dB  (SD 0.54; 95% interval +1.98 to +4.20)  PASS
+  screened gain    +1.97 dB  (SD 0.33; 95% interval +1.28 to +2.62)  PASS
+  gain = best minus new; positive means the new run is better

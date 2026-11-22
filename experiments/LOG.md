@@ -95,32 +95,70 @@ bottom.
 - Change: `cfg.diffraction = "delta_bullington_afo";` and `cfg.diffraction_bound = "itm_troposcatter_line";`
 - Rationale: 502 with the bound and no new edge term; separates the bound from the edges.
 - Predicted (from B06.md, before the run): Phase 2 within 0.2 dB of 502 (cell 12.7–13.1; R2 mean −6.5 to −5.5). Long-term level 13.5–15.5. Censored 47–49 %. Composite 10.6–11.3; screened 9.2–9.8. By-edge table as 502 within 3 points. Battery: pass.
-- Result: not run. Batch handed back after 601 passed every gate (B06.md stop condition); the setting is unchanged and can be run after the reviewer pass.
+- Result: composite 11.17 dB (stock 16.02); screened 9.67; Phase 2 cell 12.7; long-term level 15.6; shape 5.1. Site RMS R1 10.2 (mean +2.5), R2 16.8 (mean -6.0), R3 7.9 (mean +4.6), VA 12.1 (mean -4.2). Censored 49.6 %. Paired gain +4.86 (95 % +3.34 to +5.72); screened +3.73 (+2.59 to +4.48).
+- Physics battery: PASS.
+- By edge count:
+  - edges 0-1: dead rows violated  68.3 % of   41; measured-row mean error   -9.7 dB
+  - edges   2: dead rows violated  23.5 % of  204; measured-row mean error   -7.6 dB
+  - edges   3: dead rows violated  44.9 % of  376; measured-row mean error   +2.4 dB
+  - edges  4+: dead rows violated  49.9 % of  563; measured-row mean error   -4.4 dB
+- Decision: reject (censored 49.6%); on the Pareto front, same cell as 502 (502 stays elite).
+- Predictions: Held: Phase 2 within 0.2 dB of 502 (cell 12.7); R2 mean -6.0; composite 11.2 (10.6-11.3); screened 9.7 (9.2-9.8); by-edge table identical to 502; battery pass. Missed: long-term level 15.6 (predicted 13.5-15.5, just above); censored 49.6 % (predicted 47-49). The bound rarely binds below 502's level, so it changes almost nothing here.
+- Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
 ### 604-delta-cascaded-isolated-bounded
 - Date: 2026-11-21. Batch B06. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "delta_cascaded_isolated";` and `cfg.diffraction_bound = "itm_troposcatter_line";` (control, no A_fo)
 - Rationale: the new edge term without A_fo; with 601 it prices A_fo on the new base.
 - Predicted (from B06.md, before the run): censored 50–60 %; R2 measured mean −9 to −4 dB; 0–1 edge no-signal rows 95–100 % violated; 3 and 4+ edge rows 30–55 %. Composite 11.5–13.0; screened 10.0–11.5. Battery: pass.
-- Result: not run. Batch handed back after 601 passed every gate (B06.md stop condition); the setting is unchanged and can be run after the reviewer pass.
+- Result: composite 12.78 dB (stock 16.02); screened 11.43; Phase 2 cell 14.1; long-term level 19.1; shape 5.2. Site RMS R1 11.0 (mean +2.2), R2 19.4 (mean -1.4), R3 6.8 (mean +0.4), VA 13.7 (mean -5.2). Censored 31.5 %. Paired gain +3.25 (95 % +1.98 to +4.20); screened +1.97 (+1.28 to +2.62).
+- Physics battery: PASS.
+- By edge count:
+  - edges 0-1: dead rows violated 100.0 % of   41; measured-row mean error  -14.9 dB
+  - edges   2: dead rows violated  29.9 % of  204; measured-row mean error   -4.9 dB
+  - edges   3: dead rows violated  14.9 % of  376; measured-row mean error  +11.5 dB
+  - edges  4+: dead rows violated  11.7 % of  563; measured-row mean error   +7.5 dB
+- Decision: reject (censored 31.5% > 29.0%); cell elite and on the Pareto front: arc/604-delta-cascaded-isolated-bounded.
+- Predictions: Held: R2 mean -1.4 is outside (predicted -9 to -4); 0-1 edge rows 100 % (95-100, held); battery pass. Missed: censored 31.5 % (predicted 50-60, much lower); 3 and 4+ edge rows 14.9 and 11.7 % (predicted 30-55, lower); composite 12.8 (11.5-13.0, held); screened 11.4 (10.0-11.5, held).
+- Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
 ### 602-delta-cascaded-isolated-afo
 - Date: 2026-11-21. Batch B06. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "delta_cascaded_isolated_afo";` (`cfg.diffraction_bound = "none";`) (control, no bound)
 - Rationale: prices the bound on the new edge term.
 - Predicted (from B06.md, before the run): Phase 2 and the by-edge table within 1 point of 601. Long-term level 20–28. Composite 13–16. Battery: pass.
-- Result: not run. Batch handed back after 601 passed every gate (B06.md stop condition); the setting is unchanged and can be run after the reviewer pass.
+- Result: composite 18.61 dB (stock 16.02); screened 17.39; Phase 2 cell 15.0; long-term level 35.7; shape 5.1. Site RMS R1 15.3 (mean +7.9), R2 19.5 (mean +3.9), R3 9.1 (mean +5.9), VA 12.3 (mean +0.8). Censored 20.1 %. Paired gain -2.58 (95 % -4.50 to -1.39); screened -3.99 (-5.35 to -2.96).
+- Physics battery: PASS.
+- By edge count:
+  - edges 0-1: dead rows violated  68.3 % of   41; measured-row mean error   -9.1 dB
+  - edges   2: dead rows violated  22.5 % of  204; measured-row mean error   +0.5 dB
+  - edges   3: dead rows violated   7.2 % of  376; measured-row mean error  +17.0 dB
+  - edges  4+: dead rows violated   5.2 % of  563; measured-row mean error  +12.9 dB
+- Decision: reject (composite worse than stock; LT level 35.7); on the Pareto front (lowest censored, 20.1%), same cell as 601.
+- Predictions: Held: Phase 2 and by-edge table within 1 point of 601 (identical by-edge rows); battery pass. Missed: long-term level 35.7 (predicted 20-28); composite 18.6 (predicted 13-16). The bound is necessary.
+- Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
 ### 605-delta-p526-cascaded-bounded
 - Date: 2026-11-21. Batch B06. Parent: 000-baseline (best). Tier 2.
 - Change: `cfg.diffraction = "delta_p526_cascaded";` and `cfg.diffraction_bound = "itm_troposcatter_line";` (mechanism test)
 - Rationale: 503 was the only run under the censored gate (26.8 %) and lost on long-term level (30.6); with the bound, it shows how much of that result was the long paths.
 - Predicted (from B06.md, before the run): censored 27–31 %; R2 measured mean +2 to +3.5 dB; long-term level 18–24; composite 13–15; screened 11.5–13.5. By-edge table as 503 within 3 points. Battery: fail as listed (can't be kept).
-- Result: not run. Batch handed back after 601 passed every gate (B06.md stop condition); the setting is unchanged and can be run after the reviewer pass.
+- Result: composite 13.44 dB (stock 16.02); screened 11.73; Phase 2 cell 15.0; long-term level 20.2; shape 5.2. Site RMS R1 11.6 (mean +5.0), R2 21.3 (mean +2.7), R3 8.0 (mean +2.0), VA 13.8 (mean -6.2). Censored 28.9 %. Paired gain +2.59 (95 % +1.58 to +3.36); screened +1.67 (+1.05 to +2.24).
+- Physics battery: FAIL.
+- By edge count:
+  - edges 0-1: dead rows violated 100.0 % of   41; measured-row mean error  -13.4 dB
+  - edges   2: dead rows violated  23.5 % of  204; measured-row mean error   -0.3 dB
+  - edges   3: dead rows violated  14.4 % of  376; measured-row mean error  +14.6 dB
+  - edges  4+: dead rows violated   0.0 % of  563; measured-row mean error  +19.5 dB
+- Decision: reject (physics fail, as listed).
+- Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
+- Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
 ### B06 worker summary
 - Date: 2026-11-21. One run (601) of five. 601 passes every gate and uses A_fo, so it is held for the reviewer pass (B06.md) and the batch is handed back; 603, 604, 602, and 605 were not run. No infra retries. Mac `params_exp.m` restored to the defaults (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 - 601: composite 13.35, screened 11.85, censored 25.8 %, battery PASS, paired gains +2.67 and +1.54 (intervals above zero), no site worse by more than 0.1 dB. First structural run to beat stock ITM on all four archive objectives.
+- Controls run after the hand-back (Nick approved): 603 (502 + bound) is 502 within 0.1 dB, censored 49.6 %. 604 (601 without A_fo) composite 12.8, screened 11.4, censored 31.5 % (2.5 points over the gate), battery PASS. 602 (601 without the bound) composite 18.6, long-term level 35.7: the bound is necessary. 605 (503 + bound) composite 13.4, censored 28.9 %, battery FAIL.
+- Reading: on the new edge term, A_fo costs 0.6 dB of composite and buys 5.7 points of censored (31.5 -> 25.8 %), mostly on R2's 0-1 edge rows (100 -> 68 % violated). The three-reviewer pass on A_fo and 601 is running.
 
 ### B06 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Fable 5.2. Plan: `experiments/batches/B06.md`. No scored run yet.

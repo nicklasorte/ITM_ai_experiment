@@ -1,0 +1,4 @@
+paired bootstrap: 602-delta-cascaded-isolated-afo vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   -2.58 dB  (SD 0.79; 95% interval -4.50 to -1.39)  not distinguishable from zero
+  screened gain    -3.99 dB  (SD 0.63; 95% interval -5.35 to -2.96)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better
