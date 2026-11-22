@@ -185,6 +185,11 @@ bottom.
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
 
+### PR #4 changed to report-only (2026-11-22)
+- Nick's decision: the real-path height-gain check is report-only. It's recorded in metrics.json (`physics.checks.height_gain_real`: worst excess, row, 1 dB limit, `within_limit`) and printed in every run summary, but it doesn't affect the battery's pass. Reason: 707 fails it (27.0 dB, principal-edge switch) and every experiment built on 707 would inherit the failure; it becomes a gate once a multi-edge method without the jump exists (package H01).
+- Re-checked from a scratch copy of the PR #6 branch (which includes PR #4): battery passes for stock (excess 0.0 dB), 707 (27.0 dB) and 711 (26.0 dB).
+- Merge plan: PR #6 (contains #4) and PR #5. After merging, the worker pulls on the Mac, checks eval/ and data/ MD5s, rescores 000-baseline and 707 against the new screen, then runs B11.
+
 ### B11 planned (planner note): NLCD land cover, battery PR, screen PR
 - Date: 2026-11-22. Planner: Claude Opus 5.5. Plan `experiments/batches/B11.md`, predictions registered before any scored run.
 - PR #4 (eval/): real-path height-gain check relative to stock. Stock passes at 0 dB; 707 fails at 27.0 dB (principal-edge switch); every current delta form fails (Bullington 4.2 dB, from P.452 eq. (166)).
