@@ -1,0 +1,35 @@
+stock ITM
+  <100     150-500   n   19  L50 mean   -3.4 rms   9.1   shape@1% mean  +6.7  shape@99% mean  -2.7
+  <100     500-1500  n   15  L50 mean   -1.9 rms  11.9   shape@1% mean  +3.4  shape@99% mean  -2.6
+  <100     <150      n   26  L50 mean   -5.6 rms  10.8   shape@1% mean  +2.3  shape@99% mean  -2.2
+  <100     >=1500    n   12  L50 mean  +34.1 rms  50.1   shape@1% mean  +2.0  shape@99% mean  -3.8
+  100-300  150-500   n   92  L50 mean   +4.2 rms  19.6   shape@1% mean  -0.8  shape@99% mean  +2.8
+  100-300  500-1500  n   59  L50 mean   +4.4 rms  19.6   shape@1% mean  -0.8  shape@99% mean  +2.9
+  100-300  <150      n  137  L50 mean   -1.9 rms  12.8   shape@1% mean  -2.7  shape@99% mean  +2.7
+  100-300  >=1500    n   47  L50 mean  +12.2 rms  34.7   shape@1% mean  -3.0  shape@99% mean  +1.8
+  >=300    150-500   n   27  L50 mean   -1.7 rms  10.4   shape@1% mean  -1.4  shape@99% mean  +3.3
+  >=300    500-1500  n   44  L50 mean   -2.1 rms  11.0   shape@1% mean  -2.0  shape@99% mean  +2.5
+  >=300    <150      n   49  L50 mean   -0.7 rms   8.5   shape@1% mean  -5.8  shape@99% mean  +2.9
+  >=300    >=1500    n   21  L50 mean   +6.8 rms  19.1   shape@1% mean  -6.4  shape@99% mean  +1.5
+  all                n  548  L50 mean   +2.0 rms  18.8
+707-cascaded-isolated-clutter-at-r
+  <100     150-500   n   19  L50 mean   -0.8 rms   8.5   shape@1% mean  +6.7  shape@99% mean  -2.7
+  <100     500-1500  n   15  L50 mean   -2.3 rms  10.5   shape@1% mean  +3.3  shape@99% mean  -2.6
+  <100     <150      n   26  L50 mean   -0.3 rms   6.0   shape@1% mean  +2.2  shape@99% mean  -2.2
+  <100     >=1500    n   12  L50 mean  +21.2 rms  33.4   shape@1% mean  +2.0  shape@99% mean  -3.8
+  100-300  150-500   n   92  L50 mean   +1.5 rms  10.0   shape@1% mean  -0.7  shape@99% mean  +2.8
+  100-300  500-1500  n   59  L50 mean   +1.6 rms  13.5   shape@1% mean  -0.5  shape@99% mean  +2.9
+  100-300  <150      n  137  L50 mean   -2.5 rms   8.6   shape@1% mean  -2.7  shape@99% mean  +2.7
+  100-300  >=1500    n   47  L50 mean   +4.7 rms  24.2   shape@1% mean  -1.4  shape@99% mean  +1.8
+  >=300    150-500   n   27  L50 mean   -2.1 rms  10.1   shape@1% mean  -1.4  shape@99% mean  +3.3
+  >=300    500-1500  n   44  L50 mean   -3.0 rms  10.6   shape@1% mean  -2.0  shape@99% mean  +2.5
+  >=300    <150      n   49  L50 mean   -1.0 rms   7.8   shape@1% mean  -5.8  shape@99% mean  +2.9
+  >=300    >=1500    n   21  L50 mean   +4.6 rms  18.2   shape@1% mean  -6.4  shape@99% mean  +1.5
+  all                n  548  L50 mean   +0.3 rms  13.0
+
+Reading (worker, 2026-11-22), research plan H12 and H19:
+- Over all 548 long-term rows, 707's 50 % RMS is 13.0 dB (stock 18.8). The cell-balanced level score (19.1) is driven by the small >= 1.5 GHz cells: < 100 km (n 12, RMS 33.4) and 100-300 km (n 47, RMS 24.2).
+- Those cells are a few links, not a mechanism. In < 100 km >= 1.5 GHz, three paths (LT2239, LT2444, LT2244) carry 68 % of the squared error; in 100-300 km, three (LT0297, LT2243, LT2241) carry 75 %. On LT2239, LT0297 and LT2244 the measured median is at free space (+0 to +4 dB) while the 30 m profile implies deep shadow; LT2243 is measured 10 dB below free space at 180 km. All five except LT2241 already have rows in data/links/longterm_screen_rev1.csv ("record LOS; 30 m profile blocked"), so the screened composite leaves them out.
+- The large unscreened ones are terminal-geometry artifacts: LT2241's transmitter is 36 m below a ridge 90 m away in the profile (horizon angle 399 mrad from an 11 m antenna on a mountaintop relay site); LT2246 (horizon at 240 m, 147 mrad) and LT2233 (450 m, 75 mrad) are the same kind. Site coordinates that don't match the 30 m terrain at a peak would produce this. No model change is physically justified; a screen rule (for example, a terminal horizon within 0.5 km at more than 50 mrad) would be a data/ change for Nick.
+- H12 (diffraction-to-scatter transition): no transition-dependent bias stands out once these links are set aside; the >= 300 km cells are within -1 to -3 dB at 50 %.
+- H19 (time variability): the shape error is identical in every variant (only the median changes). ITM's spread is too narrow below 100 km (+2 to +7 dB at 1 %, -2 to -4 dB at 99 %) and too wide beyond 100 km at 99 % (+1.5 to +3.3 dB) and beyond 300 km at 1 % (-5.8 to -6.4 dB). The published reference models score worse on shape (P.452 9.9, P.2001 6.6, ITM 5.2), so no public replacement is better; a distance-dependent change would need a source (TODO).

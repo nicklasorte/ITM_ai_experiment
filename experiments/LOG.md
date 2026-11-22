@@ -185,6 +185,12 @@ bottom.
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
 
+### B10 planner note: long-term level and shape (D05); no model change
+- Date: 2026-11-22. Planner and worker: Claude Opus 5.5. Research plan H12 and H19. No scored run.
+- Diagnostic `experiments/D05-longterm/` on 707 (summary.txt has the tables). 707's long-term level score (19.1, cell-balanced) comes from the small >= 1.5 GHz cells, and those from a few links: three paths carry 68-75 % of each cell's squared error. Most already sit in the long-term screen ("record LOS; 30 m profile blocked"); the large unscreened ones (LT2241, LT2246, LT2233) have the terminal tens of metres below a ridge 90-450 m away in the profile, a coordinates-versus-terrain artifact at mountaintop relay sites.
+- H12: no transition bias once those links are set aside. H19: ITM's time spread is too narrow below 100 km and too wide beyond 300 km at 1 %; every published reference model is worse on shape, so there is no sourced replacement.
+- Decision: no B10 experiment. The remaining long-term gains need data decisions (a screen rule for terminal-geometry artifacts: data/, Nick) or a sourced variability model (none found).
+
 ### Diagnostic: antenna height inversion in the kept model (B08 reviewers 1 and 3)
 - Date: 2026-11-21. Model only (no measurements read). Settings: 707's diffraction and bound, clutter off.
 - Scan of the 936 R1-R3 concealed rows with the mobile antenna below 15 m: raising it to 15 m adds loss on 20 rows in the 604 base (max 4.5 dB): 14 on P2_R1_R1-020-T8_C (3.0 dB at 230 MHz, 4.0-4.5 dB from 410 MHz to 9.2 GHz) and 6 on P2_R1_R1-010-T6_C at 9.2 GHz (0.5-2.2 dB). Stock ITM adds loss on 210 of the same rows, by at most 1.8 dB. ITM classes all 20 as line of sight at both heights.
