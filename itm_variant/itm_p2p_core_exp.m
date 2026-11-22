@@ -77,6 +77,20 @@ end
     polarization, epsilon, sigma);
 
 h_m = [h_tx_m, h_rx_m];
+% Terminal clutter at a concealed Phase 2 mobile terminal (B07, B08). The
+% mobile end and the actual height are fixed here, before any height is
+% used, because cfg.terminal_clutter_base = "clutter_height" computes the
+% whole path with that antenna at max(h, R): ITU-R P.2108-1 section 3.1
+% adds A_h to "basic transmission loss ... calculated to/from the height
+% of the representative clutter height used" (also Table 1). B07 used the
+% actual height and so counted the gain from h up to R twice (B07
+% reviewer pass).
+[mobile_end, h_mobile_m] = clutter_terminal(cfg, area, h_m);
+if mobile_end > 0 && cfg.terminal_clutter_base == "clutter_height"
+    [~, R_clut_m] = p2108_height_gain_rev1(f_mhz, h_mobile_m, cfg.terminal_clutter_type, ...
+        cfg.terminal_clutter_frange);
+    h_m(mobile_end) = max(h_mobile_m, R_clut_m);
+end
 if area
     [theta_hzn, d_hzn_m, h_e_m] = initialize_area(siting, gamma_e, delta_h_m, h_m);
     theta_geo = theta_hzn;                       % no profile: the estimated horizon angles
@@ -137,39 +151,26 @@ end
 % data/raw/its_phase2.zip phase_2.txt) get it; open ("O"), undocumented
 % ("A"), long-term, and synthetic rows get 0.
 % The row's set and siting come from the evaluator in cfg.row (fields set,
-% siting, reversed; eval change proposed in PR #3), because open and
+% siting, reversed; evaluator change merged as PR #3), because open and
 % concealed twins share one terrain profile and can't be told apart from
 % the call arguments. The mobile terminal is the transmitter (end 1) in
 % sets R1, R2, R3 (fixed receiver site in r1path.txt-r3path.txt) and the
 % receiver (end 2) in VA (seven fixed transmitter sites in vapath.txt);
 % reversed = true (terminals swapped, as in the reciprocity check) swaps it.
+% The end is chosen in clutter_terminal, near the top of this function.
 %   "p2108_height_gain"  ITU-R P.2108-1 section 3.1, clutter type
 %       cfg.terminal_clutter_type at the mobile terminal's height
 %   "constant"           cfg.terminal_clutter_db on the same rows, with no
 %       frequency or height dependence (control; B06 reviewers' ablation)
-if isfield(cfg, 'terminal_clutter') && cfg.terminal_clutter ~= "none"
-    if area
-        error('itmexp:cfg', 'Terminal clutter needs a terrain profile; area mode has none.');
-    end
-    if ~isfield(cfg, 'row')
-        error('itmexp:cfg', ['Terminal clutter needs the row metadata cfg.row from the evaluator ' ...
-            '(eval change in PR #3). Without it every row would silently get 0.']);
-    end
-    mobile_end = 0;
-    if cfg.row.siting == "C"
-        if cfg.row.set == "VA", mobile_end = 2; else, mobile_end = 1; end
-        if cfg.row.reversed, mobile_end = 3 - mobile_end; end
-    end
-    if mobile_end > 0
-        switch cfg.terminal_clutter
-            case "p2108_height_gain"
-                A_ref_db = A_ref_db + p2108_height_gain_rev1(f_mhz, h_m(mobile_end), ...
-                    cfg.terminal_clutter_type, cfg.terminal_clutter_frange);
-            case "constant"
-                A_ref_db = A_ref_db + cfg.terminal_clutter_db;
-            otherwise
-                error('itmexp:cfg', 'Unknown cfg.terminal_clutter "%s".', cfg.terminal_clutter);
-        end
+if mobile_end > 0
+    switch cfg.terminal_clutter
+        case "p2108_height_gain"
+            A_ref_db = A_ref_db + p2108_height_gain_rev1(f_mhz, h_mobile_m, ...
+                cfg.terminal_clutter_type, cfg.terminal_clutter_frange);
+        case "constant"
+            A_ref_db = A_ref_db + cfg.terminal_clutter_db;
+        otherwise
+            error('itmexp:cfg', 'Unknown cfg.terminal_clutter "%s".', cfg.terminal_clutter);
     end
 end
 
@@ -1212,3 +1213,32 @@ function y = c_pow(x, p)
 y = abs(x) .^ p;
 y(x < 0) = NaN;
 end
+
+
+function [mobile_end, h_mobile_m] = clutter_terminal(cfg, area, h_m)
+%CLUTTER_TERMINAL Which end is a concealed Phase 2 mobile terminal (0 = none).
+%   The mobile terminal is the transmitter (end 1) in sets R1, R2, R3 and
+%   the receiver (end 2) in VA; cfg.row.reversed swaps it. Only siting "C"
+%   gets the term. Fails loud when the row metadata is missing.
+mobile_end = 0;
+h_mobile_m = NaN;
+if ~isfield(cfg, 'terminal_clutter') || cfg.terminal_clutter == "none"
+    return
+end
+if area
+    error('itmexp:cfg', 'Terminal clutter needs a terrain profile; area mode has none.');
+end
+if ~isfield(cfg, 'row')
+    error('itmexp:cfg', ['Terminal clutter needs the row metadata cfg.row from the evaluator. ' ...
+        'Without it every row would silently get 0.']);
+end
+if ~any(cfg.terminal_clutter_base == ["actual", "clutter_height"])
+    error('itmexp:cfg', 'Unknown cfg.terminal_clutter_base "%s".', cfg.terminal_clutter_base);
+end
+if cfg.row.siting == "C"
+    if cfg.row.set == "VA", mobile_end = 2; else, mobile_end = 1; end
+    if cfg.row.reversed, mobile_end = 3 - mobile_end; end
+    h_mobile_m = h_m(mobile_end);
+end
+end
+

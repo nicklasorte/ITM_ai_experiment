@@ -154,6 +154,12 @@ bottom.
 - Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
 - Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
+### B08 planned (planner note)
+- Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B08.md`, registered before any scored run. Answers the B07 reviewers' required-before-keep list: base loss at max(h, R) per ITU-R P.2108-1 section 3.1 and Table 1 (`cfg.terminal_clutter_base = "clutter_height"`), A_h held at 3 GHz above 3 GHz (`"hold3"`) with an `"extend"` run beside it, censored by site (`b08_censored_by_site_rev1.py`), and a MATLAB test of all 18 NTIA/ITS vectors.
+- Tests 33 of 33. Parity at defaults 6.8e-13 dB. Battery passes for both B08 settings. Default `params_exp.m` MD5 now e445ee80afe8fc350b047dfcf7d21bdb.
+- Smoke (model only): the corrected term lowers concealed-row loss by 3.5 dB on average against 701 (1.4 to 3.8 dB below 3 GHz; 5.6 to 9.1 dB above 3 GHz with "hold3").
+- Runs: 707 (604 base, corrected term), 709 (707 with "extend"), 708 (705 base, corrected term). A run that passes every gate goes back to the three B07 reviewers.
+
 ### B07 reviewer pass on 701 and 704 (three independent reviewers, 2-of-3 rule)
 - Date: 2026-11-21. Reports: `experiments/B07-reviewer-pass/reviewer1.md`, `reviewer2.md`, `reviewer3.md`. Verdicts: HOLD, HOLD, HOLD (3 of 3). **701 and 704 stay held; neither is kept.**
 - Agreed by all three, with numbers in the reports:

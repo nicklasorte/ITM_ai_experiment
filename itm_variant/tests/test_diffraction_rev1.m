@@ -472,21 +472,80 @@ tc.verifyError(@() itm_ref(pfl, 12, 3, 450, cx), 'itmexp:cfg');
 end
 
 function test_p2108_matches_ntia_test_vectors(tc)
-% NTIA/ITS P.2108 test vectors (github.com/NTIA/p2108-test-data,
-% HeightGainTerminalCorrectionModelTestData.csv): the rows with the
-% default street width 27 m and the Table 3 clutter height. Columns:
-% f (GHz), h (m), clutter type (1-6), A_h (dB, published to 0.1 dB).
-V = [1.5 2 1 16;
-    1.5 2 2 16;
-    1.5 2 3 20.5;
-    1.5 2 4 24.5;
-    1.5 2 5 24.5;
-    1.5 2 6 27.1];
+% All NTIA/ITS P.2108 height-gain test vectors (github.com/NTIA/p2108-test-data,
+% HeightGainTerminalCorrectionModelTestData.csv, MD5 of the copy used
+% dff1d0fe1692cb4e03fd9726add47d71): the 18 valid rows (rtn 0) to the
+% published 0.1 dB, and the 5 error rows (rtn 32-35) must fail loud.
+% Columns: f (GHz), h (m), w_s (m), R (m), clutter type (1-6), A_h (dB).
+% B07 checked only the 6 rows with Table 3 R and w_s = 27 m (B07 reviewer pass).
+V = [1.5 2 27 10 1 16;   1.5 2 27 6 1 10.9;
+    1.5 2 27 10 2 16;    1.5 2 27 6 2 10.9;
+    1.5 2 27 10 3 20.5;  1.5 2 27 6 3 14.6;
+    1.5 2 27 15 4 24.5;  1.5 2 27 6 4 14.6;
+    1.5 2 27 15 5 24.5;  1.5 2 27 6 5 14.6;
+    1.5 2 27 20 6 27.1;  1.5 2 27 6 6 14.6;
+    3 3 15 15 6 29;      0.9 2.3 30 10 2 13.7;
+    1.5 2.5 25 10 3 20.2; 0.03 2.1 24.5 9.8 3 5.7;
+    1.7 30 24.5 9.8 3 0; 1.7 30 24.5 30 3 0];
 names = ["water_sea" "open_rural" "suburban" "urban" "trees_forest" "dense_urban"];
+tc.verifyEqual(size(V, 1), 18);
 for i = 1:size(V, 1)
-    a = p2108_height_gain_rev1(V(i, 1) * 1000, V(i, 2), names(V(i, 3)), "recommendation");
-    tc.verifyEqual(a, V(i, 4), 'AbsTol', 0.051, sprintf('row %d', i));
+    a = p2108_height_gain_rev1(V(i, 1) * 1000, V(i, 2), names(V(i, 5)), "recommendation", ...
+        R_m=V(i, 4), w_s_m=V(i, 3));
+    tc.verifyEqual(a, V(i, 6), 'AbsTol', 0.051, sprintf('row %d', i));
 end
+E = [0.02 2 27 10 3; 4 2 27 10 3; 1 0 10 9 2; 2 1 0 9 6; 2 1 27 0 6];
+for i = 1:size(E, 1)
+    tc.verifyError(@() p2108_height_gain_rev1(E(i, 1) * 1000, E(i, 2), names(E(i, 5)), ...
+        "recommendation", R_m=E(i, 4), w_s_m=E(i, 3)), 'itmexp:p2108', sprintf('error row %d', i));
+end
+% Defaults reproduce the Table 3 rows without overrides, and R is returned
+[a, R] = p2108_height_gain_rev1(1500, 2, "trees_forest", "recommendation");
+tc.verifyEqual(a, 24.5, 'AbsTol', 0.051); tc.verifyEqual(R, 15);
+end
+
+function test_p2108_hold3(tc)
+% "hold3": above 3 GHz, A_h equals its value at 3 GHz; at or below 3 GHz it
+% equals "recommendation".
+for h = [2 6.6 7.3 14]
+    a3 = p2108_height_gain_rev1(3000, h, "trees_forest", "recommendation");
+    tc.verifyEqual(p2108_height_gain_rev1(9190, h, "trees_forest", "hold3"), a3, 'AbsTol', 1e-12);
+    tc.verifyEqual(p2108_height_gain_rev1(4595, h, "trees_forest", "hold3"), a3, 'AbsTol', 1e-12);
+    tc.verifyEqual(p2108_height_gain_rev1(1846, h, "trees_forest", "hold3"), ...
+        p2108_height_gain_rev1(1846, h, "trees_forest", "recommendation"), 'AbsTol', 1e-12);
+end
+end
+
+function test_terminal_clutter_base_height(tc)
+% cfg.terminal_clutter_base = "clutter_height": on a concealed row the loss
+% equals ITM with the mobile antenna at max(h, R) plus A_h at the actual
+% height (ITU-R P.2108-1 section 3.1, Table 1); reversed gives the same;
+% open rows and an antenna above R are unchanged by the base switch.
+x = (0:30:30000)';
+g = 200 + 40 * sin(2 * pi * x / 7300) + 120 * exp(-((x - 14000) / 1200).^2);
+pfl = [numel(x) - 1; 30; g]; pflr = [numel(x) - 1; 30; flipud(g)];
+c0 = params_exp();
+c3 = c0; c3.terminal_clutter = "p2108_height_gain"; c3.terminal_clutter_base = "clutter_height";
+c3.terminal_clutter_frange = "hold3";
+for f = [450 1846 9190]
+    for set_ = ["R2" "VA"]
+        htx = 7.3; hrx = 2;
+        row = struct('set', set_, 'siting', "C", 'reversed', false); rowr = row; rowr.reversed = true;
+        if set_ == "VA", hm = hrx; hs = [htx 15]; else, hm = htx; hs = [15 hrx]; end
+        A = p2108_height_gain_rev1(f, hm, "trees_forest", "hold3");
+        want = itm_ref(pfl, hs(1), hs(2), f, c0) + A;
+        tc.verifyEqual(itm_ref(pfl, htx, hrx, f, setfield(c3, 'row', row)), want, 'AbsTol', 1e-9, set_); %#ok<SFLD>
+        tc.verifyEqual(itm_ref(pflr, hrx, htx, f, setfield(c3, 'row', rowr)), ...
+            itm_ref(pflr, hs(2), hs(1), f, c0) + A, 'AbsTol', 1e-9, set_ + " reversed"); %#ok<SFLD>
+        rowo = row; rowo.siting = "O";
+        tc.verifyEqual(itm_ref(pfl, htx, hrx, f, setfield(c3, 'row', rowo)), itm_ref(pfl, htx, hrx, f, c0), 'AbsTol', 1e-12); %#ok<SFLD>
+    end
+end
+% Mobile antenna above R: no height change and A_h = 0
+row = struct('set', "VA", 'siting', "C", 'reversed', false);
+tc.verifyEqual(itm_ref(pfl, 7.3, 20, 1846, setfield(c3, 'row', row)), itm_ref(pfl, 7.3, 20, 1846, c0), 'AbsTol', 1e-12); %#ok<SFLD>
+cx = setfield(c3, 'row', row); cx.terminal_clutter_base = "nonsense"; %#ok<SFLD>
+tc.verifyError(@() itm_ref(pfl, 7.3, 2, 1846, cx), 'itmexp:cfg');
 end
 
 function test_p2108_range_and_height(tc)

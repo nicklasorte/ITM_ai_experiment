@@ -72,12 +72,18 @@ cfg.diffraction_bound = "none";
 % Type: a P.2108 Table 3 clutter type. "C" means "immediately behind a
 % grove of trees or a building" (Phase 2 readme), mapped to
 % "trees_forest" (R = 15 m), a design choice.
-% Frequency rule: "recommendation" (error outside 0.03-3 GHz) or "extend"
-% (no upper limit; a design choice, see p2108_height_gain_rev1).
+% Frequency rule: "recommendation" (error outside 0.03-3 GHz), "extend"
+% (no upper limit; a design choice), or "hold3" (A_h at 3 GHz above 3 GHz;
+% B08). See p2108_height_gain_rev1.
 cfg.terminal_clutter = "none";
 cfg.terminal_clutter_type = "trees_forest";
 cfg.terminal_clutter_frange = "extend";
 cfg.terminal_clutter_db = 0;
+% Base height (B08): "actual" computes the path with the mobile antenna at
+% its real height and adds A_h (B07; counts the height gain twice);
+% "clutter_height" computes it at max(h, R) and adds A_h, as ITU-R P.2108-1
+% section 3.1 and Table 1 say.
+cfg.terminal_clutter_base = "actual";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights

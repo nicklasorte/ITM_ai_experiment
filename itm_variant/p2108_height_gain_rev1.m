@@ -1,16 +1,22 @@
-function A_h = p2108_height_gain_rev1(f_mhz, h_m, clutter, frange)
+function [A_h, R] = p2108_height_gain_rev1(f_mhz, h_m, clutter, frange, opts)
 %P2108_HEIGHT_GAIN_REV1 Terminal clutter loss, ITU-R P.2108-1 section 3.1 (dB).
-%   A_h = P2108_HEIGHT_GAIN_REV1(f_mhz, h_m, clutter, frange) returns the
+%   [A_h, R] = P2108_HEIGHT_GAIN_REV1(f_mhz, h_m, clutter, frange) returns the
 %   height gain terminal correction of ITU-R P.2108-1 (09/2021) section
 %   3.1, an end loss added to basic transmission loss for a terminal
-%   below the representative clutter height.
+%   below the representative clutter height, and that height R (m,
+%   Table 3). The Recommendation adds A_h to basic transmission loss
+%   computed with the terminal at R (section 3.1, Table 1); the caller
+%   does that (cfg.terminal_clutter_base in itm_p2p_core_exp).
 %
 %   Inputs:
 %     f_mhz    frequency (MHz)
 %     h_m      antenna height above ground (m), > 0
 %     clutter  "water_sea" | "open_rural" | "suburban" | "urban" |
 %              "trees_forest" | "dense_urban" (Table 3)
-%     frange   "recommendation" | "extend"
+%     frange   "recommendation" | "extend" | "hold3"
+%     Name-value R_m, w_s_m: override the Table 3 height R and the 27 m
+%              street width; used only to check the NTIA/ITS test vectors,
+%              which include non-default values.
 %              "recommendation": error outside 0.03-3 GHz, the range of
 %                section 3.1 (Table 1).
 %              "extend": no upper frequency limit. Eq. (2a) is a single
@@ -19,6 +25,11 @@ function A_h = p2108_height_gain_rev1(f_mhz, h_m, clutter, frange)
 %                range over which section 3.1 was validated. Using it above
 %                3 GHz is a design choice (batch B07), flagged in the plan.
 %                The 0.03 GHz lower limit still applies.
+%              "hold3": above 3 GHz, A_h at 3 GHz (the top of the validated
+%                range), with no extrapolation in frequency. The B07
+%                reviewers found "extend" and "hold3" score the same on
+%                Phase 2 and the extended term exceeds the twin-path data
+%                above 3 GHz (B08).
 %
 %   Equations (P.2108-1 section 3.1; constants as in the Recommendation):
 %     h >= R: A_h = 0
@@ -40,6 +51,8 @@ arguments
     h_m (1,1) double
     clutter (1,1) string
     frange (1,1) string = "recommendation"
+    opts.R_m (1,1) double = NaN      % override Table 3 R (test vectors only)
+    opts.w_s_m (1,1) double = 27     % street width; Table 2 default
 end
 f = f_mhz / 1000;
 if ~(f >= 0.03)
@@ -51,13 +64,18 @@ switch frange
             error('itmexp:p2108', 'P.2108 section 3.1 is for 0.03-3 GHz; got %g GHz.', f);
         end
     case "extend"
+    case "hold3"
+        f = min(f, 3);
     otherwise
         error('itmexp:p2108', 'Unknown frequency range rule "%s".', frange);
 end
 if ~(h_m > 0)
     error('itmexp:p2108', 'Antenna height must be positive.');
 end
-w_s = 27;                                          % Table 2 default street width (m)
+w_s = opts.w_s_m;                                  % Table 2 default 27 m
+if ~(w_s > 0)
+    error('itmexp:p2108', 'Street width must be positive.');
+end
 switch clutter
     case {"water_sea", "open_rural"}, R = 10; use_2b = true;    % Table 3
     case "suburban",                  R = 10; use_2b = false;
@@ -65,6 +83,12 @@ switch clutter
     case "dense_urban",               R = 20; use_2b = false;
     otherwise
         error('itmexp:p2108', 'Unknown clutter type "%s".', clutter);
+end
+if ~isnan(opts.R_m)
+    if ~(opts.R_m > 0)
+        error('itmexp:p2108', 'Representative clutter height must be positive.');
+    end
+    R = opts.R_m;
 end
 if h_m >= R
     A_h = 0;
