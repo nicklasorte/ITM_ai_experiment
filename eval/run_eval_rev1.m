@@ -108,6 +108,11 @@ if ~isempty(P2)
         round(A.p2.worst_cell, 1), A.p2.censored_violation_pct, B0.p2.censored_violation_pct);
 end
 lines(end + 1) = sprintf("physics battery: %s", passfail(M.physics.pass));
+if isfield(M.physics, 'checks') && isfield(M.physics.checks, 'height_gain_real')
+    hg = M.physics.checks.height_gain_real;
+    lines(end + 1) = sprintf("  height gain on real paths (report only): worst excess %.1f dB (limit %g) at %s", ...
+        hg.worst_excess_db, hg.limit_db, hg.worst_row);
+end
 lines(end + 1) = sprintf("max |variant - baseline| = %.3g dB; runtime %.0f s", dmax, M.runtime_s);
 fprintf('%s\n', lines);
 
