@@ -145,11 +145,23 @@ L = NaN(height(T), numel(p));
 if any(ip == 0)
     error('itmexp:profiles', 'Profiles missing for %d rows. Run data/build_links_rev1(ProfilesOnly=true).', nnz(ip == 0));
 end
+% Row metadata for the variant (cfg.row): the Phase 2 set and the siting
+% of the mobile terminal, which the profile alone can't give (open and
+% concealed twins share a profile). Rows without these columns (long-term)
+% get empty strings. The variant ignores cfg.row unless a switch uses it.
+% Added with Nick's approval, 2026-11-21 (batch B07).
+meta = all(ismember({'set', 'siting'}, T.Properties.VariableNames));
 for i = 1:height(T)
     pr = profiles(ip(i));
     pfl = [numel(pr.h_m) - 1; pr.spacing_m; pr.h_m(:)];
+    c = cfg;
+    if meta
+        c.row = struct('set', string(T.set(i)), 'siting', string(T.siting(i)), 'reversed', false);
+    else
+        c.row = struct('set', "", 'siting', "", 'reversed', false);
+    end
     a = itm_p2p_core_exp(T.htx_m(i), T.hrx_m(i), pfl, T.f_mhz(i), p, S.confidence, S.location, ...
-        T.climate(i), T.N_0(i), T.pol(i), S.epsilon, S.sigma, S.mdvar, false, [], cfg);
+        T.climate(i), T.N_0(i), T.pol(i), S.epsilon, S.sigma, S.mdvar, false, [], c);
     if ~all(isfinite(a)) || ~isreal(a)
         error('itmexp:nonfinite', 'Variant returned a non-finite or complex loss on %s.', T.link_id(i));
     end

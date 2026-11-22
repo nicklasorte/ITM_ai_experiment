@@ -27,8 +27,13 @@ function B = physics_battery_rev1(cfg, P2, profiles)
 
 S = settings_rev1();
 B = struct('pass', true, 'checks', struct());
+% cfg.row: row metadata (see run_eval_rev1). Synthetic sweeps have none.
+norow = struct('set', "", 'siting', "", 'reversed', false);
+cfg.row = norow;
 fvar = @(htx, hrx, pfl, f, clim, n0, pol) itm_p2p_core_exp(htx, hrx, pfl, f, 50, S.confidence, ...
     S.location, clim, n0, pol, S.epsilon, S.sigma, S.mdvar, false, [], cfg);
+fvar_row = @(htx, hrx, pfl, f, clim, n0, pol, row) itm_p2p_core_exp(htx, hrx, pfl, f, 50, S.confidence, ...
+    S.location, clim, n0, pol, S.epsilon, S.sigma, S.mdvar, false, [], setfield(cfg, 'row', row)); %#ok<SFLD>
 fbase = @(htx, hrx, pfl, f, clim, n0, pol) itm_p2p_rev1(htx, hrx, pfl, f, 50, confidence=S.confidence, ...
     climate=clim, N_0=n0, polarization=pol, epsilon=S.epsilon, sigma=S.sigma, mdvar=S.mdvar, validity="off");
 
@@ -76,8 +81,13 @@ for i = 1:numel(k)
     r = P2(k(i), :);
     p = profiles(ids == r.path_id);
     pfl = mk(p.h_m); pflr = mk(flipud(p.h_m(:)));
-    a = fvar(r.htx_m, r.hrx_m, pfl, r.f_mhz, r.climate, r.N_0, r.pol);
-    b = fvar(r.hrx_m, r.htx_m, pflr, r.f_mhz, r.climate, r.N_0, r.pol);
+    row = norow;
+    if all(ismember({'set', 'siting'}, P2.Properties.VariableNames))
+        row = struct('set', string(r.set), 'siting', string(r.siting), 'reversed', false);
+    end
+    rowr = row; rowr.reversed = true;
+    a = fvar_row(r.htx_m, r.hrx_m, pfl, r.f_mhz, r.climate, r.N_0, r.pol, row);
+    b = fvar_row(r.hrx_m, r.htx_m, pflr, r.f_mhz, r.climate, r.N_0, r.pol, rowr);
     a0 = fbase(r.htx_m, r.hrx_m, pfl, r.f_mhz, r.climate, r.N_0, r.pol);
     b0 = fbase(r.hrx_m, r.htx_m, pflr, r.f_mhz, r.climate, r.N_0, r.pol);
     dv(i) = abs(a - b); db(i) = abs(a0 - b0);
