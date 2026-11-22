@@ -154,6 +154,24 @@ bottom.
 - Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
 - Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
+### 705-deygout-isolated
+- Date: 2026-11-21. Batch B07. Parent: 000-baseline (best). Tier 2. Run before PR #3 is merged (the 705-only case in B07.md); 701-704 and 706 wait for it.
+- Change: `cfg.diffraction = "delta_deygout_isolated";` and `cfg.diffraction_bound = "itm_troposcatter_line";`
+- Rationale: prices P.526-11's empirical C = 10 + 0.04 D alone against 604 (same isolation-weighted edges, no C or T).
+- Predicted (from B07.md, before the run): censored 38-48 %; R2 measured 3 and 4+ edge rows -3 to +3; long-term level 15-18; composite 12.0-12.8; screened 10.6-11.6. Battery: pass.
+- Result: composite 12.32 dB (stock 16.02); screened 11.2; Phase 2 cell 15.2; long-term level 16.6; shape 5.2. Site RMS R1 11.8 (mean -3.3), R2 21.0 (mean -11.2), R3 6.6 (mean -2.4), VA 14.9 (mean -7.0). Worst cell 34.6. Censored 39.7 %. Paired gain +3.70 (95 % +2.11 to +4.87); screened +2.21 (+1.29 to +3.03).
+- Physics battery: PASS (main's `eval/`). Also checked with PR #2's battery from the scratch copy: PASS, height-gain net change +0.19 dB (stock -23.30).
+- By edge count (604 in brackets):
+  - edges 0-1: dead rows violated 100.0 % of 41 [100.0]; measured-row mean error -21.6 dB [-14.9]
+  - edges   2: dead rows violated  36.3 % of 204 [29.9]; measured-row mean error -15.6 dB [-4.9]
+  - edges   3: dead rows violated  35.9 % of 376 [14.9]; measured-row mean error  -0.6 dB [+11.5]
+  - edges  4+: dead rows violated  21.8 % of 563 [11.7]; measured-row mean error  -3.3 dB [+7.5]
+- Siting split, mean error (604 in brackets): R1 O obstructed -1.0 [+6.3]; R2 O obstructed -9.9 [+0.9]; R3 O obstructed -2.5 [+6.7]; VA O obstructed -3.7 [-0.4]; R1 C obstructed -16.4 [-8.1]; R2 C obstructed -37.8 [-29.4]; VA C obstructed -7.4 [-4.9]; open clear paths R2 -17.7 [-17.0], VA -9.5 [-8.9].
+- Decision: reject (censored 39.7 % > 29.0 %). On the Pareto front and its cell's elite, so archived as `arc/705-deygout-isolated`.
+- Predictions: Held: censored 39.7 (38-48); R2 3-edge rows -0.6 (-3 to +3); long-term level 16.6 (15-18); composite 12.3 (12.0-12.8); screened 11.2 (10.6-11.6); battery pass. Missed narrowly: R2 4+ edge rows -3.3 (-3 to +3).
+- What it tells us: removing C fixes the multi-edge overshoot on open obstructed paths (R1, R3 near zero; R2 3+ edge rows near zero) but moves every class about 3-10 dB more optimistic, which raises censored violations. The concealed rows carry most of the new optimism, which is what the clutter term in 702 is for.
+- Mac defaults restored afterward (MD5 8b0f92c53f7791f59aa7e57b5cbfb4ea).
+
 ### B07 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B07.md`. No scored run yet.
 - Siting codes from the Phase 2 readme: `O` open (clear foreground at the mobile terminal), `C` concealed (immediately behind a grove of trees or a building), `A` undefined. Mobile terminal: transmitter in R1-R3, receiver in VA. Mapping `C` → P.2108 trees/forest; `O` and `A` → 0.
