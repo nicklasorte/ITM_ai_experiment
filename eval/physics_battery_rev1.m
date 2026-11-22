@@ -37,7 +37,7 @@ function B = physics_battery_rev1(cfg, P2, profiles)
 S = settings_rev1();
 B = struct('pass', true, 'checks', struct());
 % cfg.row: row metadata (see run_eval_rev1). Synthetic sweeps have none.
-norow = struct('set', "", 'siting', "", 'reversed', false);
+norow = struct('set', "", 'siting', "", 'reversed', false, 'path_id', "");
 cfg.row = norow;
 fvar = @(htx, hrx, pfl, f, clim, n0, pol) itm_p2p_core_exp(htx, hrx, pfl, f, 50, S.confidence, ...
     S.location, clim, n0, pol, S.epsilon, S.sigma, S.mdvar, false, [], cfg);
@@ -92,7 +92,8 @@ for i = 1:numel(k)
     pfl = mk(p.h_m); pflr = mk(flipud(p.h_m(:)));
     row = norow;
     if all(ismember({'set', 'siting'}, P2.Properties.VariableNames))
-        row = struct('set', string(r.set), 'siting', string(r.siting), 'reversed', false);
+        row = struct('set', string(r.set), 'siting', string(r.siting), 'reversed', false, ...
+            'path_id', string(r.path_id));
     end
     rowr = row; rowr.reversed = true;
     a = fvar_row(r.htx_m, r.hrx_m, pfl, r.f_mhz, r.climate, r.N_0, r.pol, row);
@@ -112,7 +113,8 @@ for i = 1:height(P2)
     pfl = mk(p.h_m);
     row = norow;
     if all(ismember({'set', 'siting'}, P2.Properties.VariableNames))
-        row = struct('set', string(r.set), 'siting', string(r.siting), 'reversed', false);
+        row = struct('set', string(r.set), 'siting', string(r.siting), 'reversed', false, ...
+            'path_id', string(r.path_id));
     end
     h = [r.htx_m, r.hrx_m];
     v0 = fvar_row(h(1), h(2), pfl, r.f_mhz, r.climate, r.N_0, r.pol, row);
