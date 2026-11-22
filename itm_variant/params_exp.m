@@ -26,7 +26,7 @@ cfg.version = 1;
 % The last four replace the knife-edge part of ITM's diffraction loss with a
 % profile-based loss at the path's own distance, on transhorizon paths
 % (multi_edge_diffraction_rev1; experiments/batches/B01.md).
-cfg.diffraction = "itm";
+cfg.diffraction = "delta_cascaded_isolated";
 %   "ep_isolated"       Epstein-Peterson; horizon obstacles merged unless
 %                       isolated (ITU-R P.526-16 section 2.5)
 %   "p526_double_edge"  ITU-R P.526-16 section 4.3 (with Lc where valid)
@@ -64,7 +64,7 @@ cfg.diffraction_region = "transhorizon";
 %                            ITM changes region)
 %   "itm_troposcatter_line"  on every transhorizon path, the loss can't
 %                            exceed ITM's troposcatter line at d (B06)
-cfg.diffraction_bound = "none";
+cfg.diffraction_bound = "itm_troposcatter_line";
 
 % Terminal clutter at the Phase 2 mobile terminal, siting "C" only (B07)
 %   "none"               no clutter term
@@ -76,21 +76,21 @@ cfg.diffraction_bound = "none";
 % Frequency rule: "recommendation" (error outside 0.03-3 GHz), "extend"
 % (no upper limit; a design choice), or "hold3" (A_h at 3 GHz above 3 GHz;
 % B08). See p2108_height_gain_rev1.
-cfg.terminal_clutter = "none";
+cfg.terminal_clutter = "p2108_height_gain";
 cfg.terminal_clutter_type = "trees_forest";
-cfg.terminal_clutter_frange = "extend";
+cfg.terminal_clutter_frange = "hold3";
 cfg.terminal_clutter_db = 0;
 % Base height (B08): "actual" computes the path with the mobile antenna at
 % its real height and adds A_h (B07; counts the height gain twice);
 % "clutter_height" computes it at max(h, R) and adds A_h, as ITU-R P.2108-1
 % section 3.1 and Table 1 say.
-cfg.terminal_clutter_base = "actual";
+cfg.terminal_clutter_base = "clutter_height";
 % Open and A sitings (B11): "none" (B07/B08 behavior) or "nlcd", the
 % ITU-R P.2108-1 section 3.1 term at the mobile terminal with the category of
 % the NLCD 2001 class there (landcover_lookup_rev1; Nick approved the input
 % 2026-11-22), or "nlcd_forest", forest and woody-wetland classes only (712).
 % Needs cfg.terminal_clutter = "p2108_height_gain" and cfg.row.path_id.
-cfg.terminal_clutter_open = "none";
+cfg.terminal_clutter_open = "nlcd";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights
