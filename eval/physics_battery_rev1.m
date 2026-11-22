@@ -11,6 +11,12 @@ function B = physics_battery_rev1(cfg, P2, profiles)
 %     finite        all outputs finite and real
 %     continuity    largest step between neighboring points of a
 %                   distance, frequency, or height sweep: variant <= baseline + 1 dB
+%     height_gain   receiver-height sweep over a ridge (1 to 30 m): net change
+%                   in loss from the lowest to the highest receiver,
+%                   variant <= max(baseline, 0) + 1 dB. Loss must not grow
+%                   as the antenna rises; measured Phase 2 loss falls about
+%                   9 dB from 1 m to 8 m receivers (B06 reviewer pass;
+%                   added with Nick's approval, 2026-11-21)
 %     reciprocity   swap the terminals and reverse the profile; 95th
 %                   percentile of |difference| on 300 real links:
 %                   variant <= max(0.1, baseline + 0.1) dB
@@ -52,6 +58,12 @@ for k = 1:numel(sweeps)
     ok = jv <= jb + 1;
     B.checks.("continuity_" + sw.name) = struct('variant_max_step_db', jv, 'baseline_max_step_db', jb, 'pass', ok);
     B.pass = B.pass && ok;
+    if sw.name == "rx_height_ridge40"
+        nv = Lv(end) - Lv(1); nb = Lb(end) - Lb(1);
+        ok = nv <= max(nb, 0) + 1;
+        B.checks.height_gain_rx_height_ridge40 = struct('variant_net_change_db', nv, 'baseline_net_change_db', nb, 'pass', ok);
+        B.pass = B.pass && ok;
+    end
 end
 
 % ---- real links ----
