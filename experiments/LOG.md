@@ -166,7 +166,7 @@ bottom.
 - By edge count, R2 dead rows violated: 100.0 / 29.9 / 4.3 / 9.9 %.
 - Gates: passes every gate. **Held**; back to the three B07 reviewers for their required-before-keep items (2 of 3 to keep).
 - Predictions: Held: concealed means R1 obstructed +8.1 (+7 to +10), VA obstructed +3.8 (+2 to +5), VA clear -4.7 (-4 to -7), R2 obstructed -15.9 (-14 to -17); open rows equal to 604; censored 22.8 (22-26), VA 47.5 (45-52); Phase 2 cell 13.2 (13.0-13.4); LT 19.1; composite 12.5 (12.3-12.6); screened 11.2 (10.9-11.3); battery pass. Missed narrowly: R2 censored 14.7 (15-16); R1 censored 5.7 (6-8).
-- Reading: removing the double count lowers concealed loss by 3.5 dB on average and costs 1.4 points of censored (21.4 to 22.8 %), all at VA; composite and Phase 2 cell are unchanged to 0.06 dB. 701's extra pessimism bought censored passes but no accuracy.
+- Reading: removing the double count lowers concealed loss by 3.5 dB on average and costs 1.4 points of censored (21.4 to 22.8 %): 27 of the 29 added violations at VA, 2 on R2 concealed rows; composite and Phase 2 cell are unchanged to 0.06 dB. 701's extra pessimism bought censored passes but no accuracy.
 
 ### 709-cascaded-isolated-clutter-at-r-extend
 - Date: 2026-11-21. Batch B08. Parent: 000-baseline. Tier 2.
@@ -184,6 +184,21 @@ bottom.
 - Concealed mean error: R1 obstructed +0.3; R2 obstructed -23.3; VA obstructed +1.6. R2 open obstructed -9.9 (as 702).
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
+
+### KEEP 707-cascaded-isolated-clutter-at-r (first keep)
+- Date: 2026-11-21. Follow-up reviews by the three B07 reviewers: KEEP 707, KEEP 707, KEEP 707 (3 of 3). Reports: `experiments/B07-reviewer-pass/reviewer1_b08.md`, `reviewer2_b08.md`, `reviewer3_b08.md`.
+- Merged into `best` (new branch, created from `exp/707-cascaded-isolated-clutter-at-r`: main plus the five switch lines). Main keeps stock defaults, so the parity check in CLAUDE.md still applies to main. Next batches branch from `best` and score with `Best="707-cascaded-isolated-clutter-at-r"`.
+- Headline (held-out, full data): composite 12.51 dB against stock 16.02; screened 11.2 against 13.4; Phase 2 cell 13.25 against 18.3; long-term level 19.1 against 24.6; long-term shape 5.2 (unchanged); censored 22.8 % against 28.0 %. Site RMS R1 10.5 (13.3), R2 18.2 (28.6), R3 6.8 (9.0), VA 12.9 (15.4). No free parameters.
+- What the model is: stock ITM with (1) the knife-edge part of the transhorizon diffraction replaced by a delta construction (ITU-R P.452-18 eq. 38-40 form, ITM's smooth-earth term as the spherical reference) using the ITU-R P.526-11 section 4.4.2 cascaded method with secondary edges weighted by the P.526-16 section 2.5 isolation criterion; (2) the loss bounded by ITM's own troposcatter line; (3) ITM's A_fo clutter factor removed from that construction (B06 reviewer pass); (4) ITU-R P.2108-1 section 3.1 terminal clutter at concealed Phase 2 mobile terminals, with the path computed at the clutter height R = 15 m and A_h held at its 3 GHz value above 3 GHz.
+- Reviewer agreement (3 of 3): the term follows P.2108-1 section 3.1 and Table 1; open, `A`, and long-term rows equal 604 exactly; the censored pass survives removing concealed-row pessimism (23.3, 23.9, 24.2 %); prefer 707 over 709 (0.01 dB apart; 707 stays inside the validated 3 GHz range).
+- Known limits, recorded with the keep (all three or two of three):
+  - R2 censored 14.7 % against 6.8 % for stock, all on open rows from the 604 base. A per-site censored check is Nick's framework decision.
+  - On terrain-obstructed open/concealed twin paths the term exceeds the measured excess by about 5.5 dB at R1 and R2 (701: 9 to 10 dB): clutter and terrain shadow don't simply add, and P.2108 doesn't address that case.
+  - At VA the concealed 2 m vs high-antenna difference is 14.9 dB against 10.6 dB measured: P.2108's own height shape.
+  - "hold3" flattens the concealed frequency slope at R1 and R2 (about 4 to 7 dB per decade against 10 to 11 measured); R2 concealed rows got more optimistic above 3 GHz.
+  - On 26 concealed rows (6 paths, mostly R1-020-T8) raising the mobile antenna adds up to 4.5 dB, from the 604 multi-edge construction, not the B08 change; the synthetic height-gain battery check doesn't catch it (two of three).
+  - Against 604, the clutter term gains 0.27 dB composite; it earns its place mainly on the censored gate and on physics. 707 and 701 can't be told apart on Phase 2 cell RMS (paired -0.06 +/- 0.14 dB).
+- Archive: 701 is superseded by 707 (it is the double-counted form) and must not be used as a parent, though `results/archive_rev1.txt` still lists it on the Pareto front; see `results/superseded_rev1.txt`.
 
 ### B08 worker summary
 - Date: 2026-11-21. Three runs in plan order (707, 709, 708); no errors, no infra events; every run under 2 minutes; open rows match 604 or 705 exactly. Mac `params_exp.m` restored to the defaults (MD5 e445ee80afe8fc350b047dfcf7d21bdb).
@@ -299,7 +314,7 @@ bottom.
 ### B07 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B07.md`. No scored run yet.
 - Siting codes from the Phase 2 readme: `O` open (clear foreground at the mobile terminal), `C` concealed (immediately behind a grove of trees or a building), `A` undefined. Mobile terminal: transmitter in R1-R3, receiver in VA. Mapping `C` → P.2108 trees/forest; `O` and `A` → 0.
-- New code, no free parameters: ITU-R P.2108-1 section 3.1 (`p2108_height_gain_rev1`; matches the 16 NTIA/ITS test vectors), applied above 3 GHz by a documented "extend" rule (design choice); `cfg.terminal_clutter` with a constant-offset control; `"deygout_isolated"` and `"bullington_uc"` (no P.526-11 C, no eq. (57)) and their delta forms. Tests 31 of 31. Parity at defaults 5.0e-13 dB (long-term), 6.8e-13 dB (Phase 2 sample). Default `params_exp.m` MD5 now 8b0f92c53f7791f59aa7e57b5cbfb4ea.
+- New code, no free parameters: ITU-R P.2108-1 section 3.1 (`p2108_height_gain_rev1`; matches the NTIA/ITS test vectors; corrected later: 18 valid vectors, of which B07 tested 6, all 18 tested from B08), applied above 3 GHz by a documented "extend" rule (design choice); `cfg.terminal_clutter` with a constant-offset control; `"deygout_isolated"` and `"bullington_uc"` (no P.526-11 C, no eq. (57)) and their delta forms. Tests 31 of 31. Parity at defaults 5.0e-13 dB (long-term), 6.8e-13 dB (Phase 2 sample). Default `params_exp.m` MD5 now 8b0f92c53f7791f59aa7e57b5cbfb4ea.
 - Blocker: 71 of 108 concealed paths share a terrain profile with their open twin, so the variant needs the row's siting from the evaluator (`cfg.row`). Nick approved that `eval/` change; it is PR #3 (stacked on PR #2), checked from a scratch copy on the Mac (parity 6.8e-13 dB; battery with clutter passes). Until it is merged only experiment 705 can run; the clutter settings error by design.
 - Battery (code only, with PR #2's height-gain check): all four diffraction settings pass.
 - Logged-run evidence (604): concealed rows 5-40 dB too optimistic, worse at high frequency; open clear paths at R2 (-17 dB) and VA (-9 dB) also too optimistic, which clutter can't reach.

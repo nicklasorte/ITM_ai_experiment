@@ -1,0 +1,8 @@
+Runs superseded by a later corrected run. Planners must not use these as
+parents, even when results/archive_rev1.txt lists them on the Pareto front
+or as a cell elite (the archive ranks by score, not by physics, and is
+rebuilt by eval/pareto_rev1.m after every run).
+
+run                              superseded by                         reason
+701-cascaded-isolated-clutter    707-cascaded-isolated-clutter-at-r    adds ITU-R P.2108-1 section 3.1 A_h to loss at the actual antenna height, counting the height gain from h to R twice (B07 reviewer pass, 3 of 3)
+704-cascaded-isolated-constant   707-cascaded-isolated-clutter-at-r    control built on 701's double-counted base
