@@ -1,4 +1,4 @@
-function [cls, ctype] = landcover_lookup_rev1(path_id, end_name)
+function [cls, ctype] = landcover_lookup_rev1(path_id, end_name, mapping)
 %LANDCOVER_LOOKUP_REV1 NLCD 2001 class at a Phase 2 terminal and its ITU-R P.2108 clutter category (B11).
 %   [cls, ctype] = LANDCOVER_LOOKUP_REV1(path_id, end_name) returns the NLCD
 %   2001 class at the pixel of terminal end_name ("tx" or "rx") of path
@@ -11,8 +11,18 @@ function [cls, ctype] = landcover_lookup_rev1(path_id, end_name)
 %     24 (developed, high intensity)            -> "dense_urban"
 %     anything else                             -> "" (no terminal clutter)
 %   The mapping was fixed before the land cover was extracted or any error
-%   examined (LOG, B11 planned). Fails loud when the file, its hash, or the
-%   row is missing.
+%   examined (LOG, B11 planned). mapping = "all" (default) uses every row of
+%   the list above; "forest" keeps only the forest and woody-wetland row
+%   (vegetation alone, package H20; registered in B11.md before 711 ran).
+%   Fails loud when the file, its hash, or the row is missing.
+arguments
+    path_id (1,1) string
+    end_name (1,1) string
+    mapping (1,1) string = "all"
+end
+if ~any(mapping == ["all", "forest"])
+    error('itmexp:landcover', 'Unknown land cover mapping "%s".', mapping);
+end
 persistent T
 if isempty(T)
     P = itm_exp_paths_rev1();
@@ -44,5 +54,8 @@ switch cls
         ctype = "dense_urban";
     otherwise
         ctype = "";
+end
+if mapping == "forest" && ctype ~= "trees_forest"
+    ctype = "";
 end
 end

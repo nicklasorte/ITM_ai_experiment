@@ -595,6 +595,12 @@ for k = 1:size(cases, 1)
         tc.verifyEqual(itm_ref(pflr, hrx, htx, f, setfield(cn, 'row', rowr)), itm_ref(pflr, hsr(1), hsr(2), f, c0) + A, 'AbsTol', 1e-9); %#ok<SFLD>
     end
 end
+% "nlcd_forest": the forest row matches "nlcd"; the urban row gets nothing
+cf = cn; cf.terminal_clutter_open = "nlcd_forest";
+rowF = struct('set', "VA", 'siting', "O", 'reversed', false, 'path_id', ids.P2_VA_FOREST);
+rowU = struct('set', "R3", 'siting', "O", 'reversed', false, 'path_id', ids.P2_R3_URBAN);
+tc.verifyEqual(itm_ref(pfl, 7.3, 2, 1846, setfield(cf, 'row', rowF)), itm_ref(pfl, 7.3, 2, 1846, setfield(cn, 'row', rowF)), 'AbsTol', 1e-12); %#ok<SFLD>
+tc.verifyEqual(itm_ref(pfl, 7.3, 2, 1846, setfield(cf, 'row', rowU)), itm_ref(pfl, 7.3, 2, 1846, setfield(c3, 'row', rowU)), 'AbsTol', 1e-12); %#ok<SFLD>
 rowc = struct('set', "VA", 'siting', "C", 'reversed', false, 'path_id', ids.P2_VA_FOREST);
 tc.verifyEqual(itm_ref(pfl, 7.3, 2, 1846, setfield(cn, 'row', rowc)), itm_ref(pfl, 7.3, 2, 1846, setfield(c3, 'row', rowc)), 'AbsTol', 1e-12); %#ok<SFLD>
 rowx = struct('set', "VA", 'siting', "O", 'reversed', false);

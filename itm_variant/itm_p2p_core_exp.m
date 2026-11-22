@@ -1226,7 +1226,8 @@ function [mobile_end, h_mobile_m, ctype] = clutter_terminal(cfg, area, h_m)
 %   the receiver (end 2) in VA; cfg.row.reversed swaps it. Siting "C" gets
 %   cfg.terminal_clutter_type (B07). With cfg.terminal_clutter_open =
 %   "nlcd" (B11), sitings "O" and "A" get the category of the NLCD 2001
-%   class at the mobile terminal (landcover_lookup_rev1), or none. Fails
+%   class at the mobile terminal (landcover_lookup_rev1), or none;
+%   "nlcd_forest" uses forest classes only (B11, 712). Fails
 %   loud when the row metadata is missing.
 mobile_end = 0;
 h_mobile_m = NaN;
@@ -1244,7 +1245,7 @@ end
 if ~any(cfg.terminal_clutter_base == ["actual", "clutter_height"])
     error('itmexp:cfg', 'Unknown cfg.terminal_clutter_base "%s".', cfg.terminal_clutter_base);
 end
-if ~any(cfg.terminal_clutter_open == ["none", "nlcd"])
+if ~any(cfg.terminal_clutter_open == ["none", "nlcd", "nlcd_forest"])
     error('itmexp:cfg', 'Unknown cfg.terminal_clutter_open "%s".', cfg.terminal_clutter_open);
 end
 if cfg.row.set == ""
@@ -1253,12 +1254,13 @@ end
 if cfg.row.set == "VA", orig_end = 2; else, orig_end = 1; end
 if cfg.row.siting == "C"
     ctype = cfg.terminal_clutter_type;
-elseif cfg.terminal_clutter_open == "nlcd" && any(cfg.row.siting == ["O", "A"])
+elseif startsWith(cfg.terminal_clutter_open, "nlcd") && any(cfg.row.siting == ["O", "A"])
     if ~isfield(cfg.row, 'path_id') || strlength(cfg.row.path_id) == 0
         error('itmexp:cfg', 'cfg.terminal_clutter_open = "nlcd" needs cfg.row.path_id from the evaluator.');
     end
     names = ["tx", "rx"];
-    [~, ctype] = landcover_lookup_rev1(cfg.row.path_id, names(orig_end));
+    if cfg.terminal_clutter_open == "nlcd_forest", mp = "forest"; else, mp = "all"; end
+    [~, ctype] = landcover_lookup_rev1(cfg.row.path_id, names(orig_end), mp);
     if cfg.terminal_clutter ~= "p2108_height_gain"
         error('itmexp:cfg', 'cfg.terminal_clutter_open = "nlcd" works only with cfg.terminal_clutter = "p2108_height_gain".');
     end

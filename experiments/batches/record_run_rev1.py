@@ -63,13 +63,13 @@ def plan_section(plan_text, tag):
     """Return the Change and Predicted text of the plan's section for tag."""
     m = re.search(rf"^### {re.escape(tag)}.*?$(.*?)(?=^### |\Z)", plan_text, re.M | re.S)
     if not m:
-        return None, None
+        return False, None, None
     body = m.group(1)
 
     def item(name):
-        mm = re.search(rf"^- {name}:(.*?)(?=^- |\Z)", body, re.M | re.S)
+        mm = re.search(rf"^- {name}(?: \([^)]*\))?:(.*?)(?=^- |\Z)", body, re.M | re.S)
         return " ".join(mm.group(1).split()) if mm else None
-    return item("Change"), item("Predicted")
+    return True, item("Change"), item("Predicted")
 
 
 def run_script(args):
@@ -97,9 +97,11 @@ def main():
     metrics = json.loads(read(os.path.join(run_dir, "metrics.json")))
     cfg = metrics.get("cfg", {})
     run_id = a.tag.split("-")[0]
-    change, predicted = plan_section(read(a.plan), a.tag)
-    if change is None:
+    found, change, predicted = plan_section(read(a.plan), a.tag)
+    if not found:
         sys.exit(f"{a.plan} has no section '### {a.tag}'")
+    if change is None:
+        change = "(no Change line in the plan section)"
     batch = os.path.splitext(os.path.basename(a.plan))[0]
     today = datetime.date.today().isoformat()
 
