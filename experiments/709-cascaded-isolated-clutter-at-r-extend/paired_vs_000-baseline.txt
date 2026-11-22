@@ -1,0 +1,4 @@
+paired bootstrap: 709-cascaded-isolated-clutter-at-r-extend vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +3.53 dB  (SD 0.54; 95% interval +2.30 to +4.42)  PASS
+  screened gain    +2.25 dB  (SD 0.32; 95% interval +1.60 to +2.87)  PASS
+  gain = best minus new; positive means the new run is better

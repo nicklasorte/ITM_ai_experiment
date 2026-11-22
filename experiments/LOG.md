@@ -154,6 +154,44 @@ bottom.
 - Predictions: Held: censored 28.9 % (27-31); R2 mean +2.7 (+2 to +3.5); long-term level 20.2 (18-24); composite 13.4 (13-15); screened 11.7 (11.5-13.5); by-edge table identical to 503; battery fail as listed.
 - Run after the hand-back, with Nick's approval (2026-11-21), as one batch job (`experiments/batches/b06_run_rest_rev1.m`); Mac defaults restored afterward (MD5 e9b334fa5d68c11e0159ace40f027ae4).
 
+### 707-cascaded-isolated-clutter-at-r
+- Date: 2026-11-21. Batch B08. Parent: 000-baseline (best). Tier 2.
+- Change: `cfg.diffraction = "delta_cascaded_isolated";`, `cfg.diffraction_bound = "itm_troposcatter_line";`, `cfg.terminal_clutter = "p2108_height_gain";`, `cfg.terminal_clutter_base = "clutter_height";`, `cfg.terminal_clutter_frange = "hold3";`
+- Source: ITU-R P.2108-1 section 3.1 and Table 1 (A_h added to loss computed with the terminal at R; eq. (2a)-(2g)); B06 sources for the rest. No free parameters.
+- Rationale: 701 as the Recommendation says, without the double count found by the B07 reviewers.
+- Result: composite 12.51 dB (stock 16.02); screened 11.2; Phase 2 cell 13.2; long-term level 19.1; shape 5.2. Site RMS R1 10.5 (mean +4.1), R2 18.2 (mean -0.2), R3 6.8 (mean +0.4), VA 12.9 (mean -2.9). Worst cell 29.0. Censored 22.8 %. Paired gain +3.52 (95 % +2.30 to +4.41); screened +2.24 (+1.59 to +2.85).
+- Physics battery: PASS.
+- Censored by site (stock in brackets): R1 5.7 % [13.6], R2 14.7 % [6.8], VA 47.5 % [78.3]. Concealed violated: R1 2/6, R2 14/106, VA 143/386 (701: 2, 12, 116).
+- Concealed mean error (701 in brackets): R1 clear -2.0 [+1.7], obstructed +8.1 [+11.6]; R2 clear -26.8 [-19.9], obstructed -15.9 [-11.5]; VA clear -4.7 [-2.6], obstructed +3.8 [+6.2]. VA concealed obstructed RMS 13.1 [14.4]. Open and `A` rows identical to 604.
+- By edge count, R2 dead rows violated: 100.0 / 29.9 / 4.3 / 9.9 %.
+- Gates: passes every gate. **Held**; back to the three B07 reviewers for their required-before-keep items (2 of 3 to keep).
+- Predictions: Held: concealed means R1 obstructed +8.1 (+7 to +10), VA obstructed +3.8 (+2 to +5), VA clear -4.7 (-4 to -7), R2 obstructed -15.9 (-14 to -17); open rows equal to 604; censored 22.8 (22-26), VA 47.5 (45-52); Phase 2 cell 13.2 (13.0-13.4); LT 19.1; composite 12.5 (12.3-12.6); screened 11.2 (10.9-11.3); battery pass. Missed narrowly: R2 censored 14.7 (15-16); R1 censored 5.7 (6-8).
+- Reading: removing the double count lowers concealed loss by 3.5 dB on average and costs 1.4 points of censored (21.4 to 22.8 %), all at VA; composite and Phase 2 cell are unchanged to 0.06 dB. 701's extra pessimism bought censored passes but no accuracy.
+
+### 709-cascaded-isolated-clutter-at-r-extend
+- Date: 2026-11-21. Batch B08. Parent: 000-baseline. Tier 2.
+- Change: as 707 but `cfg.terminal_clutter_frange = "extend";`
+- Result: composite 12.50; screened 11.1; Phase 2 cell 13.2; long-term level 19.1. Site RMS R1 10.5, R2 18.1, R3 6.8, VA 12.9. Worst cell 28.4. Censored 22.3 % (R1 5.7, R2 14.7, VA 45.8). Paired gain +3.53 (+2.30 to +4.42); screened +2.25 (+1.60 to +2.87). Battery PASS.
+- Concealed mean error: R1 obstructed +9.1; VA obstructed +4.0; VA clear -4.1; R2 obstructed -15.4.
+- Gates: passes every gate. Held with 707 as the with-extension report.
+- Predictions: Held: composite within 0.15 dB of 707 (0.01); censored 22.3 (21-25), at or below 707; battery pass.
+- Reading: the rule above 3 GHz changes the composite by 0.01 dB and censored by 0.5 points; the data don't distinguish "extend" from "hold3", so the B08 default is "hold3" (no extrapolation beyond the validated range).
+
+### 708-deygout-isolated-clutter-at-r
+- Date: 2026-11-21. Batch B08. Parent: 000-baseline. Tier 2.
+- Change: as 707 but `cfg.diffraction = "delta_deygout_isolated";`
+- Result: composite 11.87; screened 10.7; Phase 2 cell 13.8; long-term level 16.6. Site RMS R1 10.1 (mean -1.4), R2 19.1 (mean -9.9), R3 6.6 (mean -2.4), VA 13.7 (mean -4.5). Worst cell 32.0. Censored 32.5 % (R1 11.8, R2 28.0, VA 51.8). Paired gain +4.15 (+2.63 to +5.23); screened +2.67 (+1.68 to +3.44). Battery PASS.
+- Concealed mean error: R1 obstructed +0.3; R2 obstructed -23.3; VA obstructed +1.6. R2 open obstructed -9.9 (as 702).
+- Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
+- Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
+
+### B08 worker summary
+- Date: 2026-11-21. Three runs in plan order (707, 709, 708); no errors, no infra events; every run under 2 minutes; open rows match 604 or 705 exactly. Mac `params_exp.m` restored to the defaults (MD5 e445ee80afe8fc350b047dfcf7d21bdb).
+- **707 passes every gate and is held** for the three B07 reviewers to check their required-before-keep items: composite 12.5, censored 22.8 %, battery PASS, no free parameters, term applied as P.2108-1 section 3.1 says. 709 (with "extend") also passes and differs by 0.01 dB. 708 fails censored (32.5 %).
+- Every registered prediction held except two per-site censored ranges, missed by under 0.5 points.
+- Archive note: no B08 run is on the Pareto front, because 701's double count gives it slightly lower Phase 2 cell RMS (13.19 vs 13.25) and censored (21.4 vs 22.8 %). The archive ranks by score, not by physics; 701 stays on the front though it is the incorrect form.
+- Still open: R2 censored 14.7 % against stock's 6.8 % (inherited from 604, all on open rows); open clear paths at R2 (-17 dB) and VA (-9 dB); R1 concealed obstructed +8.1 dB.
+
 ### B08 planned (planner note)
 - Date: 2026-11-21. Planner: Claude Opus 5.5. Plan: `experiments/batches/B08.md`, registered before any scored run. Answers the B07 reviewers' required-before-keep list: base loss at max(h, R) per ITU-R P.2108-1 section 3.1 and Table 1 (`cfg.terminal_clutter_base = "clutter_height"`), A_h held at 3 GHz above 3 GHz (`"hold3"`) with an `"extend"` run beside it, censored by site (`b08_censored_by_site_rev1.py`), and a MATLAB test of all 18 NTIA/ITS vectors.
 - Tests 33 of 33. Parity at defaults 6.8e-13 dB. Battery passes for both B08 settings. Default `params_exp.m` MD5 now e445ee80afe8fc350b047dfcf7d21bdb.

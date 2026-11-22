@@ -1,0 +1,18 @@
+experiment 708-deygout-isolated-clutter-at-r   (matlab_itm 9bd6a4e, 21-Nov-2026 20:58:50)
+composite  11.9 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   13.8   (baseline 18.3)
+  long-term level RMS             16.6   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  10.7 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 10.1  mean -1.4   (baseline 13.3)
+  site R2 RMS 19.1  mean -9.9   (baseline 28.6)
+  site R3 RMS 6.6  mean -2.4   (baseline 9.0)
+  site VA RMS 13.7  mean -4.5   (baseline 15.4)
+  worst cell 32.0   censored violations 32.5% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 92 dB; runtime 10 s
+
+paired bootstrap: 708-deygout-isolated-clutter-at-r vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +4.15 dB  (SD 0.66; 95% interval +2.63 to +5.23)  PASS
+  screened gain    +2.67 dB  (SD 0.43; 95% interval +1.68 to +3.44)  PASS
+  gain = best minus new; positive means the new run is better

@@ -1,0 +1,18 @@
+experiment 709-cascaded-isolated-clutter-at-r-extend   (matlab_itm 9bd6a4e, 21-Nov-2026 20:57:28)
+composite  12.5 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   13.2   (baseline 18.3)
+  long-term level RMS             19.1   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  11.1 dB   (baseline 13.4; 14 rows left out)
+  site R1 RMS 10.5  mean +4.2   (baseline 13.3)
+  site R2 RMS 18.1  mean -0.2   (baseline 28.6)
+  site R3 RMS 6.8  mean +0.4   (baseline 9.0)
+  site VA RMS 12.9  mean -2.8   (baseline 15.4)
+  worst cell 28.4   censored violations 22.3% (baseline 28.0%)
+physics battery: PASS
+max |variant - baseline| = 77.5 dB; runtime 10 s
+
+paired bootstrap: 709-cascaded-isolated-clutter-at-r-extend vs 000-baseline (500 draws, paths resampled within site and fold)
+  composite gain   +3.53 dB  (SD 0.54; 95% interval +2.30 to +4.42)  PASS
+  screened gain    +2.25 dB  (SD 0.32; 95% interval +1.60 to +2.87)  PASS
+  gain = best minus new; positive means the new run is better
