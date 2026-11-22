@@ -185,6 +185,16 @@ bottom.
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
 
+### Research package added (2026-11-22)
+- Nick's ITM research package (11 Markdown files: README, five research documents, proposals H01–H05) added unchanged under `experiments/proposals/itm_research_package_rev1/`, with a planner status note `STATUS_rev1.md` that marks what is out of date (written at B05: stock parent, 502 arithmetic, A_fo) and maps each item to work done. Planner's order for next batches: H02 and H03 in parallel, then H01 as an oracle against 707's cascade, then H05.
+
+### Finding: principal-edge switch discontinuity in the kept model (707)
+- Date: 2026-11-22. Model only. Found while prototyping the real-path height-gain battery check Nick approved.
+- Prototype (scratch, not in eval/): on all 16,805 Phase 2 rows, raise each antenna by 10 m; record the change in loss for 707 and for stock ITM. Stock adds more than 1 dB on 6,799 row-ends (max 25.4 dB): two-ray interference in line of sight makes "loss must not rise with height" invalid on real paths, so the check has to be relative to stock. Relative to stock, 707 adds more than 2 dB beyond stock's change (and more than 1 dB) on 102 row-ends on 8 paths, 75 % of them on P2_R2_R2-020-T1_O and -T2_O; worst variant-minus-stock 51.7 dB.
+- Cause, on P2_R2_R2-020-T2_O at 9.19 GHz (20.1 km, terrain 126 m above the antenna line): raising the receiver from 18.5 to 21 m switches the P.526-11 section 4.4.2 principal edge from the ridge near the receiver (point 668, nu 15.6) to a mid-path ridge (point 289, nu 14.2). Before the switch the method counts one secondary edge per side and never sees point 289; after it, both neighbours count at full isolation weight. L_ba jumps from 83.1 to 112.6 dB for a 2.5 m change. This is the three-edge cascade as written, not a coding error, and it is not physical.
+- Why the battery misses it: the synthetic height sweep has one ridge; the rough distance sweep tolerates large steps because stock ITM itself steps 33 dB there (707: 32.5 dB).
+- Consequence: a real-path height check relative to stock would fail 707. The eval/ PR states this so Nick can decide what it means for the keep.
+
 ### Decisions from Nick after B10 (2026-11-22)
 - Land cover: add a public land-cover input (USGS NLCD) for a terminal clutter test on open paths (VA). Input change approved; it goes in as a data/ PR for Nick to merge, with source, edition, and build script recorded.
 - Censored gate: stays overall. Every run reports censored violations by site (b08_censored_by_site_rev1.py); no per-site gate.
