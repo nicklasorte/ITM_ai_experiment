@@ -185,6 +185,85 @@ bottom.
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
 
+### 711-nlcd-open-clutter
+- Date: 2026-11-22. Batch B11. Parent: 707-cascaded-isolated-clutter-at-r. Tier 2.
+- Change: 707's five settings plus `"terminal_clutter_open":"nlcd"`.
+- Run settings (metrics.json cfg): diffraction=delta_cascaded_isolated, diffraction_bound=itm_troposcatter_line, terminal_clutter=p2108_height_gain, terminal_clutter_base=clutter_height, terminal_clutter_frange=hold3; overrides {"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3","terminal_clutter_open":"nlcd"}
+- Predicted (from B11.md, before the run): R3 mean error rises by 5-7 dB and R3 RMS by more than 0.5 dB (fails the site gate); R1 RMS rises; VA RMS changes by less than 1 dB; composite worse than 707. Censored violations fall (more loss everywhere). Most likely: rejected. Falsifies H20/H21 as specified (pixel class with P.2108 section 3.1) if R3 and R1 worsen while VA barely moves.
+- Result: composite 13.3 dB (707-cascaded-isolated-clutter-at-r 12.5); screened 10.7; Phase 2 cell 15.6; long-term level 19.1; shape 5.2. Site RMS R1 13.7 (mean +6.9), R2 19.8 (mean +7.2), R3 11.3 (mean +6.9), VA 12.9 (mean -1.9). Worst cell 28.5. Censored 16.9 %. Paired gain vs 707-cascaded-isolated-clutter-at-r -0.77 (95 % -1.10 to -0.48); screened -0.77 (-1.10 to -0.48).
+- Physics battery: PASS.
+- Censored by site:
+  - R1    5.4 %  (15 of 280)   C 2/6, O 13/274
+  - R2    7.5 %  (89 of 1184)   C 14/106, O 75/1078
+  - VA   41.5 %  (241 of 581)   C 143/386, O 98/195
+- By edge count:
+  - edges 0-1: dead rows violated  68.3 % of   41; measured-row mean error   -3.4 dB
+  - edges   2: dead rows violated  21.6 % of  204; measured-row mean error   +1.1 dB
+  - edges   3: dead rows violated   0.0 % of  376; measured-row mean error  +17.2 dB
+  - edges  4+: dead rows violated   3.0 % of  563; measured-row mean error  +18.0 dB
+- Siting split (mean error, dB):
+  - R1 A clear n 112 mean +8.0 rms 10.5
+  - R1 A obstructed n 304 mean +0.7 rms 6.9
+  - R1 C clear n 156 mean -2.0 rms 13.1
+  - R1 C obstructed n 436 mean +8.1 rms 12.2 censored violated 2 of 6
+  - R1 O clear n 1445 mean +1.2 rms 7.1
+  - R1 O obstructed n 2036 mean +10.6 rms 16.5 censored violated 13 of 274
+  - R2 C clear n 46 mean -26.8 rms 33.4
+  - R2 C obstructed n 186 mean -15.9 rms 27.2 censored violated 14 of 106
+  - R2 O clear n 355 mean -3.7 rms 24.0
+  - R2 O obstructed n 1973 mean +8.8 rms 18.8 censored violated 75 of 1078
+  - R3 O clear n 4005 mean +6.1 rms 10.9
+  - R3 O obstructed n 1144 mean +9.3 rms 11.9
+  - VA C clear n 241 mean -4.7 rms 12.5 censored violated 27 of 27
+  - VA C obstructed n 709 mean +3.8 rms 13.1 censored violated 116 of 359
+  - VA O clear n 810 mean -7.8 rms 15.1 censored violated 10 of 10
+  - VA O obstructed n 802 mean +1.3 rms 11.3 censored violated 88 of 185
+- Decision: reject (composite 0.77 dB worse than 707, 95 % -1.10 to -0.48; R3 RMS +4.5 dB fails the site gate; R1 RMS +3.2).
+- Predictions: Held: R3 mean +0.4 to +6.9 (rise 5-7), R3 RMS +4.5 (site gate fails); R1 RMS rises (10.5 to 13.7); VA RMS within 1 dB (12.9 to 12.9); composite worse (12.5 to 13.3); censored falls (22.8 to 16.9 %). All held. Archived as `arc/711-nlcd-open-clutter` (Pareto front on censored).
+### 712-nlcd-open-forest-only
+- Date: 2026-11-22. Batch B11. Parent: 707-cascaded-isolated-clutter-at-r. Tier 2.
+- Change: 707's five settings plus `"terminal_clutter_open":"nlcd_forest"` (added after 711; 37 tests pass).
+- Run settings (metrics.json cfg): diffraction=delta_cascaded_isolated, diffraction_bound=itm_troposcatter_line, terminal_clutter=p2108_height_gain, terminal_clutter_base=clutter_height, terminal_clutter_frange=hold3; overrides {"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3","terminal_clutter_open":"nlcd_forest"}
+- Predicted (from B11.md, before the run): R3 RMS within 0.5 dB of 707 (6.8); R1 RMS 11.8-12.8 and R2 RMS 19.0-19.6, both more than 0.5 dB worse than 707 (site gate fails); VA RMS within 0.5 dB of 12.9; Phase 2 cell 14.4-15.2; composite 12.8-13.1, worse than 707; censored 18-21 %. Most likely: rejected, which would leave no form of the NLCD point-class test that helps VA without hurting R1 or R2.
+- Result: composite 12.9 dB (707-cascaded-isolated-clutter-at-r 12.5); screened 10.3; Phase 2 cell 14.4; long-term level 19.1; shape 5.2. Site RMS R1 13.2 (mean +5.9), R2 19.9 (mean +5.4), R3 6.7 (mean +0.7), VA 12.9 (mean -2.0). Worst cell 30.1. Censored 17.5 %. Paired gain vs 707-cascaded-isolated-clutter-at-r -0.38 (95 % -0.61 to -0.16); screened -0.38 (-0.61 to -0.16).
+- Physics battery: PASS.
+- Censored by site:
+  - R1    5.4 %  (15 of 280)   C 2/6, O 13/274
+  - R2    8.4 %  (99 of 1184)   C 14/106, O 85/1078
+  - VA   42.0 %  (244 of 581)   C 143/386, O 101/195
+- By edge count:
+  - edges 0-1: dead rows violated  68.3 % of   41; measured-row mean error   -4.7 dB
+  - edges   2: dead rows violated  23.5 % of  204; measured-row mean error   -2.0 dB
+  - edges   3: dead rows violated   0.0 % of  376; measured-row mean error  +16.5 dB
+  - edges  4+: dead rows violated   4.1 % of  563; measured-row mean error  +14.9 dB
+- Siting split (mean error, dB):
+  - R1 A clear n 112 mean +0.1 rms 5.0
+  - R1 A obstructed n 304 mean -2.5 rms 6.2
+  - R1 C clear n 156 mean -2.0 rms 13.1
+  - R1 C obstructed n 436 mean +8.1 rms 12.2 censored violated 2 of 6
+  - R1 O clear n 1445 mean +0.6 rms 6.9
+  - R1 O obstructed n 2036 mean +9.7 rms 16.2 censored violated 13 of 274
+  - R2 C clear n 46 mean -26.8 rms 33.4
+  - R2 C obstructed n 186 mean -15.9 rms 27.2 censored violated 14 of 106
+  - R2 O clear n 355 mean -6.3 rms 28.1
+  - R2 O obstructed n 1973 mean +7.0 rms 18.5 censored violated 85 of 1078
+  - R3 O clear n 4005 mean -1.0 rms 5.6
+  - R3 O obstructed n 1144 mean +6.7 rms 9.0
+  - VA C clear n 241 mean -4.7 rms 12.5 censored violated 27 of 27
+  - VA C obstructed n 709 mean +3.8 rms 13.1 censored violated 116 of 359
+  - VA O clear n 810 mean -8.0 rms 15.2 censored violated 10 of 10
+  - VA O obstructed n 802 mean +1.2 rms 11.4 censored violated 91 of 185
+- Decision: reject (composite 0.38 dB worse than 707, 95 % -0.61 to -0.16; R1 RMS +2.7 and R2 RMS +1.7 dB fail the site gate).
+- Predictions: Held: R3 RMS within 0.5 dB (6.7); VA RMS within 0.5 dB (12.9); Phase 2 cell 14.4 (14.4-15.2); composite 12.9 (12.8-13.1), worse than 707; site gate fails. Missed: R1 RMS 13.2 (predicted 11.8-12.8, worse than predicted); R2 RMS 19.9 (19.0-19.6, worse); censored 17.5 % (18-21, lower). Archived as `arc/712-nlcd-open-forest-only` (Pareto front on censored).
+### B11 worker summary
+- Date: 2026-11-22. Runs 711 and 712, each through the parallel launcher with overrides, scored against 707. No errors, no infra events; runs 32 s each. Both pass the battery; the report-only height check shows 26.0 dB for both (inherited from the 604 base).
+- **Neither is kept.** 711 (all NLCD classes): composite 13.3 dB, 0.77 worse than 707; R3 RMS 6.8 to 11.3 and R1 10.5 to 13.7 fail the site gate. 712 (forest only): composite 12.9, 0.38 worse; R3 holds (6.7) but R1 (13.2) and R2 (19.9) fail.
+- **VA, the target, doesn't move**: RMS 12.9 in both; VA open clear mean error -7.8 and -8.0 dB against about -9 in 707. Terminal clutter at the pixel doesn't explain the VA open-path bias: most VA open receivers are at 12 m, close to the 15 m clutter height, where P.2108-1 section 3.1 adds little, while the low R1 and R2 mobile antennas (2 to 7 m) take 14-18 dB where they're flagged forest.
+- R2's open clear bias drops (-17 to -3.7 and -6.3 dB), but almost all of it is on the two D04 data-problem paths (R2-005-T7, R2-020-T10).
+- Conclusion for H20/H21: rejected as specified (NLCD point class with P.2108-1 section 3.1 at the mobile terminal), in both forms. What remains open for VA is clutter along the path rather than at the terminal (for example ITU-R P.833 vegetation over a path section), which needs land cover sampled along each profile; not planned until a source and an identifiable test exist.
+- Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
+
+
 ### PR #4 changed to report-only (2026-11-22)
 - Nick's decision: the real-path height-gain check is report-only. It's recorded in metrics.json (`physics.checks.height_gain_real`: worst excess, row, 1 dB limit, `within_limit`) and printed in every run summary, but it doesn't affect the battery's pass. Reason: 707 fails it (27.0 dB, principal-edge switch) and every experiment built on 707 would inherit the failure; it becomes a gate once a multi-edge method without the jump exists (package H01).
 - Re-checked from a scratch copy of the PR #6 branch (which includes PR #4): battery passes for stock (excess 0.0 dB), 707 (27.0 dB) and 711 (26.0 dB).

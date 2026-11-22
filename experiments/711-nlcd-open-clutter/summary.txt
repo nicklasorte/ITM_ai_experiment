@@ -1,0 +1,19 @@
+experiment 711-nlcd-open-clutter   (matlab_itm 9bd6a4e, 22-Nov-2026 07:14:46)
+composite  13.3 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   15.6   (baseline 18.3)
+  long-term level RMS             19.1   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  10.7 dB   (baseline 11.9; 36 rows left out)
+  site R1 RMS 13.7  mean +6.9   (baseline 13.3)
+  site R2 RMS 19.8  mean +7.2   (baseline 28.6)
+  site R3 RMS 11.3  mean +6.9   (baseline 9.0)
+  site VA RMS 12.9  mean -1.9   (baseline 15.4)
+  worst cell 28.5   censored violations 16.9% (baseline 28.0%)
+physics battery: PASS
+  height gain on real paths (report only): worst excess 26.0 dB (limit 1) at P2_R2_R2-020-T2_O f 9190 MHz, antenna 2
+max |variant - baseline| = 77.5 dB; runtime 32 s
+
+paired bootstrap: 711-nlcd-open-clutter vs 707-cascaded-isolated-clutter-at-r (500 draws, paths resampled within site and fold)
+  composite gain   -0.77 dB  (SD 0.16; 95% interval -1.10 to -0.48)  not distinguishable from zero
+  screened gain    -0.77 dB  (SD 0.16; 95% interval -1.10 to -0.48)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better
