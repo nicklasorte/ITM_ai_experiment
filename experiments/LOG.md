@@ -185,6 +185,12 @@ bottom.
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
 
+### Decisions from Nick after B10 (2026-11-22)
+- Land cover: add a public land-cover input (USGS NLCD) for a terminal clutter test on open paths (VA). Input change approved; it goes in as a data/ PR for Nick to merge, with source, edition, and build script recorded.
+- Censored gate: stays overall. Every run reports censored violations by site (b08_censored_by_site_rev1.py); no per-site gate.
+- Battery: open an eval/ PR adding a height-gain check on real paths (catches the P.452 eq. (166) inversion that the synthetic ridge misses).
+- Long-term screen: propose a data/ PR adding a terminal-geometry rule (terminal horizon within 0.5 km at more than 50 mrad) to data/links/longterm_screen_rev1.csv.
+
 ### B10 planner note: long-term level and shape (D05); no model change
 - Date: 2026-11-22. Planner and worker: Claude Opus 5.5. Research plan H12 and H19. No scored run.
 - Diagnostic `experiments/D05-longterm/` on 707 (summary.txt has the tables). 707's long-term level score (19.1, cell-balanced) comes from the small >= 1.5 GHz cells, and those from a few links: three paths carry 68-75 % of each cell's squared error. Most already sit in the long-term screen ("record LOS; 30 m profile blocked"); the large unscreened ones (LT2241, LT2246, LT2233) have the terminal tens of metres below a ridge 90-450 m away in the profile, a coordinates-versus-terrain artifact at mountaintop relay sites.
