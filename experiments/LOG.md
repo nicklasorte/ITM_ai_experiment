@@ -185,6 +185,13 @@ bottom.
 - Decision: reject (censored 32.5 %). Not on the Pareto front (702 dominates it), so not archived.
 - Predictions: Held: composite 11.9 (11.6-12.0); censored 32.5 (31-35); R2 open obstructed -9.9.
 
+### Diagnostic: antenna height inversion in the kept model (B08 reviewers 1 and 3)
+- Date: 2026-11-21. Model only (no measurements read). Settings: 707's diffraction and bound, clutter off.
+- Scan of the 936 R1-R3 concealed rows with the mobile antenna below 15 m: raising it to 15 m adds loss on 20 rows in the 604 base (max 4.5 dB): 14 on P2_R1_R1-020-T8_C (3.0 dB at 230 MHz, 4.0-4.5 dB from 410 MHz to 9.2 GHz) and 6 on P2_R1_R1-010-T6_C at 9.2 GHz (0.5-2.2 dB). Stock ITM adds loss on 210 of the same rows, by at most 1.8 dB. ITM classes all 20 as line of sight at both heights.
+- Cause, traced on R1-020-T8 at 910 MHz: the obstruction loss falls with height as it should (L_ba 37.27 to 36.33 dB; L_bs 0 at both). The rise is in ITM's smooth-path reference A_s: P.452-18 eq. (166c)-(166f) lower the smooth surface by h_obs split between the ends by a_t and a_r; raising the transmitter from 6.6 to 15 m changes h_obs (18.2 to 16.5 m) and the split, so the smooth surface under the receiver rises 1.4 m (h_sr 1576.9 to 1578.3 m) and the receiver's height above it falls from 13.1 to 11.7 m, which raises A_s. This is P.452 as written combined with ITM's line-of-sight loss on the smooth path, not a coding defect.
+- Why the battery misses it: the synthetic height-gain check sweeps the receiver on a symmetric ridge, where the smooth-surface split doesn't move against the swept terminal. A real-path height-gain check would catch it; that is an eval/ change for Nick.
+- No change made. Candidate for a later batch: hold the smooth surface fixed from terrain alone (P.452 eq. (163)-(164) without the antenna-dependent eq. (166)) only if a published method supports it (TODO: check P.452-18 and P.1812 text before proposing).
+
 ### B09 planner note: open clear paths (D04) and P.526-16 section 4.4 (abandoned at the battery)
 - Date: 2026-11-21. Planner and worker: Claude Opus 5.5. Targets from the research plan (docs/research/FUTURE_RESEARCH_PLAN_rev1.md): H04 + H21, then H05. No scored run.
 - D04 (`experiments/D04-open-clear-paths/`, diagnostic on 707): H04 not supported (VA sign reversed; knife-edge size 2-3 dB against 10-28 dB errors). R2's open clear bias is two paths (95 % of its squared error). VA's is broad and rises with frequency, consistent with unmodelled clutter (H21), not testable without a land-cover input (Nick's call; a site identifier isn't allowed, H16).
