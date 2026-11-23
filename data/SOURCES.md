@@ -53,3 +53,18 @@ because the ITU doesn't allow redistributing its digital products; only the
 derived per-path values are. `N0_map` equals the existing `N_0` column at
 every path (largest difference 0.00), which confirms the same map and
 midpoint. Hash in `path_refractivity_rev1.csv.sha256`.
+
+## Land cover along Phase 2 profiles (B17, proposed 2026-11-23)
+
+`data/landcover/phase2_profiles_nlcd_rev1.csv` gives the USGS NLCD 2001 land
+cover class (30 m, CONUS, MRLC coverage `mrlc_download__NLCD_2001_Land_Cover_L48`,
+the edition approved for the terminal file in PR #6) at every sample of every
+Phase 2 profile: 688,564 samples on 515 paths, run-length encoded (columns
+`path_id`, `i_first`, `i_last`, `nlcd2001`; transmitter = sample 1). Samples
+are placed on the great circle from transmitter to receiver at the profile's
+own spacing. Built by `data/build_landcover_profiles_rev1.m` from the MRLC
+GeoServer WCS, one window per path. Every sample has a class; the runs tile
+each profile exactly (checked by the builder). Forest classes (41, 42, 43, 90)
+cover 60 % of VA samples, 53 % of R2, 18 % of R1 and 1.5 % of R3. Land cover
+can have changed since the 1960s measurements. Hash in
+`phase2_profiles_nlcd_rev1.sha256`.
