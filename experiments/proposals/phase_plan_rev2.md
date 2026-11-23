@@ -189,6 +189,22 @@ correlation with 707's error; diffraction replacements against stock reached
 - **Terminal clutter from land cover at open terminals** (711, 712).
 - **P.526-16 §4.4 cylinders** (B09): fails continuity.
 
+## Fit with the independent review of 2026-11-23
+
+Nick added `research_review_2026-11-23.md` (five proposals) while this plan
+was being written. How each one sits against the ceilings:
+
+| Review item | Disposition here |
+| --- | --- |
+| 1. Fixed-geometry coupled two-screen oracle (H01, Vogler) | Adopt as the first step of B16's principal-edge repair. Its staging is right: prove the ideal-screen calculation is continuous on the logged R2-020 height sweep before any terrain-to-screen mapping. It's a repair, so it needs P3 to be keepable. |
+| 2. P.617 fading side with a continuous transition | Answered by B15.md. The design there meets the review's conditions (median exactly 707, ITM below 50 %, no mode switch, equation stated before any run). The review's own falsifiers are already met from stored runs: the same-screen gain is +0.01 dB, the full-composite gain (+0.12) sits in the artifact links, and the ceiling for any fading-side model is 0.10 dB. Recommend closing it without a build. |
+| 3. Curvature loss for one isolated crest (H05) | Diagnostic only, as the review says. Low priority for score: a rounded crest adds loss on obstructed rows, where 707 is already pessimistic at R1 and R3. Worth doing only if a cohort of resolved single-crest paths exists; count them first. |
+| 4. Roughness estimator audit (H04) | Fits the hardening phase: a model-only numerical audit with invariance tests. No score claim. Run it alongside B16, since sampling invariance is a defensibility property like continuity. |
+| 5. External height-gain campaign (H02 external) | Outside this repo's data; Nick's call. Nothing here depends on it. |
+
+The review's repository controls ask for the 1 % and 99 % continuity checks
+from B14. P4 above makes them part of the battery, with the pointwise rule.
+
 ## Proposed sequence
 
 1. **Decisions from Nick** (below). Nothing else starts until P3 and P4 are
@@ -196,10 +212,11 @@ correlation with 707's error; diffraction replacements against stock reached
 2. **Eval PR E1** (P4), report-only. Then score 707 on it: the baseline for
    repairs.
 3. **B16, repairs.** One design per defect, each with a source:
-   - Principal-edge jump: candidates are the research package's H01 (Vogler
-     coupled screens) and a continuous weighting of the P.526-11 secondary
-     edges. The planner picks after reading the H01 file and checking
-     continuity on R2-020 T1 and T2.
+   - Principal-edge jump: start with the review's fixed-geometry coupled
+     two-screen oracle (Vogler, NTIA TR-83-124) on the logged R2-020 height
+     sweep; the rival is a continuous weighting of the P.526-11 secondary
+     edges. Only a form that's continuous on R2-020 T1 and T2 goes forward.
+   - Roughness estimator audit (review item 4), model only.
    - Height inversion: fix the smooth surface from terrain alone (P.452-18
      eqs. 163-164 without the antenna-dependent eq. 166), only if the
      P.452-18 or P.1812 text supports it (TODO in the LOG).
