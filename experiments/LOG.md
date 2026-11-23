@@ -264,6 +264,17 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### PRs #8, #9, #10 merged (Nick, 2026-11-23)
+- From now on: the screened composite decides keeps and the full composite
+  must do no harm; the paired interval is at 1 − 0.05/k (next candidate
+  against 707: k = 5, 99 %); repair keeps are allowed for logged defects;
+  lockbox after B18 or two empty batches. The battery reports pointwise
+  continuity at 1/50/99 % (report-only). NLCD along Phase 2 profiles is a
+  frozen input.
+- `best` rebuilt on main b4a7f3c; Mac working copy synced (MD5 checked).
+- Next: B16 (repairs: H01 oracle, roughness audit, crest eligibility count),
+  then B17 (path vegetation).
+
 ### PRs opened after the phase plan (planner note, 2026-11-23)
 - PR #8 (eval, report-only): pointwise continuity at 1/50/99 % and 99 % /
   99.5 % paired bounds. Scratch run: stock 0.00 dB; 707 has new steps where
