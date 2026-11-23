@@ -264,6 +264,22 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### D06 run: P.617-6 troposcatter distribution (diagnostic, 2026-11-23)
+- PR #7 merged (a7ad22d): dN at path midpoints.
+- D06a (time distribution, mode 3): composite 12.5, gain −0.01 dB; screened
+  +0.22; LT shape 5.17 to 5.25. D06b (plus median): composite 12.0, gain
+  +0.51 (95 % −0.09 to +0.75), screened −0.07; LT level 19.1 to 17.5.
+  Phase 2, sites, censored unchanged. Not keep candidates (tail continuity).
+- D06b's gain is in the 36 screened-out artifact links. D06a improves the
+  fading side (99 % shape RMS 6.77 to 5.50 dB at 100-300 km) and worsens the
+  enhancement side (1 % shape mean −1.5 to +4.6 dB), consistent with P.617-6
+  §4 covering p > 50 % and §5 covering enhancements.
+- Predictions: central estimates too pessimistic (effective ρ 0.39 and
+  0.51, the highest yet on 707); both results inside the screen intervals.
+- Next candidate (not registered): P.617-6 on the fading side only, combined
+  with ITM's diffraction loss by power sum (P.452-18 eq. 64 style) so there's
+  no region switch.
+
 ### B14 registered as diagnostic D06 (planner note, 2026-11-23)
 - ITU-R P.617-6 §4.1 troposcatter time distribution (eqs. 1-7b, read from the
   rendered PDF) behind `cfg.time_variability = "p617" | "p617_transhorizon"`

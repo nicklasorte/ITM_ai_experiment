@@ -8,6 +8,7 @@ Pareto front (eligible runs no other run beats on all four):
   401-delta-bullington-p452          composite  11.5 |  14.2  15.0   5.2  67.6%   cell: delta_bullington/itm/itm/itm/itm | 0
   702-deygout-isolated-clutter       composite  11.8 |  13.7  16.6   5.2  29.7%   cell: delta_deygout_isolated/itm/itm/itm/itm | 0
   706-bullington-uc-clutter          composite  11.8 |  15.7  14.6   5.2  82.8%   cell: delta_bullington_uc/itm/itm/itm/itm | 0
+  D06b-p617-time-and-median          composite  12.0 |  13.2  17.5   5.2  22.8%   cell: delta_cascaded_isolated/itm/p617/itm/itm | 0
   505-delta-ep-isolated              composite  12.4 |  18.0  14.0   5.2  91.3%   cell: delta_ep_isolated/itm/itm/itm/itm | 0
   701-cascaded-isolated-clutter      composite  12.5 |  13.2  19.1   5.2  21.4%   cell: delta_cascaded_isolated/itm/itm/itm/itm | 0
   1301-p452-troposcatter             composite  12.8 |  13.2  20.1   5.2  23.5%   cell: delta_cascaded_isolated/itm/p452_45/itm/itm | 0
@@ -23,6 +24,7 @@ MAP-Elites cells (structure | free parameters): elite by composite
   delta_bullington_p526/itm/itm/itm/itm | 0          402-delta-bullington-p526 (11.5)
   delta_deygout_isolated/itm/itm/itm/itm | 0         702-deygout-isolated-clutter (11.8)
   delta_bullington_uc/itm/itm/itm/itm | 0            706-bullington-uc-clutter (11.8)
+  delta_cascaded_isolated/itm/p617/itm/itm | 0       D06b-p617-time-and-median (12.0)
   delta_ep_isolated/itm/itm/itm/itm | 0              505-delta-ep-isolated (12.4)
   delta_cascaded_isolated/itm/itm/itm/itm | 0        701-cascaded-isolated-clutter (12.5)
   delta_cascaded_isolated/itm/p452_45/itm/itm | 0    1301-p452-troposcatter (12.8)
@@ -34,10 +36,10 @@ MAP-Elites cells (structure | free parameters): elite by composite
   itm/itm/itm/itm/itm | 0                            000-baseline (16.0)
   itm/profile_horizons/itm/itm/itm | 0               105-profile-horizon-region (16.6)
 
-Reference models (from 1301-p452-troposcatter):
+Reference models (from D06b-p617-time-and-median):
   baseline composite  16.0 |  18.3  24.6   5.2  28.0%   beaten on all four by: 601-delta-cascaded-isolated-afo-bounded
-  p452     composite  14.2 |  14.1  18.5   9.9  65.6%   beaten on all four by: 502-delta-bullington-afo;603-delta-bullington-afo-bounded;702-deygout-isolated-clutter;703-bullington-clutter
-  p2001    composite  14.0 |  14.1  21.2   6.6  65.7%   beaten on all four by: 1301-p452-troposcatter;502-delta-bullington-afo;603-delta-bullington-afo-bounded;701-cascaded-isolated-clutter;702-deygout-isolated-clutter;703-bullington-clutter
+  p452     composite  14.2 |  14.1  18.5   9.9  65.6%   beaten on all four by: 502-delta-bullington-afo;603-delta-bullington-afo-bounded;702-deygout-isolated-clutter;703-bullington-clutter;D06b-p617-time-and-median
+  p2001    composite  14.0 |  14.1  21.2   6.6  65.7%   beaten on all four by: 1301-p452-troposcatter;502-delta-bullington-afo;603-delta-bullington-afo-bounded;701-cascaded-isolated-clutter;702-deygout-isolated-clutter;703-bullington-clutter;D06b-p617-time-and-median
 
 Not eligible:
   101-ep-two-horizon                 physics fail

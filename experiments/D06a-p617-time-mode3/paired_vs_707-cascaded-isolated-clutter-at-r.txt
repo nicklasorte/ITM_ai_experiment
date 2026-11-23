@@ -1,0 +1,4 @@
+paired bootstrap: D06a-p617-time-mode3 vs 707-cascaded-isolated-clutter-at-r (500 draws, paths resampled within site and fold)
+  composite gain   -0.01 dB  (SD 0.16; 95% interval -0.24 to +0.36)  not distinguishable from zero
+  screened gain    +0.22 dB  (SD 0.14; 95% interval -0.11 to +0.40)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

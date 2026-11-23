@@ -1,0 +1,19 @@
+experiment D06b-p617-time-and-median   (matlab_itm 9bd6a4e, 23-Nov-2026 17:46:30)
+composite  12.0 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   13.2   (baseline 18.3)
+  long-term level RMS             17.5   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  10.0 dB   (baseline 11.9; 36 rows left out)
+  site R1 RMS 10.5  mean +4.1   (baseline 13.3)
+  site R2 RMS 18.2  mean -0.2   (baseline 28.6)
+  site R3 RMS 6.8  mean +0.4   (baseline 9.0)
+  site VA RMS 12.9  mean -2.9   (baseline 15.4)
+  worst cell 29.0   censored violations 22.8% (baseline 28.0%)
+physics battery: PASS
+  height gain on real paths (report only): worst excess 27.0 dB (limit 1) at P2_R2_R2-020-T2_O f 9190 MHz, antenna 2
+max |variant - baseline| = 77.5 dB; runtime 36 s
+
+paired bootstrap: D06b-p617-time-and-median vs 707-cascaded-isolated-clutter-at-r (500 draws, paths resampled within site and fold)
+  composite gain   +0.51 dB  (SD 0.22; 95% interval -0.09 to +0.75)  not distinguishable from zero
+  screened gain    -0.07 dB  (SD 0.14; 95% interval -0.41 to +0.14)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better
