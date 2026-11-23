@@ -38,3 +38,18 @@ frozen set; `score_rev1` reports scores with and without them, and a kept
 change must improve both. Generated from
 `experiments/D01-longterm-level/rows_rev1.csv`; hash in
 `longterm_screen_rev1.sha256`.
+
+## Refractivity at path midpoints (B14, proposed 2026-11-23)
+
+`data/links/path_refractivity_rev1.csv` gives, for each of the 840 paths in
+`profiles/profiles_index_rev1.csv`, the average annual radio-refractivity
+lapse rate through the lowest 1 km of the atmosphere, `dN` (N-units/km), and
+the sea-level surface refractivity `N0_map`, at the path midpoint. Source:
+the ITU-R digital maps DN50.txt and N050.txt named in ITU-R P.617-6 Table 1
+(1.5° grid, originating from ITU-R P.452), read by bilinear interpolation
+with the edge handling of the ITU-R P.452 reference implementation. Built by
+`data/build_refractivity_rev1.m`. The maps themselves aren't in this repo,
+because the ITU doesn't allow redistributing its digital products; only the
+derived per-path values are. `N0_map` equals the existing `N_0` column at
+every path (largest difference 0.00), which confirms the same map and
+midpoint. Hash in `path_refractivity_rev1.csv.sha256`.
