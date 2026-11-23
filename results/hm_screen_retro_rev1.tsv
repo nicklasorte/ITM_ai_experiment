@@ -1,0 +1,39 @@
+parent	run	verdict	parent_composite	gain_min	gain_mean	gain_max	gain_actual	screened_gain_max	screened_gain_actual	worst_site_min_rise	rho_required	rho_effective	site_change_actual
+stock	101-ep-two-horizon	NOT_RULED_OUT	16.025	-1.315	0.042	1.649	0.756	1.205	0.346	-0.632	0.345	0.471	R1:-0.11 R2:-2.57 R3:-0.04 VA:+0.12
+stock	102-deygout-three-edge	NOT_RULED_OUT	16.025	-2.494	-0.769	1.323	-0.740	1.344	-0.241	-0.508	0.543	0.016	R1:+0.13 R2:-1.09 R3:-0.01 VA:-0.63
+stock	103-p526-cascaded	NOT_RULED_OUT	16.025	-5.036	-2.483	0.777	-3.012	1.264	-1.795	-1.701	0.877	-0.193	R1:+1.27 R2:+1.53 R3:+0.22 VA:-0.92
+stock	104-bullington	NOT_RULED_OUT	16.025	-1.661	-0.142	1.622	0.308	1.352	0.207	-0.273	0.302	0.272	R1:+0.08 R2:-2.46 R3:-0.01 VA:-0.46
+stock	105-profile-horizon-region	NOT_RULED_OUT	16.025	-1.288	-0.374	0.891	-0.543	0.918	-0.553	-2.371	0.602	-0.171	R1:+1.96 R2:+1.72 R3:+1.77 VA:+0.34
+stock	201-ep-isolated-blocked	NOT_RULED_OUT	16.025	-3.859	-0.591	4.088	2.275	3.277	1.445	-0.838	0.355	0.678	R1:-2.31 R2:-7.00 R3:-2.11 VA:+1.11
+stock	202-p526-double-edge-blocked	NOT_RULED_OUT	16.025	-3.866	-0.595	4.088	2.271	3.276	1.431	-0.838	0.355	0.678	R1:-2.31 R2:-7.02 R3:-2.11 VA:+1.11
+stock	301-bullington-phased	NOT_RULED_OUT	16.025	-1.374	-0.150	1.254	0.126	1.169	0.252	-0.134	0.338	0.209	R1:+0.02 R2:-2.17 R3:-0.01 VA:-0.38
+stock	401-delta-bullington-p452	NOT_RULED_OUT	16.025	-6.470	-1.406	6.905	4.569	4.354	1.841	-3.709	0.470	0.807	R1:-3.10 R2:-9.11 R3:-2.52 VA:-0.23
+stock	402-delta-bullington-p526	NOT_RULED_OUT	16.025	-6.572	-1.479	6.880	4.508	4.333	1.800	-3.661	0.481	0.804	R1:-3.07 R2:-9.11 R3:-2.49 VA:-0.03
+stock	501-delta-string-ep	CANNOT_PASS	16.025	-23.113	-16.953	-7.437	-11.936	-12.295	-15.984	-5.549	inf	0.620	R1:+1.30 R2:-6.77 R3:-2.01 VA:+1.07
+stock	502-delta-bullington-afo	NOT_RULED_OUT	16.025	-6.244	-1.102	7.356	4.894	5.475	2.751	-3.898	0.312	0.797	R1:-2.75 R2:-11.86 R3:-1.02 VA:-3.30
+stock	503-delta-p526-cascaded	CANNOT_PASS	16.025	-9.466	-4.809	2.182	-0.936	-0.237	-3.271	-5.625	inf	0.636	R1:-1.29 R2:-7.32 R3:-0.91 VA:-1.56
+stock	504-delta-deygout	NOT_RULED_OUT	16.025	-7.856	-2.491	6.420	3.073	4.052	0.546	-4.312	0.601	0.731	R1:-3.05 R2:-8.11 R3:-2.58 VA:+0.07
+stock	505-delta-ep-isolated	NOT_RULED_OUT	16.025	-9.333	-3.534	6.102	3.616	2.579	-0.004	-1.741	0.740	0.830	R1:+0.43 R2:-1.13 R3:-0.90 VA:+2.34
+stock	506-bullington-blocked-paths	NOT_RULED_OUT	16.025	-2.460	-0.052	3.044	1.426	2.784	1.275	-2.194	0.151	0.520	R1:-2.72 R2:-6.82 R3:-1.26 VA:-0.86
+stock	601-delta-cascaded-isolated-afo-bounded	NOT_RULED_OUT	16.025	-5.210	-1.091	5.063	2.671	4.004	1.353	-2.201	0.355	0.686	R1:-0.96 R2:-9.13 R3:+0.16 VA:-3.64
+stock	602-delta-cascaded-isolated-afo	CANNOT_PASS	16.025	-11.607	-6.834	0.154	-2.582	-2.447	-5.107	-2.201	inf	0.681	R1:+1.93 R2:-9.11 R3:+0.16 VA:-3.10
+stock	603-delta-bullington-afo-bounded	NOT_RULED_OUT	16.025	-5.849	-0.915	7.062	4.856	5.188	2.709	-3.898	0.312	0.804	R1:-3.15 R2:-11.86 R3:-1.02 VA:-3.28
+stock	604-delta-cascaded-isolated-bounded	NOT_RULED_OUT	16.025	-4.987	-0.761	5.807	3.246	4.487	1.751	-6.124	0.296	0.697	R1:-2.33 R2:-9.26 R3:-2.17 VA:-1.69
+stock	605-delta-p526-cascaded-bounded	NOT_RULED_OUT	16.025	-4.655	-0.703	5.290	2.585	4.324	1.419	-5.625	0.293	0.631	R1:-1.71 R2:-7.32 R3:-0.91 VA:-1.55
+stock	701-cascaded-isolated-clutter	NOT_RULED_OUT	16.025	-5.507	-0.976	6.381	3.537	5.060	2.043	-6.124	0.314	0.713	R1:-2.62 R2:-10.92 R3:-2.17 VA:-2.30
+stock	702-deygout-isolated-clutter	NOT_RULED_OUT	16.025	-6.732	-1.561	7.119	4.197	5.110	2.172	-6.420	0.418	0.768	R1:-3.23 R2:-9.88 R3:-2.30 VA:-1.57
+stock	703-bullington-clutter	NOT_RULED_OUT	16.025	-6.817	-1.475	7.588	5.061	5.031	2.335	-6.964	0.449	0.818	R1:-4.41 R2:-11.24 R3:-2.52 VA:-1.92
+stock	704-cascaded-isolated-constant	NOT_RULED_OUT	16.025	-5.425	-0.957	6.210	3.449	4.890	1.954	-6.124	0.316	0.711	R1:-2.66 R2:-10.61 R3:-2.17 VA:-1.35
+stock	705-deygout-isolated	NOT_RULED_OUT	16.025	-6.443	-1.509	6.493	3.700	4.484	1.676	-6.420	0.437	0.747	R1:-1.50 R2:-7.64 R3:-2.30 VA:-0.52
+stock	706-bullington-uc-clutter	NOT_RULED_OUT	16.025	-8.487	-2.796	6.655	4.186	3.554	1.075	-5.018	0.647	0.825	R1:-2.04 R2:-5.04 R3:-1.09 VA:-0.34
+stock	707-cascaded-isolated-clutter-at-r	NOT_RULED_OUT	16.025	-5.334	-0.892	6.224	3.520	4.904	2.025	-6.124	0.305	0.715	R1:-2.86 R2:-10.46 R3:-2.17 VA:-2.52
+stock	708-deygout-isolated-clutter-at-r	NOT_RULED_OUT	16.025	-6.636	-1.522	6.994	4.153	4.985	2.129	-6.420	0.418	0.768	R1:-3.20 R2:-9.48 R3:-2.30 VA:-1.66
+stock	709-cascaded-isolated-clutter-at-r-extend	NOT_RULED_OUT	16.025	-5.374	-0.908	6.271	3.529	4.951	2.034	-6.124	0.306	0.714	R1:-2.84 R2:-10.54 R3:-2.17 VA:-2.52
+stock	711-nlcd-open-clutter	NOT_RULED_OUT	16.025	-6.051	-1.416	5.989	2.750	4.669	1.256	-1.897	0.391	0.659	R1:+0.40 R2:-8.83 R3:+2.37 VA:-2.51
+stock	712-nlcd-open-forest-only	NOT_RULED_OUT	16.025	-5.582	-1.012	6.432	3.141	5.111	1.646	-6.458	0.317	0.661	R1:-0.11 R2:-8.70 R3:-2.25 VA:-2.47
+707	708-deygout-isolated-clutter-at-r	NOT_RULED_OUT	12.505	-2.389	-0.433	2.174	0.634	1.553	0.104	-0.710	0.521	0.460	R1:-0.34 R2:+0.98 R3:-0.13 VA:+0.86
+707	709-cascaded-isolated-clutter-at-r-extend	CANNOT_PASS	12.505	-0.081	0.004	0.096	0.009	0.096	0.009	0.000	inf	0.054	R1:+0.02 R2:-0.08 R3:+0.00 VA:+0.00
+707	711-nlcd-open-clutter	NOT_RULED_OUT	12.505	-2.237	-0.842	1.187	-0.769	1.187	-0.769	0.241	0.633	0.045	R1:+3.26 R2:+1.64 R3:+4.54 VA:+0.00
+707	712-nlcd-open-forest-only	NOT_RULED_OUT	12.505	-1.559	-0.327	1.475	-0.379	1.475	-0.379	-2.196	0.413	-0.037	R1:+2.74 R2:+1.76 R3:-0.08 VA:+0.04
+707	b12_deltas_1201_rev1.csv	CANNOT_PASS	12.505	-0.161	-0.020	0.128		0.133		-0.177	inf	nan	
+707	b12_deltas_1202_rev1.csv	CANNOT_PASS	12.505	-0.008	0.000	0.008		0.009		0.000	inf	nan	

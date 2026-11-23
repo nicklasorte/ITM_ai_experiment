@@ -264,6 +264,33 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### Tooling: history-matching screen, model floor, repo skills (2026-11-22)
+- `experiments/batches/hm_screen_rev1.py` bounds the composite, screened
+  and site changes of a candidate from its model-only deltas and the
+  parent's per-cell residuals (method: `experiments/proposals/history_matching_rev1.md`).
+  It reproduces 707's composite exactly (12.505 dB).
+- Retrospective check on 36 past runs (`results/hm_screen_retro_rev1.tsv`):
+  every actual gain is inside its interval; 4 runs come out CANNOT_PASS
+  (501, 503, 602, 709) and all 4 were real rejections; no run that would
+  have passed is screened out. B11 isn't ruled out by the bound (it failed
+  by harm), but the central estimate predicted it: 711 −0.84 dB (actual
+  −0.77), 712 −0.33 (actual −0.38).
+- B12 screened from the smoke-test deltas: largest possible gain 0.128 dB
+  (1201) and 0.008 dB (1202). Both can't pass; proposed not to run them,
+  pending Nick.
+- `experiments/batches/model_floor_rev1.py` writes `results/model_floor_rev1.csv`:
+  the Bayes error of the fixed inputs, from the 21 long-term groups with
+  identical inputs. It allows a composite as low as 0.33 dB, so it doesn't
+  limit progress; Phase 2 has no identical-input rows.
+- Four repo skills and the reviewer criteria are in `experiments/skills/`.
+
+### B12 registered (planner note, 2026-11-22)
+- 1201 (curved-Earth reflection phase, H02) and 1202 (two-leg time
+  variability, H03); plan and predictions in `experiments/batches/B12.md`,
+  commit 5d77508. Parity 6.8e-13 dB; 39 tests pass. Not run: the Mac batch
+  queue stopped starting jobs (infra), and the screen above later showed
+  neither can pass.
+
 ### PR #4 changed to report-only (2026-11-22)
 - Nick's decision: the real-path height-gain check is report-only. It's recorded in metrics.json (`physics.checks.height_gain_real`: worst excess, row, 1 dB limit, `within_limit`) and printed in every run summary, but it doesn't affect the battery's pass. Reason: 707 fails it (27.0 dB, principal-edge switch) and every experiment built on 707 would inherit the failure; it becomes a gate once a multi-edge method without the jump exists (package H01).
 - Re-checked from a scratch copy of the PR #6 branch (which includes PR #4): battery passes for stock (excess 0.0 dB), 707 (27.0 dB) and 711 (26.0 dB).
