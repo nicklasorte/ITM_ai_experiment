@@ -876,3 +876,55 @@ tc.verifyError(@() itm_ref(pfl, 7.3, 2, f, c1), 'itmexp:cfg');
 % At defaults a row field changes nothing
 tc.verifyEqual(itm_ref(pfl, 7.3, 2, f, setfield(c0, 'row', row)), itm_ref(pfl, 7.3, 2, f, c0)); %#ok<SFLD>
 end
+
+function test_faddeeva_reference(tc)
+% faddeeva_w_rev1 against SciPy 1.18 scipy.special.wofz (independent
+% implementation), values generated 2026-11-23 (B16a); and the real-axis
+% identity w(i x) = erfcx(x).
+R = [0.5, 0.5, 0.5331567079121748, 0.2304882313844585;
+    -3.0, 2.0, 0.09271076642644344, -0.1283169622282617;
+    10.0, 0.01, 5.728711622490079e-05, 0.05670533605480961;
+    -25.0, 15.0, 0.009967664050400801, -0.01659321887412511;
+    2.0, 30.0, 0.018712949469146704, 0.0012461537277561354;
+    0.0, 0.0, 1.0, 0.0;
+    7.5, 7.5, 0.03777752935845999, 0.037443293729595144;
+    -0.2, 1e-06, 0.9607883986752431, -0.2197526245074582];
+w = faddeeva_w_rev1(R(:, 1) + 1i * R(:, 2));
+ref = R(:, 3) + 1i * R(:, 4);
+tc.verifyLessThan(max(abs(w - ref) ./ abs(ref)), 1e-12);
+x = [0 0.3 2 9 30]';
+tc.verifyEqual(real(faddeeva_w_rev1(1i * x)), erfcx(x), 'RelTol', 1e-12);
+% Lower half-plane by reflection: w(conj(z)) = conj(w(-z))
+z = [1 - 2i; -4 - 0.5i];
+tc.verifyEqual(faddeeva_w_rev1(z), conj(faddeeva_w_rev1(-conj(z))), 'RelTol', 1e-12);
+tc.verifyError(@() faddeeva_w_rev1(NaN), 'itmexp:faddeeva');
+end
+
+function test_vogler_two_screen(tc)
+% NTIA TR-26-580 (2025) Table 12 cases 21-25 (two knife edges, 1500 MHz,
+% antennas at 0 m, distances from the transmitter) against its Table 17
+% Vogler values; single edge against the exact Fresnel loss; reversal;
+% large-nu limit L_ep + L_c (ITU-R P.526-16 eq. (39)-(40)).
+cases = {[800 2000 2800], [2.4 2.0], 13.991; [160 400 560], [2.4 2.0], 18.626; ...
+    [1600 4000 5600], [240 200], 71.448; [16 40 56], [2.4 2.0], 32.244; ...
+    [32 80 112], [1.2 1.0], 19.558};
+for c = 1:size(cases, 1)
+    L = vogler_two_screen_rev1([0 cases{c, 1}], [0 cases{c, 2} 0], 1500);
+    tc.verifyEqual(L, cases{c, 3}, 'AbsTol', 1.5e-3, sprintf('TR-26-580 case %d', 20 + c));
+end
+lambda = 299.792458 / 1500;
+for h = [-3 0 5 40]
+    L1 = vogler_two_screen_rev1([0 4000 9000], [0 h 0], 1500);
+    nu = h * sqrt(2 * 9000 / (lambda * 4000 * 5000));
+    tc.verifyEqual(L1, J_exact(nu), 'AbsTol', 1e-6);
+end
+x = [0 6000 11000 15000]; z = [10 40 30 5];
+tc.verifyEqual(vogler_two_screen_rev1(x, z, 1500), ...
+    vogler_two_screen_rev1(x(end) - fliplr(x), fliplr(z), 1500), 'AbsTol', 1e-9);
+[L, ~, D] = vogler_two_screen_rev1([0 4000 9000 15000], [0 200 200 0], 1500);
+tc.verifyEqual(L, D.L_ep_db + D.L_c_db, 'AbsTol', 0.01);
+tc.verifyEqual(D.L_c_db, 10 * log10(9000 * 11000 / (5000 * 15000)), 'AbsTol', 1e-12);
+% Tighter integration tolerance changes nothing visible
+tc.verifyEqual(vogler_two_screen_rev1(x, z, 9190, 1e-12), vogler_two_screen_rev1(x, z, 9190), 'AbsTol', 1e-7);
+tc.verifyError(@() vogler_two_screen_rev1([0 1 2 3 4], [0 1 1 1 0], 1500), 'itmexp:vogler');
+end
