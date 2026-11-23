@@ -170,6 +170,8 @@ correlation with 707's error; diffraction replacements against stock reached
 | 2 | Vegetation along the path on terrain-clear rows (M11) | 0.87 dB at a 5 dB floor; VA bias alone 0.19 dB | `data/` PR: NLCD along each Phase 2 profile; ITU-R P.833 primary text | About 25 % | Right sign on the rows that are 6.4 dB optimistic and break every censored bound; the only lead with new path-specific input |
 | 2b | The same term on the no-C Deygout parent (708) | 708 scores 0.63 dB better than 707 but fails the censored gate (32.5 %) | The M11 term; one extra run | About 15 % | A loss-adding term on clear rows is what that family lacks; needs censored violations down by 3.5 points |
 | 3 | Effective antenna height (M13) | Line-of-sight class: 3.65 dB perfect, 4.18 screened, the largest class | Code for `cfg.effective_height`; parameter-free forms first | About 15 % | Big class, but bias-only gain is 0.11 dB, and a fitted blend must buy 0.5 dB |
+| 1b | Roughness estimator audit (review item 4, H04) | No score claim; defensibility (sampling invariance) | Nothing new; model only | Not a keep candidate | Cheap, and invariance is a property an opposing filer would test |
+| 1c | Rounded-crest eligibility count (review item 3, H05) | Unknown until counted; obstructed rows where 707 is already pessimistic | Raw Phase 2 survey vertices | Diagnostic only | One afternoon of counting decides whether it's worth doing at all |
 | 4 | Enhancement side: ducting and layer reflection (M15) | 0.07 to 0.12 dB full; 0.25 to 0.36 screened | P1 decided; P.452-18 or P.2001-6 anomalous-propagation text | About 5 % | Can only pass if P1 is adopted, and only if nearly perfect |
 | — | Closed | | | | See below |
 
@@ -191,19 +193,19 @@ correlation with 707's error; diffraction replacements against stock reached
 
 ## Fit with the independent review of 2026-11-23
 
-Nick added `research_review_2026-11-23.md` (five proposals) while this plan
-was being written. How each one sits against the ceilings:
+Nick added `research_review_2026-11-23.md` (five proposals, revised through
+commit e80ddfc). Its verdicts and how each joins the agenda:
 
-| Review item | Disposition here |
-| --- | --- |
-| 1. Fixed-geometry coupled two-screen oracle (H01, Vogler) | Adopt as the first step of B16's principal-edge repair. Its staging is right: prove the ideal-screen calculation is continuous on the logged R2-020 height sweep before any terrain-to-screen mapping. It's a repair, so it needs P3 to be keepable. |
-| 2. P.617 fading side with a continuous transition | Answered by B15.md. The design there meets the review's conditions (median exactly 707, ITM below 50 %, no mode switch, equation stated before any run). The review's own falsifiers are already met from stored runs: the same-screen gain is +0.01 dB, the full-composite gain (+0.12) sits in the artifact links, and the ceiling for any fading-side model is 0.10 dB. Recommend closing it without a build. |
-| 3. Curvature loss for one isolated crest (H05) | Diagnostic only, as the review says. Low priority for score: a rounded crest adds loss on obstructed rows, where 707 is already pessimistic at R1 and R3. Worth doing only if a cohort of resolved single-crest paths exists; count them first. |
-| 4. Roughness estimator audit (H04) | Fits the hardening phase: a model-only numerical audit with invariance tests. No score claim. Run it alongside B16, since sampling invariance is a defensibility property like continuity. |
-| 5. External height-gain campaign (H02 external) | Outside this repo's data; Nick's call. Nothing here depends on it. |
+| Review item | Review verdict | Added to the agenda as |
+| --- | --- | --- |
+| 1. Fixed-geometry coupled two-screen oracle (H01, Vogler NTIA TR-83-124) | Advance first | **B16a**, the first step of the principal-edge repair. Numerical stage first (converged, continuous on the logged R2-020 sweep), measurements only after. The review's own challenge stands: fixed screens make continuity nearly automatic, so a keep candidate also needs a predeclared terrain-to-screen selector with its own transition check. It's a repair, so it needs P3 (PR #9) to be keepable. |
+| 4. Exact path-length roughness audit (H04, NTIA TR-82-100) | Advance as a numerical audit | **B16b**, model only, alongside B16a. Invariance tests (collinear vertex insertion, reversal, affine tilt, flat segments) on the 2×2 of detrending and quantile weighting, keeping the short-span Δh = 0 branch. Stops if Δh is already invariant. Reports feature differences before any score; no model change unless held-out evidence supports it. |
+| 3. Rounded crest on one isolated, resolved ridge (H05, P.526-16 §4.2) | Conditional diagnostic | **B16c, eligibility count only**: paths and sites with one tangent-defined crest, native survey vertices on both flanks, 0.6 first-Fresnel clearance on both arms. The diagnostic runs only if the count supports independent replication. Low score priority: a rounded crest adds loss where 707 is already pessimistic at R1 and R3. |
+| 2. P.617 fading side | Closed by B15 | Closed. The review's caveat is recorded: B15's ceiling covers its restricted family, not event-conditioned refractivity or anomalous propagation, which the historical set lacks. |
+| 5. External curved-Earth reflection campaign (H02) | Needs new measurements | **Outside this repo.** A measurement campaign is Nick's decision; nothing here depends on it. |
 
 The review's repository controls ask for the 1 % and 99 % continuity checks
-from B14. P4 above makes them part of the battery, with the pointwise rule.
+from B14; PR #8 adds them, pointwise, as report-only.
 
 ## Proposed sequence
 
@@ -216,7 +218,9 @@ from B14. P4 above makes them part of the battery, with the pointwise rule.
      two-screen oracle (Vogler, NTIA TR-83-124) on the logged R2-020 height
      sweep; the rival is a continuous weighting of the P.526-11 secondary
      edges. Only a form that's continuous on R2-020 T1 and T2 goes forward.
-   - Roughness estimator audit (review item 4), model only.
+   - Roughness estimator audit (review item 4, B16b), model only.
+   - Rounded-crest eligibility count (review item 3, B16c); the diagnostic
+     itself only if the count supports it.
    - Height inversion: fix the smooth surface from terrain alone (P.452-18
      eqs. 163-164 without the antenna-dependent eq. 166), only if the
      P.452-18 or P.1812 text supports it (TODO in the LOG).
