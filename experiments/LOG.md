@@ -264,6 +264,33 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### B15 planned and ruled out by ceiling; phase plan rev 2 (planner note, 2026-11-23)
+- Planner: Claude Fable 5.2. No code, no runs. `experiments/batches/B15.md`,
+  `experiments/proposals/phase_plan_rev2.md`, tool `experiments/batches/hm_ceiling_rev1.py`.
+- B15 design: 707's troposcatter bound applied at each time percentage, with
+  the scatter component fading by P.617-6 eq. (6) above 50 % (1501), and the
+  P.452-18 eq. (64) form as a rival (1502). Median unchanged in 1501; no
+  region switch; step inventory and checks in B15.md.
+- Ceiling: a perfect fix of every fading-side shape bias gains 0.07-0.10 dB
+  (screened 0.11-0.12); both sides 0.14-0.21 (screened 0.36-0.48). 707 with
+  D06a's fading side scores +0.12 (screened +0.01). Registered: both rejected
+  on gain; recommended not to build. Time variability is closed as a score
+  lever under the current rule.
+- Cell-mean ceiling for everything: screened composite 9.91 to 8.78 if every
+  cell mean were zero (Phase 2 0.37, level 0.41, shape 0.35). The rest is
+  spread inside cells.
+- Correction: B14.md and the D06 summary given to Nick said ITM predicts too
+  little fading at 99 %. The sign was read backwards: ITM predicts too much fading
+  beyond 100 km (shape error +1.1 to +4.0 dB by cell), and P.617-6's narrower
+  spread helps at 100-300 km but is too narrow beyond 300 km above 1 GHz.
+- Coupling loss checked and closed: the raw long-term file has antenna gains
+  on 93 of 1,114 rows, 1 of the 548 scored rows.
+- Protocol recommendations for Nick (phase plan): gate on the screened
+  composite with the full composite held to no harm; Bonferroni level for
+  the paired interval; a repair-keep class for logged physics defects;
+  pointwise and tail continuity in the battery (report-only PR); an
+  end-of-phase rule and lockbox trigger.
+
 ### D06 run: P.617-6 troposcatter distribution (diagnostic, 2026-11-23)
 - PR #7 merged (a7ad22d): dN at path midpoints.
 - D06a (time distribution, mode 3): composite 12.5, gain −0.01 dB; screened

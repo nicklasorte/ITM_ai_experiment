@@ -23,17 +23,23 @@ whose predictions were written after a score was seen isn't a valid test.
    - a public source with section and equation numbers
    - one sentence of physical rationale
    - the switch or code change, with defaults that keep stock behaviour
-3. **Code, if needed.** Edit only `itm_variant/`. Add a switch in
+3. **Ceiling.** Before any code, state the family's ceiling: run
+   `python3 experiments/batches/hm_ceiling_rev1.py parts` (and `variability`
+   for time-distribution changes) and give the perfect-bias gain for the
+   cells the change acts on. If that's under 0.3 dB, the change needs
+   path-specific information that reduces spread inside cells; say what it
+   is, or stop and record the family as ruled out (B15.md is the pattern).
+4. **Code, if needed.** Edit only `itm_variant/`. Add a switch in
    `params_exp.m` with a default that reproduces the parent. Add a test in
    `itm_variant/tests/test_diffraction_rev1.m`. Run the suite; every test
    must pass. Version-suffix new files (`_rev1`).
-4. **Parity.** At default settings the variant must match the stored
+5. **Parity.** At default settings the variant must match the stored
    baseline within 1e-9 dB on every Phase 2 and long-term row. Use
    `run_eval_rev1(Tag="000-baseline", Parity=true)` as a batch job, or the
    interactive check in B12.md if the queue is down.
-5. **Smoke test (model only).** Use the `itm-smoke-test` skill. Never read
+6. **Smoke test (model only).** Use the `itm-smoke-test` skill. Never read
    a measured-loss column in this step.
-6. **History-matching screen.** Run:
+7. **History-matching screen.** Run:
 
    ```bash
    python3 experiments/batches/hm_screen_rev1.py \
@@ -46,14 +52,14 @@ whose predictions were written after a score was seen isn't a valid test.
    - NOT_RULED_OUT: carry the central estimate and the required ρ into the
      predictions. If the required ρ is above about 0.5 against 707, explain
      why the change would line up with the current error that strongly.
-7. **Write `experiments/batches/Bnn.md`.** Follow `B12.md`:
+8. **Write `experiments/batches/Bnn.md`.** Follow `B12.md`:
    - Purpose, Code, Checks before the runs, Smoke test, Screen, Logged
      evidence, Experiments.
    - For each experiment: `Change (launcher overrides):` line with the full
      JSON, `Source:`, numeric `Predicted:` values per site and for
      composite, screened gain and censored violations, and `Confidence:`.
    - Record any deviation from a proposal's text before any score.
-8. **Commit and push.** Stage only `itm_variant/`, `experiments/` and
+9. **Commit and push.** Stage only `itm_variant/`, `experiments/` and
    `results/`. Run
    `python3 .github/scripts/guard_rev1.py --range <base>..HEAD`. Commit
    message: what changed and "score delta: none", then the

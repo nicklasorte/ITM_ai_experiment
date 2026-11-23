@@ -38,4 +38,4 @@ exists. It reads geometry, frequency and climate columns only. Reading a
    time percentage for long-term: rows changed (|d| > 0.01 dB), mean
    change, and range. Report no error against measurements.
 
-Then run the history-matching screen (`itm-register-batch`, step 6).
+Then run the history-matching screen (`itm-register-batch`, step 7).
