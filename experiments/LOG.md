@@ -264,6 +264,21 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### PRs opened after the phase plan (planner note, 2026-11-23)
+- PR #8 (eval, report-only): pointwise continuity at 1/50/99 % and 99 % /
+  99.5 % paired bounds. Scratch run: stock 0.00 dB; 707 has new steps where
+  stock is smooth, 21.9 dB at 50 % (rough distance sweep, 12 km) and 23.2 dB
+  at 1 % (40 km), hidden today by stock's 33 dB step elsewhere; D06a's
+  tail-only steps (6.5 dB at 1 %) show up too.
+- PR #9 (FRAMEWORK.md): screened composite decides with the full composite
+  held to no harm; Bonferroni level; repair keeps; lockbox trigger.
+- PR #10 (data): NLCD 2001 class at all 688,564 Phase 2 profile samples
+  (forest share of samples: VA 60 %, R2 53 %, R1 18 %, R3 1.5 %). Infra: one
+  unreadable MRLC response on the first build; the builder now retries.
+- Nick's five reviewed experiments (`research_review_2026-11-23.md`, through
+  e80ddfc) folded into the phase plan: H01 oracle (B16a), H04 roughness
+  audit (B16b), H05 eligibility count (B16c); P.617 closed; H02 external.
+
 ### Decisions from Nick after the phase plan (2026-11-23)
 - "Do what you recommend": B15 recorded as screened out by ceiling (not built).
 - Protocol recommendations P1 (screened gate, full composite held to no harm),
