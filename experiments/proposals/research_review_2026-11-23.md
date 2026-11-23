@@ -55,3 +55,27 @@ B12 screened the curved-phase change out as a keep candidate on the frozen datas
 Advance H01 as a reference diagnostic and H04 as a numerical audit. Run H05 only if the profile-support count justifies it. Treat the curved-reflection work as a new-data campaign. Close the P.617 current-data keep proposal under B15’s headroom result. No proposal guarantees a score gain.
 
 Before any future run, register the exact parent, inputs, cohort, equations, predictions and stop rules; use current screening membership; apply existing score and physics gates, including the distance-continuity checks from B14. No experiment was executed in preparing this document.
+
+## Detailed execution and adversarial review addendum (2026-11-23)
+
+### 1. Two-screen oracle
+
+**Estimand:** the difference in excess diffraction loss between the coupled two-screen field and the independent-edge control at identical physical screen coordinates, followed by the height derivative of each prediction near 707's principal-edge switch. Record crest coordinates, clearance, separation, wavelength, and the 707 selected edge at every sweep point. Use a dense sweep around the switch, and repeat after terminal reversal. The oracle passes its numerical stage only if the complex-field calculation converges under integration tolerance and varies continuously as height and separation change. Compare with independent path measurements only after that stage. Do not tune crest selection on observed loss. **Reviewer challenge:** holding screens fixed makes continuity almost expected; it cannot by itself establish a superior terrain-to-screen mapping or a useful composite gain. A future mapping needs its own predeclared selector and transition check.
+
+### 2. P.617 fading side
+
+**Disposition:** closed as a current-data keep experiment by B15; no new implementation or evaluator run. Retain B15's 1501 and 1502 formulations, ceiling assumptions, per-percentile outcomes and distance-boundary diagnostics. Reopen only if a distinct measurement collection or mechanism changes the attainable headroom. **Reviewer challenge:** a ceiling for B15's restricted correction family is not a theorem about every possible atmospheric model. Do not generalize the negative result to event-conditioned refractivity or anomalous-propagation data that the historical set lacks.
+
+### 3. Isolated rounded crest
+
+**Eligibility audit:** report counts of distinct paths and sites with a single tangent-defined crest, native survey vertices on both flanks within the first-Fresnel-scale window, documented vertical error small relative to crest drops, and 0.6 first-Fresnel clearance on both arms. If native support or uncertainty is unavailable, classify the path unresolved rather than infer a radius from interpolated 30 m points. Freeze one physical radius across paired frequencies and compare measured high-minus-low excess loss with the predicted difference of J and J+T. Report interval-valued outcomes for censoring and sensitivity to plausible radius bounds. **Reviewer challenge:** adding positive curvature loss to 707 may worsen already pessimistic obstructed strata; the primary result must be a matched frequency contrast, with independent sites and sign stability, before any full-model candidate.
+
+### 4. Roughness estimator
+
+**Definition:** within the unchanged physical trim, fit a line by exact segment integrals of the piecewise-linear elevation; form the residual's distance-weighted CDF by treating each nonflat segment as uniformly covering its endpoint residual range and each flat segment as a point mass; define the 10th and 90th percentiles as generalized inverse CDF values. Cross detrending (legacy/continuous) with quantiles (legacy/distance-weighted), keeping the short-span baseline rule. Record feature differences before model scores. Perturb only representation by inserting collinear samples, then test reversal, affine tilt and flat segments. **Reviewer challenge:** legacy ITM coefficients were calibrated to legacy roughness; invariance is a numerical virtue, not evidence of better transmission-loss prediction. A model change needs held-out site evidence and censor checks.
+
+### 5. External reflection campaign
+
+**Measurement contract:** choose surveyed smooth paths with a known reflecting area; record height, frequency, polarization, antenna pattern, surface dielectric/roughness, refractivity and uncertainty during each sweep. Pre-register three predictions using the same geometry: flat-Earth phase, curved-Earth phase with stock amplitude, and stock phase with divergence-adjusted amplitude. Randomize or repeat height order to detect temporal drift; include reciprocal layouts and multiple independent sites. Analyze signed within-path height differences and oscillation locations, using held-out sites for final comparison. **Reviewer challenge:** unmeasured reflection points, antenna coupling, variable effective Earth radius and secondary multipath can mimic phase shifts. If those cannot be bounded, report non-identifiability rather than claiming a phase improvement. This is a new campaign, not a rerun of B12.
+
+**Common reporting:** show eligible and excluded path counts, uncertainty, each rival's signed prediction, physics invariants, subgroup results, and failures. Preserve all negative findings. No experiments were executed in preparing this addendum.
