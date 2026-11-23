@@ -12,6 +12,10 @@ Date: 2026-11-23. Reviewed against the current repository history, including B12
 
 **Sources.** Vogler, NTIA TR-83-124 §§2–3, https://its.ntia.gov/publications/download/83-124_ocr.pdf; NTIA TR-26-580 Table 17, https://its.ntia.gov/publications/download/TR-26-580.pdf.
 
+### Execution detail and reviewer challenge
+
+**Estimand:** the difference in excess diffraction loss between the coupled two-screen field and the independent-edge control at identical physical screen coordinates, followed by the height derivative of each prediction near 707's principal-edge switch. Record crest coordinates, clearance, separation, wavelength, and the 707 selected edge at every sweep point. Use a dense sweep around the switch, and repeat after terminal reversal. The oracle passes its numerical stage only if the complex-field calculation converges under integration tolerance and varies continuously as height and separation change. Compare with independent path measurements only after that stage. Do not tune crest selection on observed loss. **Reviewer challenge:** holding screens fixed makes continuity almost expected; it cannot by itself establish a superior terrain-to-screen mapping or a useful composite gain. A future mapping needs its own predeclared selector and transition check.
+
 ## 2. P.617 fading-side time distribution — close on current data
 
 B15 already specifies continuous P.617 fading-side variants and screens the family against the current gain ceiling. The stored proxy estimates only about +0.10 dB maximum full-composite gain, below the 0.3 dB acceptance threshold; the screened estimate is similarly small. D06 also showed that the enhancement and fading sides behave differently and that naïve switching creates distance discontinuities.
@@ -19,6 +23,10 @@ B15 already specifies continuous P.617 fading-side variants and screens the fami
 **Recommendation.** Do not build or run this as a current keep attempt. Retain B15’s registered formulation and ceiling calculation as the decision record. A new study would need a distinct mechanism or independent data; renaming the same P.617 correction is not a new experiment.
 
 **Source.** B15, https://github.com/nicklasorte/ITM_ai_experiment/blob/main/experiments/batches/B15.md; ITU-R P.617-6 §4.1, https://www.itu.int/rec/R-REC-P.617-6-202509-I/en.
+
+### Execution detail and reviewer challenge
+
+**Disposition:** closed as a current-data keep experiment by B15; no new implementation or evaluator run. Retain B15's 1501 and 1502 formulations, ceiling assumptions, per-percentile outcomes and distance-boundary diagnostics. Reopen only if a distinct measurement collection or mechanism changes the attainable headroom. **Reviewer challenge:** a ceiling for B15's restricted correction family is not a theorem about every possible atmospheric model. Do not generalize the negative result to event-conditioned refractivity or anomalous-propagation data that the historical set lacks.
 
 ## 3. Rounded loss from one isolated, resolved crest (H05) — conditional diagnostic
 
@@ -30,6 +38,10 @@ B15 already specifies continuous P.617 fading-side variants and screens the fami
 
 **Sources.** ITU-R P.526-16 §4.2, https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.526-16-202511-I!!PDF-E.pdf; Dougherty and Maloney (1964), https://nvlpubs.nist.gov/nistpubs/jres/68D/jresv68Dn2p239_A1b.pdf.
 
+### Execution detail and reviewer challenge
+
+**Eligibility audit:** report counts of distinct paths and sites with a single tangent-defined crest, native survey vertices on both flanks within the first-Fresnel-scale window, documented vertical error small relative to crest drops, and 0.6 first-Fresnel clearance on both arms. If native support or uncertainty is unavailable, classify the path unresolved rather than infer a radius from interpolated 30 m points. Freeze one physical radius across paired frequencies and compare measured high-minus-low excess loss with the predicted difference of J and J+T. Report interval-valued outcomes for censoring and sensitivity to plausible radius bounds. **Reviewer challenge:** adding positive curvature loss to 707 may worsen already pessimistic obstructed strata; the primary result must be a matched frequency contrast, with independent sites and sign stability, before any full-model candidate.
+
 ## 4. Exact path-length terrain roughness audit (H04) — advance as a numerical audit
 
 **Question.** Does ITM’s sampled interdecile roughness change when the same piecewise-linear profile is represented with different collinear sample points?
@@ -39,6 +51,10 @@ B15 already specifies continuous P.617 fading-side variants and screens the fami
 **Falsifier and limit.** If the estimator is already invariant within numerical tolerance, stop. A more stable statistic alone does not establish more accurate propagation.
 
 **Source.** Hufford, Longley and Kissick, NTIA TR-82-100, https://its.ntia.gov/publications/download/82-100_ocr.pdf.
+
+### Execution detail and reviewer challenge
+
+**Definition:** within the unchanged physical trim, fit a line by exact segment integrals of the piecewise-linear elevation; form the residual's distance-weighted CDF by treating each nonflat segment as uniformly covering its endpoint residual range and each flat segment as a point mass; define the 10th and 90th percentiles as generalized inverse CDF values. Cross detrending (legacy/continuous) with quantiles (legacy/distance-weighted), keeping the short-span baseline rule. Record feature differences before model scores. Perturb only representation by inserting collinear samples, then test reversal, affine tilt and flat segments. **Reviewer challenge:** legacy ITM coefficients were calibrated to legacy roughness; invariance is a numerical virtue, not evidence of better transmission-loss prediction. A model change needs held-out site evidence and censor checks.
 
 ## 5. External curved-Earth reflection height-gain campaign (H02 external) — conditional on new measurements
 
@@ -56,26 +72,12 @@ Advance H01 as a reference diagnostic and H04 as a numerical audit. Run H05 only
 
 Before any future run, register the exact parent, inputs, cohort, equations, predictions and stop rules; use current screening membership; apply existing score and physics gates, including the distance-continuity checks from B14. No experiment was executed in preparing this document.
 
-## Detailed execution and adversarial review addendum (2026-11-23)
-
-### 1. Two-screen oracle
-
-**Estimand:** the difference in excess diffraction loss between the coupled two-screen field and the independent-edge control at identical physical screen coordinates, followed by the height derivative of each prediction near 707's principal-edge switch. Record crest coordinates, clearance, separation, wavelength, and the 707 selected edge at every sweep point. Use a dense sweep around the switch, and repeat after terminal reversal. The oracle passes its numerical stage only if the complex-field calculation converges under integration tolerance and varies continuously as height and separation change. Compare with independent path measurements only after that stage. Do not tune crest selection on observed loss. **Reviewer challenge:** holding screens fixed makes continuity almost expected; it cannot by itself establish a superior terrain-to-screen mapping or a useful composite gain. A future mapping needs its own predeclared selector and transition check.
-
-### 2. P.617 fading side
-
-**Disposition:** closed as a current-data keep experiment by B15; no new implementation or evaluator run. Retain B15's 1501 and 1502 formulations, ceiling assumptions, per-percentile outcomes and distance-boundary diagnostics. Reopen only if a distinct measurement collection or mechanism changes the attainable headroom. **Reviewer challenge:** a ceiling for B15's restricted correction family is not a theorem about every possible atmospheric model. Do not generalize the negative result to event-conditioned refractivity or anomalous-propagation data that the historical set lacks.
-
-### 3. Isolated rounded crest
-
-**Eligibility audit:** report counts of distinct paths and sites with a single tangent-defined crest, native survey vertices on both flanks within the first-Fresnel-scale window, documented vertical error small relative to crest drops, and 0.6 first-Fresnel clearance on both arms. If native support or uncertainty is unavailable, classify the path unresolved rather than infer a radius from interpolated 30 m points. Freeze one physical radius across paired frequencies and compare measured high-minus-low excess loss with the predicted difference of J and J+T. Report interval-valued outcomes for censoring and sensitivity to plausible radius bounds. **Reviewer challenge:** adding positive curvature loss to 707 may worsen already pessimistic obstructed strata; the primary result must be a matched frequency contrast, with independent sites and sign stability, before any full-model candidate.
-
-### 4. Roughness estimator
-
-**Definition:** within the unchanged physical trim, fit a line by exact segment integrals of the piecewise-linear elevation; form the residual's distance-weighted CDF by treating each nonflat segment as uniformly covering its endpoint residual range and each flat segment as a point mass; define the 10th and 90th percentiles as generalized inverse CDF values. Cross detrending (legacy/continuous) with quantiles (legacy/distance-weighted), keeping the short-span baseline rule. Record feature differences before model scores. Perturb only representation by inserting collinear samples, then test reversal, affine tilt and flat segments. **Reviewer challenge:** legacy ITM coefficients were calibrated to legacy roughness; invariance is a numerical virtue, not evidence of better transmission-loss prediction. A model change needs held-out site evidence and censor checks.
-
-### 5. External reflection campaign
+### Execution detail and reviewer challenge
 
 **Measurement contract:** choose surveyed smooth paths with a known reflecting area; record height, frequency, polarization, antenna pattern, surface dielectric/roughness, refractivity and uncertainty during each sweep. Pre-register three predictions using the same geometry: flat-Earth phase, curved-Earth phase with stock amplitude, and stock phase with divergence-adjusted amplitude. Randomize or repeat height order to detect temporal drift; include reciprocal layouts and multiple independent sites. Analyze signed within-path height differences and oscillation locations, using held-out sites for final comparison. **Reviewer challenge:** unmeasured reflection points, antenna coupling, variable effective Earth radius and secondary multipath can mimic phase shifts. If those cannot be bounded, report non-identifiability rather than claiming a phase improvement. This is a new campaign, not a rerun of B12.
+
+**Common reporting:** show eligible and excluded path counts, uncertainty, each rival's signed prediction, physics invariants, subgroup results, and failures. Preserve all negative findings. No experiments were executed in preparing this addendum.
+
+
 
 **Common reporting:** show eligible and excluded path counts, uncertainty, each rival's signed prediction, physics invariants, subgroup results, and failures. Preserve all negative findings. No experiments were executed in preparing this addendum.
