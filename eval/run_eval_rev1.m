@@ -113,6 +113,11 @@ if isfield(M.physics, 'checks') && isfield(M.physics.checks, 'height_gain_real')
     lines(end + 1) = sprintf("  height gain on real paths (report only): worst excess %.1f dB (limit %g) at %s", ...
         hg.worst_excess_db, hg.limit_db, hg.worst_row);
 end
+if isfield(M.physics, 'checks') && isfield(M.physics.checks, 'continuity_pointwise')
+    cp = M.physics.checks.continuity_pointwise;
+    lines(end + 1) = sprintf("  pointwise continuity at 1/50/99%% (report only): worst step %.1f dB above stock's (limit %g), %s at %g %%, x = %g", ...
+        cp.worst_excess_db, cp.limit_db, cp.worst_sweep, cp.worst_time_pct, cp.worst_at_x);
+end
 lines(end + 1) = sprintf("max |variant - baseline| = %.3g dB; runtime %.0f s", dmax, M.runtime_s);
 fprintf('%s\n', lines);
 

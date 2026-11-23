@@ -44,7 +44,14 @@ end
 names = ["full" "screened"];
 for k = 1:2
     q = prctile(gb(:, k), [2.5 97.5]);
-    G.(names(k)) = struct('gain', g0(k), 'sd', std(gb(:, k)), 'lo', q(1), 'hi', q(2), 'pass', q(1) > 0);
+    % Report only: two-sided 99 % and 99.5 % lower bounds (0.5th and 0.25th
+    % percentiles), for a Bonferroni level 1 - 0.05/k over k candidates
+    % (proposed 2026-11-23, phase plan rev 2, P2). With 500 draws the
+    % 0.25th percentile rests on about one draw; use N = 2000 for a stable
+    % bound.
+    qq = prctile(gb(:, k), [0.5 0.25]);
+    G.(names(k)) = struct('gain', g0(k), 'sd', std(gb(:, k)), 'lo', q(1), 'hi', q(2), 'pass', q(1) > 0, ...
+        'lo99', qq(1), 'lo995', qq(2));
 end
 G.new = newTag; G.best = bestTag; G.n = options.N;
 
@@ -52,6 +59,8 @@ lines = [
     sprintf("paired bootstrap: %s vs %s (%d draws, paths resampled within site and fold)", newTag, bestTag, options.N)
     sprintf("  composite gain   %+.2f dB  (SD %.2f; 95%% interval %+.2f to %+.2f)  %s", G.full.gain, G.full.sd, G.full.lo, G.full.hi, verdict(G.full.pass))
     sprintf("  screened gain    %+.2f dB  (SD %.2f; 95%% interval %+.2f to %+.2f)  %s", G.screened.gain, G.screened.sd, G.screened.lo, G.screened.hi, verdict(G.screened.pass))
+    sprintf("  lower bounds at 99%% / 99.5%% (report only, for a Bonferroni level): composite %+.2f / %+.2f, screened %+.2f / %+.2f", ...
+        G.full.lo99, G.full.lo995, G.screened.lo99, G.screened.lo995)
     "  gain = best minus new; positive means the new run is better"
     ];
 fprintf('%s\n', lines);

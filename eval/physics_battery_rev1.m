@@ -31,6 +31,16 @@ function B = physics_battery_rev1(cfg, P2, profiles)
 %                   the one-ridge synthetic sweep can't, such as a principal
 %                   edge switching in a multi-edge method (707: 51.7 dB).
 %                   Added with Nick's approval, 2026-11-22.
+%     continuity_pointwise  REPORT ONLY (not part of B.pass; proposed
+%                   2026-11-23, phase plan rev 2, P4). The synthetic sweeps
+%                   again at 1, 50 and 99 % time; at every step of every
+%                   sweep, the variant's step minus stock's step at the same
+%                   point (|dL_variant| - |dL_stock|), worst step, against a
+%                   1 dB limit. Catches what the largest-step rule above
+%                   can't: a new step at a point where stock is smooth, when
+%                   stock's largest step elsewhere is bigger (707's
+%                   principal-edge jump), and a step in the tails only
+%                   (B14: P.617-6 deviate at ITM's region change).
 %     reciprocity   swap the terminals and reverse the profile; 95th
 %                   percentile of |difference| on 300 real links:
 %                   variant <= max(0.1, baseline + 0.1) dB
@@ -84,6 +94,29 @@ for k = 1:numel(sweeps)
         B.pass = B.pass && ok;
     end
 end
+
+% ---- pointwise continuity at 1, 50 and 99 % (report only) ----
+pt = [1 50 99];
+fvar_p = @(htx, hrx, pfl, f, clim, n0, pol) itm_p2p_core_exp(htx, hrx, pfl, f, pt, S.confidence, ...
+    S.location, clim, n0, pol, S.epsilon, S.sigma, S.mdvar, false, [], cfg);
+fbase_p = @(htx, hrx, pfl, f, clim, n0, pol) itm_p2p_rev1(htx, hrx, pfl, f, pt, confidence=S.confidence, ...
+    climate=clim, N_0=n0, polarization=pol, epsilon=S.epsilon, sigma=S.sigma, mdvar=S.mdvar, validity="off");
+pw = struct('sweep', {}, 'time_pct', {}, 'worst_excess_db', {}, 'at_x', {});
+for k = 1:numel(sweeps)
+    sw = sweeps(k);
+    Lv = cell2mat(arrayfun(@(x) reshape(sw.fun(x, fvar_p), 1, []), sw.x(:), 'UniformOutput', false));
+    Lb = cell2mat(arrayfun(@(x) reshape(sw.fun(x, fbase_p), 1, []), sw.x(:), 'UniformOutput', false));
+    finite_ok = finite_ok && all(isfinite(Lv), 'all') && isreal(Lv);
+    ex = abs(diff(Lv, 1, 1)) - abs(diff(Lb, 1, 1));
+    for j = 1:numel(pt)
+        [m, i] = max(ex(:, j));
+        pw(end + 1) = struct('sweep', sw.name, 'time_pct', pt(j), 'worst_excess_db', m, 'at_x', sw.x(i + 1)); %#ok<AGROW>
+    end
+end
+[mx, i] = max([pw.worst_excess_db]);
+B.checks.continuity_pointwise = struct('worst_excess_db', mx, 'worst_sweep', pw(i).sweep, ...
+    'worst_time_pct', pw(i).time_pct, 'worst_at_x', pw(i).at_x, 'limit_db', 1, ...
+    'within_limit', mx <= 1, 'report_only', true, 'by_sweep', pw);
 
 % ---- real links ----
 rng(1, 'twister');                          % fixed sample, same every run
