@@ -108,6 +108,7 @@ if ~area && ((cfg.diffraction ~= "itm" && ~delta) || cfg.line_of_sight ~= "itm")
 end
 
 cfg.N_0_sea = N_0;                  % sea-level refractivity, for cfg.troposcatter = "p452_45"
+cfg = p617_context(cfg, pfl, h_m, f_mhz, area, theta_hzn, gamma_e);   % B14: ITU-R P.617-6 inputs, long-term rows only
 [A_ref_db, warnings, propmode, lines] = longley_rice(theta_hzn, f_mhz, Z_g, d_hzn_m, h_e_m, ...
     gamma_e, N_s, delta_h_m, h_m, d_m, warnings, area, cfg);
 if delta
@@ -188,7 +189,21 @@ end
 
 if isfield(cfg, 'time_variability') && cfg.time_variability == "two_leg" && ~area
     cfg.leg = two_leg_geometry(pfl, h_m, 1 / gamma_e, f_mhz);   % research package H03 (B12)
-elseif isfield(cfg, 'time_variability') && ~any(cfg.time_variability == ["itm", "two_leg"])
+elseif isfield(cfg, 'time_variability') && any(cfg.time_variability == ["p617", "p617_transhorizon"])
+    % B14: ITU-R P.617-6 eq. (6) time deviate on long-term rows, with h_0 from
+    % eq. (7) for the actual path. Elsewhere ITM's own.
+    %   "p617"               only in ITM's troposcatter region (propmode 3).
+    %                        The tails step where ITM changes region.
+    %   "p617_transhorizon"  on every transhorizon path (propmode 2 or 3),
+    %                        so ITM's region change doesn't switch the
+    %                        deviate.
+    in_region = propmode == 3 || (cfg.time_variability == "p617_transhorizon" && propmode == 2);
+    if cfg.p617.applies && in_region
+        cfg.p617.args = {d_m / 1e3, f_mhz, 1e3 * theta_hzn(1), 1e3 * theta_hzn(2), ...
+            cfg.p617.h_t_km, cfg.p617.h_r_km, cfg.p617.h_s_km, N_0, cfg.p617.dN, 1e-3 / gamma_e};
+        cfg.p617.use_time = true;
+    end
+elseif isfield(cfg, 'time_variability') && ~any(cfg.time_variability == ["itm", "two_leg", "p617", "p617_transhorizon"])
     error('itmexp:cfg', 'Unknown cfg.time_variability "%s".', cfg.time_variability);
 end
 [V_db, extreme] = variability(z, h_e_m, delta_h_m, f_mhz, d_m, A_ref_db, climate, mdvar, cfg);
@@ -1008,6 +1023,14 @@ switch cfg.troposcatter
             L_bs = p452_troposcatter_rev1(d_m / 1e3, theta_mrad, f_mhz / 1e3, cfg.N_0_sea, 50, 0);
             A_scat = L_bs - free_space_loss(d_m, f_mhz);
         end
+    case "p617"
+        % B14: ITU-R P.617-6 eqs. (1)-(5) median (Y_p = 0 at 50 %) on long-term
+        % rows, where ITM itself computes a scatter loss; ITM's value elsewhere.
+        if A_scat < 1000.0 && cfg.p617.applies
+            pp = p617_troposcatter_rev1(d_m / 1e3, f_mhz, 1e3 * theta_hzn(1), 1e3 * theta_hzn(2), ...
+                cfg.p617.h_t_km, cfg.p617.h_r_km, cfg.p617.h_s_km, cfg.N_0_sea, cfg.p617.dN, a_e / 1e3, 50, 0);
+            A_scat = pp.L_bs - free_space_loss(d_m, f_mhz);
+        end
     otherwise
         error('itmexp:cfg', 'Unknown cfg.troposcatter "%s".', cfg.troposcatter);
 end
@@ -1228,6 +1251,20 @@ if isfield(cfg, 'leg') && cfg.leg.w > 0 && any(z_T(:) ~= 0)
     Y_T = (1 - cfg.leg.w) * Y_T + cfg.leg.w * Yc;
 end
 
+if isfield(cfg, 'p617') && cfg.p617.use_time
+    % B14: ITU-R P.617-6 eq. (6). Both ITM and P.617 subtract the deviate
+    % from the median loss and make it positive below 50 % time, so Y_p
+    % replaces Y_T directly, at p = 100 Q(z_T).
+    p_t = 50 * erfc(z_T / sqrt(2));
+    % ITM's deviate comes from a rational approximation of the inverse
+    % normal (Abramowitz and Stegun 26.2.23, |error| < 4.5e-4), so at 50 %
+    % it isn't exactly 0, and Y_p's infinite slope at 50 % would turn that
+    % into a visible offset. Deviates inside the approximation's error bound
+    % are taken as exactly 50 %.
+    p_t(abs(z_T) <= 4.5e-4) = 50;
+    pp = p617_troposcatter_rev1(cfg.p617.args{:}, p_t, 0);
+    Y_T = pp.Y_p;
+end
 Y_S_temp = sigma_S^2 + Y_T.^2 ./ (7.8 + z_S.^2) + Y_L.^2 ./ (24.0 + z_S.^2);
 switch mdvar_internal
     case 0
@@ -1404,5 +1441,52 @@ for f = string(fieldnames(stock))'
         error('itmexp:cfg', ['cfg.%s isn''t implemented in itm_p2p_core_exp; only its ' ...
             'stock value is allowed.'], f);
     end
+end
+end
+
+function cfg = p617_context(cfg, pfl, h_m, f_mhz, area, theta_hzn, gamma_e)
+% B14: inputs of ITU-R P.617-6 section 4.1 for this row. Applies to
+% long-term rows (cfg.row.set == "") and to synthetic paths with no row
+% metadata; Phase 2 rows keep ITM, because P.617-6 predicts annual
+% distributions and the Phase 2 records are short-term measurements.
+%   dN    from data/links/path_refractivity_rev1.csv at the path midpoint;
+%         the long-term mean for synthetic paths (refractivity_lookup_rev1)
+%   h_t, h_r  antenna altitudes above sea level: terminal ground + height
+%   h_s   ground height under the common volume: the profile height at
+%         d sin(beta) / sin(theta/1000) from the transmitter (eq. (7a)'s
+%         range to the crossing of the two horizon rays), clamped to the
+%         path; theta and beta from eqs. (1), (2) and (7b) with ITM's horizon
+%         angles and effective radius. A design choice: P.617-6 defines h_s
+%         only as the height of the Earth's surface.
+uses = (isfield(cfg, 'troposcatter') && cfg.troposcatter == "p617") || ...
+    (isfield(cfg, 'time_variability') && any(cfg.time_variability == ["p617", "p617_transhorizon"]));
+cfg.p617 = struct('applies', false, 'use_time', false);
+if ~uses
+    return
+end
+if area
+    error('itmexp:cfg', 'P.617-6 switches need a terrain profile; area mode has none.');
+end
+if ~isfield(cfg, 'row') || cfg.row.set == ""
+    pid = "";
+    if isfield(cfg, 'row') && isfield(cfg.row, 'path_id')
+        pid = string(cfg.row.path_id);
+    end
+    np = pfl(1);                                   % number of intervals
+    z = pfl(3:end);
+    cfg.p617.applies = true;
+    cfg.p617.dN = refractivity_lookup_rev1(pid);
+    cfg.p617.h_t_km = (z(1) + h_m(1)) / 1e3;
+    cfg.p617.h_r_km = (z(end) + h_m(2)) / 1e3;
+    d_km = np * pfl(2) / 1e3;
+    ka_km = 1e-3 / gamma_e;
+    th = d_km * 1e3 / ka_km + 1e3 * (theta_hzn(1) + theta_hzn(2));            % eqs. (1), (2)
+    beta = d_km / (2 * ka_km) + theta_hzn(2) + (cfg.p617.h_r_km - cfg.p617.h_t_km) / d_km;   % eq. (7b)
+    if th > 0
+        x_km = min(max(d_km * sin(beta) / sin(th / 1000), 0), d_km);
+    else
+        x_km = d_km / 2;   % not transhorizon: P.617 isn't used on this path
+    end
+    cfg.p617.h_s_km = interp1((0:np)' * pfl(2) / 1e3, z(:), x_km) / 1e3;
 end
 end

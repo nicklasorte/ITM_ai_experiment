@@ -632,6 +632,44 @@ x = (0:100:300e3)'; pfl = [numel(x) - 1; 100; 200 + 0 * x];
 tc.verifyError(@() itm_ref(pfl, 30, 10, 1000, c2), 'itmexp:cfg');
 end
 
+function test_p617_troposcatter(tc)
+% B14: ITU-R P.617-6 section 4.1. Term-by-term hand values of eqs. (1)-(7),
+% Y_p = 0 at 50 % and its sign on each side, and the core switches: the
+% time switch leaves every 50 % value unchanged and moves the tails on a
+% transhorizon synthetic path; the median switch changes A_ref; Phase 2
+% rows (cfg.row.set non-empty) are untouched.
+d = 250; f = 900; tt = 2; tr = 3; ht = 0.35; hr = 0.25; hs = 0.2; N0 = 320; dN = 40; ka = 8500;
+o = p617_troposcatter_rev1(d, f, tt, tr, ht, hr, hs, N0, dN, ka, [1 50 99], 0);
+th = d * 1e3 / ka + tt + tr;
+tc.verifyEqual(o.theta, th, 'AbsTol', 1e-12);
+F = 0.18 * N0 * exp(-hs / 7.35) - 0.23 * dN;
+tc.verifyEqual(o.F, F, 'AbsTol', 1e-12);
+be = d / (2 * ka) + tr / 1000 + (hr - ht) / d;
+h0 = ht + d * sin(be) / sin(th / 1000) * (0.5 * d * sin(be) / (ka * sin(th / 1000)) + sin(tt / 1000));
+tc.verifyEqual(o.h_0, h0, 'AbsTol', 1e-12);
+tc.verifyGreaterThan(o.h_0, 0.5); tc.verifyLessThan(o.h_0, 10);      % common volume a few km up
+amp = 0.035 * N0 * exp(-h0 / 7.35);
+tc.verifyEqual(o.Y_p, [amp * (-log10(1 / 50))^0.67, 0, -amp * (-log10(1 / 50))^0.67], 'AbsTol', 1e-12);
+L50 = F + 22 * log10(f) + 17.5 * log10(th^2 + 7 * th + 4) + 17 * log10(d) + 0.07;
+tc.verifyEqual(o.L_bs(2), L50, 'AbsTol', 1e-9);
+tc.verifyEqual(o.L_bs(1), L50 - o.Y_p(1), 'AbsTol', 1e-9);
+% core switches on a synthetic 250 km transhorizon path (mean long-term dN)
+x = (0:100:250e3)'; pfl = [numel(x) - 1; 100; 200 + 0 * x];
+c0 = params_exp(); c1 = c0; c1.time_variability = "p617"; c2 = c0; c2.troposcatter = "p617";
+p = [10 50 90];
+a0 = itm_p2p_core_exp(30, 10, pfl, 900, p, 50, 50, 5, 320, 0, 25, 0.02, 13, false, [], c0);
+a1 = itm_p2p_core_exp(30, 10, pfl, 900, p, 50, 50, 5, 320, 0, 25, 0.02, 13, false, [], c1);
+tc.verifyEqual(a1(2), a0(2), 'AbsTol', 1e-5);   % stock ITM's own 50 % deviate is about 1e-9 sigma_T, not 0
+tc.verifyNotEqual(a1([1 3]), a0([1 3]));
+tc.verifyLessThan(a1(1), a1(2)); tc.verifyGreaterThan(a1(3), a1(2));
+tc.verifyNotEqual(itm_ref(pfl, 30, 10, 900, c2), itm_ref(pfl, 30, 10, 900, c0));
+cP = c1; cP.row = struct('set', "R1", 'siting', "O", 'reversed', false, 'path_id', "x");
+aP = itm_p2p_core_exp(30, 10, pfl, 900, p, 50, 50, 5, 320, 0, 25, 0.02, 13, false, [], cP);
+tc.verifyEqual(aP, a0, 'AbsTol', 1e-9);
+cU = c1; cU.row = struct('set', "", 'siting', "", 'reversed', false, 'path_id', "NO_SUCH_PATH");
+tc.verifyError(@() itm_p2p_core_exp(30, 10, pfl, 900, p, 50, 50, 5, 320, 0, 25, 0.02, 13, false, [], cU), 'itmexp:data');
+end
+
 function test_placeholder_switches_fail_loud(tc)
 % Switches the core doesn't implement must stop with an error, not be no-ops.
 x = (0:30:15000)'; pfl = [numel(x) - 1; 30; 100 + 0 * x];

@@ -264,6 +264,18 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### B14 registered as diagnostic D06 (planner note, 2026-11-23)
+- ITU-R P.617-6 §4.1 troposcatter time distribution (eqs. 1-7b, read from the
+  rendered PDF) behind `cfg.time_variability = "p617" | "p617_transhorizon"`
+  and `cfg.troposcatter = "p617"`, long-term rows only; 42 tests pass;
+  smoke tests and screen in `experiments/batches/B14.md`.
+- Needs dN at path midpoints: PR #7 (data), awaiting Nick.
+- Physics finding: the tails step where the P.617 deviate starts to apply
+  (4-5 dB above stock's largest step at ITM's troposcatter changeover; 1.5 dB
+  at the horizon for the transhorizon form). The frozen battery checks 50 %
+  only and passes. Registered as diagnostic, not keep candidates; proposed a
+  report-only tail-continuity check for the battery.
+
 ### 1301-p452-troposcatter
 - Date: 2026-11-23. Batch B13. Parent: 707-cascaded-isolated-clutter-at-r. Tier 2.
 - Change: `{"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3","troposcatter":"p452_45"}`
