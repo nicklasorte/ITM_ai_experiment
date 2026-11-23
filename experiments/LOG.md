@@ -264,6 +264,21 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### B13 registered (planner note, 2026-11-23)
+- 1301-p452-troposcatter: ITU-R P.452-18 eq. (45) as ITM's scatter
+  attenuation on 707's base; plan, smoke test, screen and predictions in
+  `experiments/batches/B13.md`. Screen: NOT_RULED_OUT (composite gain −0.93 to
+  +0.64 dB, central −0.23, ρ needed 0.64). Battery passes. Predicted: most
+  likely rejected.
+- 707 rescored on the 36-link screen as `707r-rescore-screen36`: composite
+  12.5 (unchanged), screened 9.9 dB (was 11.2 on the 14-link list); stock
+  screened 11.9 (was 13.4). Use these when comparing screened figures with
+  runs after PR #5. Not a results.tsv row: no model change.
+- `params_exp.m` placeholder switches (`effective_height`,
+  `effective_height_alpha`, `variability`) now stop with an error when set.
+- Infra, 2026-11-22: batch queue stuck (jobs 198-200); working again on
+  2026-11-23 (test job 201 finished).
+
 ### Tooling: history-matching screen, model floor, repo skills (2026-11-22)
 - `experiments/batches/hm_screen_rev1.py` bounds the composite, screened
   and site changes of a candidate from its model-only deltas and the
@@ -276,8 +291,8 @@ bottom.
   by harm), but the central estimate predicted it: 711 −0.84 dB (actual
   −0.77), 712 −0.33 (actual −0.38).
 - B12 screened from the smoke-test deltas: largest possible gain 0.128 dB
-  (1201) and 0.008 dB (1202). Both can't pass; proposed not to run them,
-  pending Nick.
+  (1201) and 0.008 dB (1202). Both can't pass. Nick approved on 2026-11-23:
+  recorded as screened out, not run; H02 and H03 closed on this data.
 - `experiments/batches/model_floor_rev1.py` writes `results/model_floor_rev1.csv`:
   the Bayes error of the fixed inputs, from the 21 long-term groups with
   identical inputs. It allows a composite as low as 0.33 dB, so it doesn't

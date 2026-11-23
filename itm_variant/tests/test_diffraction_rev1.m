@@ -607,6 +607,42 @@ rowx = struct('set', "VA", 'siting', "O", 'reversed', false);
 tc.verifyError(@() itm_ref(pfl, 7.3, 2, 1846, setfield(cn, 'row', rowx)), 'itmexp:cfg'); %#ok<SFLD>
 end
 
+function test_p452_troposcatter(tc)
+% B13: ITU-R P.452-18 eq. (45). Term-by-term hand values at 2 GHz (where
+% L_f = 25 log10 2 exactly), the time term, gaseous absorption of the
+% right size, and the core switch: unchanged in line of sight, changed on
+% a long transhorizon path, ITM's value kept below 100 MHz.
+g = gaseous_p676_rev1(2, 3, 288.15, 1013.25);
+tc.verifyGreaterThan(g(1), 0.005); tc.verifyLessThan(g(1), 0.01);   % oxygen near 2 GHz: about 0.007 dB/km
+tc.verifyGreaterThan(g(2), 0);     tc.verifyLessThan(g(2), 1e-3);   % water vapour at 3 g/m^3: small
+L50 = p452_troposcatter_rev1(200, 20, 2, 320, 50, 0);
+hand = 190 + 25 * log10(2) + 20 * log10(200) + 0.573 * 20 - 0.15 * 320 + 0.051 + sum(g) * 200;
+tc.verifyEqual(L50, hand, 'AbsTol', 1e-9);
+L1 = p452_troposcatter_rev1(200, 20, 2, 320, 1, 0);
+tc.verifyEqual(L50 - L1, 10.1 * (-log10(1 / 50))^0.7, 'AbsTol', 1e-9);
+tc.verifyError(@() p452_troposcatter_rev1(200, 20, 2, 320, 60, 0), 'MATLAB:validators:mustBeInRange');
+x = (0:100:300e3)'; pfl = [numel(x) - 1; 100; 200 + 0 * x];
+c0 = params_exp(); c1 = c0; c1.troposcatter = "p452_45";
+tc.verifyNotEqual(itm_ref(pfl, 30, 10, 1000, c1), itm_ref(pfl, 30, 10, 1000, c0));
+tc.verifyEqual(itm_ref(pfl, 30, 10, 60, c1), itm_ref(pfl, 30, 10, 60, c0), 'AbsTol', 1e-9);
+x = (0:30:15000)'; pfl = [numel(x) - 1; 30; 100 + 0 * x];
+tc.verifyEqual(itm_ref(pfl, 30, 10, 1000, c1), itm_ref(pfl, 30, 10, 1000, c0), 'AbsTol', 1e-9);
+c2 = c0; c2.troposcatter = "bogus";
+x = (0:100:300e3)'; pfl = [numel(x) - 1; 100; 200 + 0 * x];
+tc.verifyError(@() itm_ref(pfl, 30, 10, 1000, c2), 'itmexp:cfg');
+end
+
+function test_placeholder_switches_fail_loud(tc)
+% Switches the core doesn't implement must stop with an error, not be no-ops.
+x = (0:30:15000)'; pfl = [numel(x) - 1; 30; 100 + 0 * x];
+for f = ["effective_height", "variability"]
+    c = params_exp(); c.(f) = "other";
+    tc.verifyError(@() itm_ref(pfl, 30, 10, 1000, c), 'itmexp:cfg');
+end
+c = params_exp(); c.effective_height_alpha = 0;
+tc.verifyError(@() itm_ref(pfl, 30, 10, 1000, c), 'itmexp:cfg');
+end
+
 function test_los_phase_curved(tc)
 % H02 (B12): ITU-R P.530-19 specular geometry. Flat-Earth limit equals
 % ITM's 2 h1 h2 / d phase; equal heights at half the smooth horizon give

@@ -110,11 +110,13 @@ cfg.time_variability = "itm";
 cfg.troposcatter = "itm";
 
 % Effective antenna height (quick_pfl). alpha = 1 keeps ITM's effective height;
-% 0 uses the structural height (Paul 2003, ISART SP-03-401).
+% 0 uses the structural height (Paul 2003, ISART SP-03-401). Not implemented:
+% the core stops with an error if either value differs from stock.
 cfg.effective_height = "itm";
 cfg.effective_height_alpha = 1;
 
-% Time variability (variability)
+% Time variability (variability). Not implemented (see cfg.time_variability):
+% the core stops with an error if this differs from "itm".
 cfg.variability = "itm";
 
 % Recalibration constants (Tier 1). At these values ITM v1.4 is unchanged.

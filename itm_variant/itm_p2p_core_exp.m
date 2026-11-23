@@ -43,6 +43,7 @@ end
 if ~isstruct(cfg) || ~isfield(cfg, 'version')
     error('itmexp:cfg', 'cfg must be the struct returned by params_exp.');
 end
+check_placeholder_switches(cfg);
 
 info = [];
 area = isstruct(pfl);
@@ -106,6 +107,7 @@ if ~area && ((cfg.diffraction ~= "itm" && ~delta) || cfg.line_of_sight ~= "itm")
     cfg.ctx = profile_context(pfl, h_m, 1 / gamma_e, f_mhz, cfg);
 end
 
+cfg.N_0_sea = N_0;                  % sea-level refractivity, for cfg.troposcatter = "p452_45"
 [A_ref_db, warnings, propmode, lines] = longley_rice(theta_hzn, f_mhz, Z_g, d_hzn_m, h_e_m, ...
     gamma_e, N_s, delta_h_m, h_m, d_m, warnings, area, cfg);
 if delta
@@ -688,8 +690,8 @@ else
     d_5 = d_ML + 200e3;
     d_6 = d_ML + 400e3;
     h0 = -1;
-    [A_6, h0] = troposcatter_loss(d_6, theta_hzn, d_hzn_m, h_e_m, a_e, N_s, f_mhz, theta_los, h0);
-    A_5 = troposcatter_loss(d_5, theta_hzn, d_hzn_m, h_e_m, a_e, N_s, f_mhz, theta_los, h0);
+    [A_6, h0] = troposcatter_loss(d_6, theta_hzn, d_hzn_m, h_e_m, a_e, N_s, f_mhz, theta_los, h0, cfg);
+    A_5 = troposcatter_loss(d_5, theta_hzn, d_hzn_m, h_e_m, a_e, N_s, f_mhz, theta_los, h0, cfg);
     if A_5 < 1000.0
         M_s = (A_6 - A_5) / 200e3;
         d_x = c_max(c_max(d_sML, d_ML + 1.088 * (a_e^2 / f_mhz)^(1.0 / 3.0) * log(f_mhz)), ...
@@ -983,7 +985,35 @@ w = 1 / (1 + cfg.cal.los_w_scale * f_mhz * delta_h_m / c_max(10e3, d_sML));   % 
 A_los = w * A_t + (1 - w) * A_d;
 end
 
-function [A_scat, h0] = troposcatter_loss(d_m, theta_hzn, d_hzn_m, h_e_m, a_e, N_s, f_mhz, theta_los, h0)
+function [A_scat, h0] = troposcatter_loss(d_m, theta_hzn, d_hzn_m, h_e_m, a_e, N_s, f_mhz, theta_los, h0, cfg)
+% cfg.troposcatter (B13):
+%   "itm"      ITM v1.4 troposcatter attenuation (below).
+%   "p452_45"  ITU-R P.452-18 section 4.3 eq. (45) at 50 % time, minus free-space
+%              loss, wherever ITM itself computes a scatter loss (it returns
+%              1001 where it doesn't, and that is kept) and f >= 100 MHz, the
+%              lower end of P.452-18's scope; ITM's value below 100 MHz.
+%              Path angular distance theta = theta_t + theta_r + d / a_e
+%              (P.452-18 Table 4 definition; ITM's horizon angles and
+%              effective radius). N_0 is the sea-level refractivity input.
+%              Antenna gains aren't in the records: G_t + G_r = 0 dBi.
+if nargin < 10
+    cfg = struct('troposcatter', "itm");
+end
+[A_scat, h0] = troposcatter_loss_itm(d_m, theta_hzn, d_hzn_m, h_e_m, a_e, N_s, f_mhz, theta_los, h0);
+switch cfg.troposcatter
+    case "itm"
+    case "p452_45"
+        if A_scat < 1000.0 && f_mhz >= 100.0
+            theta_mrad = 1e3 * (theta_hzn(1) + theta_hzn(2) + d_m / a_e);
+            L_bs = p452_troposcatter_rev1(d_m / 1e3, theta_mrad, f_mhz / 1e3, cfg.N_0_sea, 50, 0);
+            A_scat = L_bs - free_space_loss(d_m, f_mhz);
+        end
+    otherwise
+        error('itmexp:cfg', 'Unknown cfg.troposcatter "%s".', cfg.troposcatter);
+end
+end
+
+function [A_scat, h0] = troposcatter_loss_itm(d_m, theta_hzn, d_hzn_m, h_e_m, a_e, N_s, f_mhz, theta_los, h0)
 wn = f_mhz / 47.7;
 if h0 > 15.0
     H_0 = h0;
@@ -1364,3 +1394,15 @@ for j = 1:2
 end
 end
 
+function check_placeholder_switches(cfg)
+% Switches listed in params_exp.m that the core doesn't implement yet. A value
+% other than the stock one would be a silent no-op, so fail loud instead
+% (found by the Claude Science headroom pass, 2026-11-23).
+stock = struct('effective_height', "itm", 'effective_height_alpha', 1, 'variability', "itm");
+for f = string(fieldnames(stock))'
+    if isfield(cfg, f) && ~isequal(cfg.(f), stock.(f))
+        error('itmexp:cfg', ['cfg.%s isn''t implemented in itm_p2p_core_exp; only its ' ...
+            'stock value is allowed.'], f);
+    end
+end
+end
