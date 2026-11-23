@@ -427,20 +427,31 @@ The agent keeps a change only if all of these hold:
 1. **The gain is distinguishable from zero.** `run_eval_rev1(Tag=...,
    Best=<current best tag>)` runs a paired bootstrap (`paired_gain_rev1`,
    500 draws, paths resampled within site and fold) and appends it to
-   `summary.txt`. The 95 % interval of the gain must lie above zero on both
-   the full and the screened composite. Example: R02's 0.09 dB gain over
-   stock ITM is distinguishable from zero but under 0.3 dB, so it wouldn't
-   be kept.
+   `summary.txt`. The interval of the screened gain must lie above zero.
+   Example: R02's 0.09 dB gain over stock ITM is distinguishable from zero
+   but under 0.3 dB, so it wouldn't be kept.
+   **Level (from 2026-11-23):** a two-sided interval at 1 − 0.05/k, where k
+   counts the keep candidates scored against the current best since it
+   became best, including this one (Bonferroni). k = 1: 95 %; k = 2: 97.5 %;
+   k = 5: 99 %; k = 10: 99.5 %. Candidates ruled out before running
+   (history-matching screen, family ceiling) aren't scored, so they don't
+   count; diagnostics don't count. Above 97.5 %, use 2,000 draws. Reason:
+   with one keep in about 30 candidates, the chance that one of the next k
+   clears a 95 % interval by luck is 1 − 0.975^k (22 % at k = 10).
 1. **No held-out site gets worse** by more than 0.5 dB RMS.
 1. Censored-bound violations don't increase by more than 1 percentage point.
-1. **The gain shows on the screened set too.** The screened composite
-   (long-term rows in `data/links/longterm_screen_rev1.csv` left out) must
-   also improve by at least the same threshold. Those 14 rows on 10 paths
-   are line of sight in the 1971 record but blocked on the 30 m profile
-   (experiment D01), so every terrain model misses them; a change can't be
-   kept on the strength of those rows alone. The rule was fixed on
-   2026-11-21, before any experiment, and the list is hash-checked. Both
-   composites are reported for every run.
+1. **The screened composite decides; the full composite must do no harm
+   (from 2026-11-23).** The gain in rules 2 and 3 is the gain on the
+   screened composite (long-term rows in
+   `data/links/longterm_screen_rev1.csv` left out). The full composite must
+   not get worse by more than 0.3 dB. The screened rows (36 links since
+   PR #5) are documented artifacts: line of sight in the 1971 record but
+   blocked on the 30 m profile (experiment D01), or a terminal tens of
+   metres below a ridge within 0.5 km (PR #5). They can't earn a keep, and
+   now they can't veto one either: they hold about 40 % of the full
+   long-term level score, and in 1301 and D06b they decided the full
+   composite on their own. The rule changes no past decision. The list is
+   hash-checked, and both composites are reported for every run.
 1. **Complexity cost:** each new free parameter must buy at least 0.5 dB on
    the primary score. A change that adds a fitted parameter and gains 0.4 dB
    is rejected.
@@ -455,6 +466,25 @@ doesn't beat R01 is a retune, not a new mechanism, and the log says so. The
 order follows industry practice: parameter optimizers inside a verified flow
 reached production before free-roaming agents did
 ([docs/INDUSTRY_AGENT_PRACTICES.md](docs/INDUSTRY_AGENT_PRACTICES.md)).
+
+**Repair keeps (from 2026-11-23).** A change that removes a documented
+physics defect of `best` is kept as a repair, even without a score gain, if
+all of these hold:
+
+1. The defect was logged in `experiments/LOG.md` before the batch, and a
+   physics battery check (gating or report-only) shows `best` failing it and
+   the change passing it.
+1. **Non-inferior:** the lower end of the paired interval on the screened
+   composite is above −0.3 dB (same level as rule 3), the full composite
+   gets no worse than 0.3 dB, no site gets worse by more than 0.5 dB RMS,
+   and censored-bound violations rise by no more than 1 percentage point.
+1. It adds no free parameter and has a public source.
+1. The three-reviewer pass runs on every repair keep, not every tenth keep.
+
+Reason: a fix to a defect that acts on few rows can't gain 0.3 dB, so under
+rules 2 and 3 alone a model that leaves the repo would keep defects that are
+known. 707 has two (the principal-edge jump logged after B08, and the
+antenna-height inversion from P.452 eq. (166)).
 
 If a change fails, the agent reverts it and logs it. Failed experiments are
 data too; the log stops the agent from retrying the same idea.
@@ -699,7 +729,7 @@ The working plan, with stages and gates, is
 | 1. Diagnose | Error breakdown by mechanism, Δh, effective height ratio, frequency, and time percentage; noise floor estimate; Tier 4 residual ceiling | A ranked list of where squared error lives, with the ceiling and floor |
 | 2. Restructure | Tier 2 submodel swaps from P.452, P.2001, P.526, and the literature, in the ranked order | Target: Phase 2 cell score at or below 14.1 dB (P.452 and P.2001), no site worse than baseline, long-term scores no worse |
 | 3. Calibrate | Tier 1 constants of the kept structure, fitted in cross-validation | Accepted changes logged; held-out score trend |
-| 4. Lockbox | Human runs Tier B sets on the best variant and on baseline | Lockbox result recorded, whatever it is |
+| 4. Lockbox | Human runs Tier B sets on the best variant and on baseline | Lockbox result recorded, whatever it is. **Trigger (from 2026-11-23):** after batch B18, or after two consecutive batches in which no candidate passes both the screen and the acceptance rule, whichever comes first. `best` is frozen, and Nick scores the lockbox once on `best`, stock ITM and R02. |
 | 5. Write-up | Working paper: which changes, why, held-out evidence, limits | Human review |
 
 ## Open questions for Nick
