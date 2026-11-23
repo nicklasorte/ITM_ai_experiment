@@ -80,4 +80,8 @@ Before any future run, register the exact parent, inputs, cohort, equations, pre
 
 
 
-**Common reporting:** show eligible and excluded path counts, uncertainty, each rival's signed prediction, physics invariants, subgroup results, and failures. Preserve all negative findings. No experiments were executed in preparing this addendum.
+**Common reporting:** show eligible and excluded path counts, uncertainty, each rival's signed prediction, physics invariants, subgroup results, and failures. Preserve all negative findings. No experiments were executed in preparing this addendum.## Independent reviewer disposition
+
+The independent review advances H01 as a fixed-geometry reference and H04 as a numerical audit. H05 remains conditional on native terrain support, and H02 requires a new external measurement campaign. B15 already specifies and screens the P.617 fading-side family below the current 0.3 dB gain gate; no duplicate keep run is recommended. These verdicts separate physical diagnostics from eligible model changes. No experiment was executed for this review.
+
+
