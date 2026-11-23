@@ -264,6 +264,14 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### Decisions from Nick after the phase plan (2026-11-23)
+- "Do what you recommend": B15 recorded as screened out by ceiling (not built).
+- Protocol recommendations P1 (screened gate, full composite held to no harm),
+  P2 (Bonferroni level), P3 (repair keeps), P4 (pointwise and tail continuity)
+  and P7 (end of phase, lockbox trigger) go to Nick as PRs, because agents
+  don't edit FRAMEWORK.md or eval/. Until they merge, the current rule applies.
+- B17 input: data/ PR for NLCD along the Phase 2 profiles.
+
 ### B15 planned and ruled out by ceiling; phase plan rev 2 (planner note, 2026-11-23)
 - Planner: Claude Fable 5.2. No code, no runs. `experiments/batches/B15.md`,
   `experiments/proposals/phase_plan_rev2.md`, tool `experiments/batches/hm_ceiling_rev1.py`.
