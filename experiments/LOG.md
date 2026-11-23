@@ -264,6 +264,54 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### 1301-p452-troposcatter
+- Date: 2026-11-23. Batch B13. Parent: 707-cascaded-isolated-clutter-at-r. Tier 2.
+- Change: `{"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3","troposcatter":"p452_45"}`
+- Run settings (metrics.json cfg): diffraction=delta_cascaded_isolated, diffraction_bound=itm_troposcatter_line, terminal_clutter=p2108_height_gain, terminal_clutter_base=clutter_height, terminal_clutter_frange=hold3; overrides {"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3","troposcatter":"p452_45"}
+- Predicted (from B13.md, before the run): - Composite 12.7 dB (gain −0.2), inside −0.93 to +0.64 dB; screened gain between −0.6 and +0.7 dB. - Long-term level 19.8 (range 17.6 to 21.5); shape 5.2, unchanged to within 0.01 dB. - Phase 2 cell 13.25 (range 12.8 to 13.6). - Site RMS: R1 between 9.0 and 11.7, most likely a small gain (its transhorizon rows lose 1.7-2.0 dB of predicted loss, and R1 is pessimistic, mean +4.1); R2 and R3 unchanged; VA between 12.5 and 13.3. - Censored violations 22.8 % ± 1.5 points: R1 and VA rows get less loss (more violations possible), R2 rows more loss (fewer). - Physics battery passes. - **Most likely: rejected,** on the composite gain (central estimate −0.23 dB). A keep needs the change to line up with 707's long-term error at ρ ≈ 0.64.
+- Result: composite 12.8 dB (707-cascaded-isolated-clutter-at-r 12.5); screened 9.9; Phase 2 cell 13.2; long-term level 20.1; shape 5.2. Site RMS R1 10.2 (mean +3.7), R2 18.2 (mean -0.2), R3 6.8 (mean +0.4), VA 12.9 (mean -2.9). Worst cell 29.0. Censored 23.5 %. Paired gain vs 707-cascaded-isolated-clutter-at-r -0.30 (95 % -0.48 to -0.02); screened +0.04 (-0.08 to +0.15).
+- Physics battery: PASS.
+- Censored by site:
+  - R1    5.7 %  (16 of 280)   C 2/6, O 14/274
+  - R2   14.7 %  (174 of 1184)   C 14/106, O 160/1078
+  - VA   50.1 %  (291 of 581)   C 143/386, O 148/195
+- By edge count:
+  - edges 0-1: dead rows violated 100.0 % of   41; measured-row mean error  -13.0 dB
+  - edges   2: dead rows violated  29.9 % of  204; measured-row mean error   -4.9 dB
+  - edges   3: dead rows violated   4.3 % of  376; measured-row mean error  +13.0 dB
+  - edges  4+: dead rows violated   9.9 % of  563; measured-row mean error   +7.7 dB
+- Siting split (mean error, dB):
+  - R1 A clear n 112 mean +0.1 rms 5.0
+  - R1 A obstructed n 304 mean -2.5 rms 6.2
+  - R1 C clear n 156 mean -2.0 rms 13.1
+  - R1 C obstructed n 436 mean +8.1 rms 12.2 censored violated 2 of 6
+  - R1 O clear n 1445 mean -0.6 rms 5.8
+  - R1 O obstructed n 2036 mean +5.7 rms 10.9 censored violated 14 of 274
+  - R2 C clear n 46 mean -26.8 rms 33.4
+  - R2 C obstructed n 186 mean -15.9 rms 27.2 censored violated 14 of 106
+  - R2 O clear n 355 mean -17.0 rms 26.1
+  - R2 O obstructed n 1973 mean +0.9 rms 16.6 censored violated 160 of 1078
+  - R3 O clear n 4005 mean -1.4 rms 5.7
+  - R3 O obstructed n 1144 mean +6.7 rms 9.0
+  - VA C clear n 241 mean -4.7 rms 12.5 censored violated 27 of 27
+  - VA C obstructed n 709 mean +3.9 rms 13.1 censored violated 116 of 359
+  - VA O clear n 810 mean -8.9 rms 15.6 censored violated 10 of 10
+  - VA O obstructed n 802 mean -0.4 rms 10.7 censored violated 138 of 185
+- Decision: reject (composite gain -0.30 dB, 95% -0.48 to -0.02).
+- Predictions (B13.md), held or missed:
+  - Composite 12.7 (gain −0.2): missed by 0.1, actual 12.8 (−0.30), inside the screen interval −0.93 to +0.64.
+  - Screened gain −0.6 to +0.7: held, +0.04.
+  - Long-term level 19.8 (17.6 to 21.5): held within range, actual 20.1.
+  - Shape unchanged: held, 5.2.
+  - Phase 2 cell 13.25 (12.8 to 13.6): held, 13.2.
+  - R1 small gain (9.0 to 11.7): held, 10.5 to 10.2.
+  - R2, R3 unchanged: held. VA 12.5 to 13.3: held, 12.9.
+  - Censored 22.8 % ± 1.5: held, 23.5 %.
+  - Battery passes: held. Most likely rejected: held.
+- Screen check: actual gain −0.30 inside −0.93 to +0.64; central estimate −0.23; effective ρ −0.10 (needed 0.64).
+- Where the loss came from: the 36 screened-out long-term links (707 mean error +24.9 dB, RMS 36.4) get 2.4 dB more loss (RMS 38.7). On the other 512 links the 50 % RMS moves 9.37 to 9.48 dB and the mean −1.43 to −0.96 dB.
+- What it tells us: swapping ITM's troposcatter attenuation for P.452-18 eq. (45) inside ITM's line structure doesn't line up with 707's long-term error. It adds about 1 dB of loss on troposcatter paths, where 707 is already roughly unbiased once the screened links are out. The headroom in the troposcatter class is spread, not level, so a different median isn't the lever; the time distribution and path-to-path spread are.
+
 ### B13 registered (planner note, 2026-11-23)
 - 1301-p452-troposcatter: ITU-R P.452-18 eq. (45) as ITM's scatter
   attenuation on 707's base; plan, smoke test, screen and predictions in

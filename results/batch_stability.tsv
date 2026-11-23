@@ -8,3 +8,5 @@ B06	2026-11-21	5	0	0	1	2	0	13.4 (601, rejected after reviewer pass)	-2.6	601 pas
 B07	2026-11-21	6	0	0	0	4	0	12.5 (701, held for reviewer pass)	-3.5	P.2108-1 terminal clutter at concealed sites passes every gate (701, censored 21.4%); constant control within 0.1 dB (704); removing P.526-11 C gives 11.8 but censored 29.7% (702); 702, 703, 705, 706 archived
 B08	2026-11-21	3	0	0	0	1	0	12.5 (707, held for the reviewers)	-3.5	P.2108-1 3.1 applied with base loss at max(h, R) (707) keeps the gate pass: censored 22.8% (701 21.4%), composite 12.5; extend vs hold3 differ by 0.01 dB (709); 708 fails censored 32.5%
 B11	2026-11-22	2	0	0	0	2	0	12.5 (707, unchanged)	-3.5	NLCD terminal clutter at open sites rejected in both forms (711 all classes: R3, R1 worse; 712 forest only: R1, R2 worse); VA unmoved
+B12	2026-11-23	2	0	0	0	0	1	12.5 (707, unchanged)	-3.5	1201 and 1202 screened out by the history-matching bound (max gain 0.128 and 0.008 dB), not run; batch queue stuck 2026-11-22 (infra)
+B13	2026-11-23	1	0	0	0	0	0	12.5 (707, unchanged)	-3.5	1301 P.452-18 eq. (45) troposcatter rejected: composite -0.30 dB, screened +0.04; harm in the 36 screened-out links; screen interval held

@@ -1,0 +1,4 @@
+paired bootstrap: 1301-p452-troposcatter vs 707-cascaded-isolated-clutter-at-r (500 draws, paths resampled within site and fold)
+  composite gain   -0.30 dB  (SD 0.12; 95% interval -0.48 to -0.02)  not distinguishable from zero
+  screened gain    +0.04 dB  (SD 0.06; 95% interval -0.08 to +0.15)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better

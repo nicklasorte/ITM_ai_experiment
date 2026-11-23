@@ -1,0 +1,19 @@
+experiment 1301-p452-troposcatter   (matlab_itm 9bd6a4e, 23-Nov-2026 07:59:28)
+composite  12.8 dB   (baseline 16.0)
+  phase2 cell-balanced RMS @50%   13.2   (baseline 18.3)
+  long-term level RMS             20.1   (baseline 24.6)
+  long-term shape RMS             5.2   (baseline 5.2)
+composite, screened set  9.9 dB   (baseline 11.9; 36 rows left out)
+  site R1 RMS 10.2  mean +3.7   (baseline 13.3)
+  site R2 RMS 18.2  mean -0.2   (baseline 28.6)
+  site R3 RMS 6.8  mean +0.4   (baseline 9.0)
+  site VA RMS 12.9  mean -2.9   (baseline 15.4)
+  worst cell 29.0   censored violations 23.5% (baseline 28.0%)
+physics battery: PASS
+  height gain on real paths (report only): worst excess 27.0 dB (limit 1) at P2_R2_R2-020-T2_O f 9190 MHz, antenna 2
+max |variant - baseline| = 77.5 dB; runtime 32 s
+
+paired bootstrap: 1301-p452-troposcatter vs 707-cascaded-isolated-clutter-at-r (500 draws, paths resampled within site and fold)
+  composite gain   -0.30 dB  (SD 0.12; 95% interval -0.48 to -0.02)  not distinguishable from zero
+  screened gain    +0.04 dB  (SD 0.06; 95% interval -0.08 to +0.15)  not distinguishable from zero
+  gain = best minus new; positive means the new run is better
