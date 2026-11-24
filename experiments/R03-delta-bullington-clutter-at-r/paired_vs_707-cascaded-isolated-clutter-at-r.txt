@@ -1,0 +1,5 @@
+paired bootstrap: R03-delta-bullington-clutter-at-r vs 707-cascaded-isolated-clutter-at-r (500 draws, paths resampled within site and fold)
+  composite gain   +1.50 dB  (SD 0.44; 95% interval +0.42 to +2.03)  PASS
+  screened gain    +0.27 dB  (SD 0.22; 95% interval -0.14 to +0.73)  not distinguishable from zero
+  lower bounds at 99% / 99.5% (report only, for a Bonferroni level): composite +0.18 / +0.16, screened -0.29 / -0.36
+  gain = best minus new; positive means the new run is better
