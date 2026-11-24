@@ -1501,3 +1501,18 @@ appended row 1804 to results/results.tsv
   repo need Nick's read first.
 - **Next:** B21 (smooth-surface candidate) stays next. D23a is directional
   evidence to weigh when judging it, not a repair gate.
+
+## B21: smooth-surface candidate (closed, no candidate)
+
+- No scored run; k stays 6. The next scored candidate against 707 is k = 7.
+- Checked the phase plan's open item against the public texts. ITU-R
+  P.1812-8 Attachment 1 eq. (88c)-(88f) and ITU-R P.2001-5 eq. (35d)-(35f)
+  apply the same obstruction adjustment as P.452-18 eq. (153), which 707
+  uses. Dropping it is 1803; replacing the surface with ITM heights is
+  1804. Both are closed.
+- No public source offers a third construction, so R1 stays on hold. Text
+  extraction of both PDFs was garbled in places; equation numbers come from
+  a reading of the text.
+- Details: `experiments/batches/B21.md`.
+- **Next (needs Nick):** hold R1, and run one diagnostic on R4 (line-of-sight
+  A_s) or register R2 before the next candidate.
