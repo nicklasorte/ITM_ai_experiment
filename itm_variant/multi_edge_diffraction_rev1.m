@@ -8,7 +8,8 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %     method   "epstein_peterson" | "ep_isolated" | "p526_double_edge" | "string_ep" |
 %              "deygout" | "p526_cascaded" | "p526_cascaded_isolated" |
 %              "deygout_isolated" | "bullington" | "bullington_uc" |
-%              "p526_cylinders_knife"
+%              "p526_cylinders_knife" | "p526_cascaded_isolated_one" |
+%              "p526_cascaded_isolated_tree3" | "p526_cascaded_isolated_rival"
 %     x_m      distance of each profile point from the transmitter (m),
 %              increasing, x_m(1) = 0, x_m(end) = path length
 %     z_m      height above sea level (m): z_m(1) and z_m(end) are the
@@ -121,6 +122,30 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %         the Earth-curvature term in eq. (122) as printed gives a negative
 %         radius on a smooth Earth, so it waits for a check against
 %         independent reference code (TODO).
+%     "p526_cascaded_isolated_one"  "p526_cascaded_isolated" with one
+%         secondary edge in total, the larger of the two weighted secondary
+%         losses: L = J(nu_p) + T [max(w_t J(nu_t), w_r J(nu_r)) + C]
+%         (batch B18, candidate 1801). With two tied ridges the loss is
+%         the same whichever is principal (the secondary parameter of each,
+%         seen from the other, is equal), so the step at a switch of
+%         principal edge shrinks to the difference of two secondary
+%         losses. Design choice with no new constant; P.526-11 counts one
+%         secondary edge on each side.
+%     "p526_cascaded_isolated_tree3"  Three edges whenever three exist
+%         (batch B18, candidate 1802): the principal edge, the stronger
+%         weighted secondary edge s1 of the two sides, then the strongest
+%         of the other side's secondary edge and the edges of the two
+%         sub-paths s1 splits its side into (Deygout's recursion, IEEE
+%         Trans. Antennas Propag. 14(4), 1966, to depth two on one side).
+%         Sub-path candidates are weighted by their isolation from both
+%         ends of their sub-path (the smaller weight). L = J(nu_p) + T
+%         [L_s1 + L_3 + C]. Design choice with no new constant.
+%     "p526_cascaded_isolated_rival"  Diagnostic, not a loss model: the
+%         "p526_cascaded_isolated" loss with the principal edge moved to the
+%         runner-up ridge, the highest full-path nu among points fully
+%         isolated from the principal edge (weight 1). D.nu = [nu_p nu_2].
+%         With no runner-up, the normal loss and nu_2 = -Inf. Used for the
+%         report-only info.edge_switch (B18).
 %     "bullington"  Single equivalent edge at the intersection of the two
 %         horizon rays: ITU-R P.526-16 section 4.5.1, eq. (49)-(57),
 %         including the correction [1 - exp(-L_uc/6)] (10 + 0.02 d).
@@ -210,6 +235,67 @@ switch method
             D.edges = p; D.nu = nu_p; D.weight = 1;
         end
 
+    case "p526_cascaded_isolated_one"
+        [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
+        if nu_p > -0.78
+            Jp = knife_J(nu_p);
+            [L_t, t, nu_t, w_t] = isolated_secondary(1, p, p, x_m, z_m, lambda, a_e_m);
+            [L_r, r, nu_r, w_r] = isolated_secondary(p, n, p, x_m, z_m, lambda, a_e_m);
+            C = 10.0 + 0.04 * (x_m(n) / 1000);               % P.526-11 eq. (51), D in km
+            T = 1.0 - exp(-Jp / 6.0);                        % P.526-11 eq. (52)
+            if L_t >= L_r
+                L_db = Jp + T * (L_t + C);
+                D.edges = [t p]; D.nu = [nu_t nu_p]; D.weight = [w_t 1];
+            else
+                L_db = Jp + T * (L_r + C);
+                D.edges = [p r]; D.nu = [nu_p nu_r]; D.weight = [1 w_r];
+            end
+        else
+            L_db = 0;                                        % P.526-11 eq. (50b)
+            D.edges = p; D.nu = nu_p; D.weight = 1;
+        end
+
+    case "p526_cascaded_isolated_tree3"
+        [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
+        if nu_p > -0.78
+            Jp = knife_J(nu_p);
+            [L_t, t, nu_t, w_t] = isolated_secondary(1, p, p, x_m, z_m, lambda, a_e_m);
+            [L_r, r, nu_r, w_r] = isolated_secondary(p, n, p, x_m, z_m, lambda, a_e_m);
+            if L_t >= L_r
+                L_1 = L_t; s1 = t; e1 = [nu_t w_t]; L_o = L_r; o = r; eo = [nu_r w_r];
+                sub = [1 s1; s1 p];
+            else
+                L_1 = L_r; s1 = r; e1 = [nu_r w_r]; L_o = L_t; o = t; eo = [nu_t w_t];
+                sub = [p s1; s1 n];
+            end
+            L_3 = L_o; k3 = o; e3 = eo;
+            if L_1 > 0
+                for q = 1:2
+                    [Lq, kq, nuq, wq] = isolated_between(sub(q, 1), sub(q, 2), x_m, z_m, lambda, a_e_m);
+                    if Lq > L_3
+                        L_3 = Lq; k3 = kq; e3 = [nuq wq];
+                    end
+                end
+            end
+            C = 10.0 + 0.04 * (x_m(n) / 1000);               % P.526-11 eq. (51), D in km
+            T = 1.0 - exp(-Jp / 6.0);                        % P.526-11 eq. (52)
+            L_db = Jp + T * (L_1 + L_3 + C);
+            D.edges = [p s1 k3]; D.nu = [nu_p e1(1) e3(1)]; D.weight = [1 e1(2) e3(2)];
+        else
+            L_db = 0;                                        % P.526-11 eq. (50b)
+            D.edges = p; D.nu = nu_p; D.weight = 1;
+        end
+
+    case "p526_cascaded_isolated_rival"
+        [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
+        [nu_2, p2] = rival_ridge(p, x_m, z_m, lambda, a_e_m);
+        if isfinite(nu_2)
+            L_db = cascaded_isolated_at(p2, nu_2, x_m, z_m, lambda, a_e_m);
+        else
+            L_db = cascaded_isolated_at(p, nu_p, x_m, z_m, lambda, a_e_m);
+        end
+        D.edges = [p p2]; D.nu = [nu_p nu_2];
+
     case {"deygout", "p526_cascaded"}
         [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
         if nu_p > -0.78
@@ -271,6 +357,87 @@ switch method
 end
 if ~isfinite(L_db) || ~isreal(L_db)
     error('itmexp:multiedge', 'Non-finite %s loss.', method);
+end
+end
+
+function L = cascaded_isolated_at(p, nu_p, x, z, lambda, a_e)
+% "p526_cascaded_isolated" with the principal edge fixed at p
+n = numel(x);
+if nu_p > -0.78
+    Jp = knife_J(nu_p);
+    L_t = isolated_secondary(1, p, p, x, z, lambda, a_e);
+    L_r = isolated_secondary(p, n, p, x, z, lambda, a_e);
+    C = 10.0 + 0.04 * (x(n) / 1000);                 % P.526-11 eq. (51), D in km
+    T = 1.0 - exp(-Jp / 6.0);                        % P.526-11 eq. (52)
+    L = Jp + T * (L_t + L_r + C);
+else
+    L = 0;
+end
+end
+
+function [nu2, p2] = rival_ridge(p, x, z, lambda, a_e)
+% Highest full-path nu (P.526-11 eq. (49)) among points with isolation
+% weight 1 from the principal edge p. -Inf and p when there is none.
+n = numel(x);
+nu2 = -Inf; p2 = p;
+w = zeros(n, 1);
+if p > 2
+    k = (p - 1:-1:2)';
+    w(k) = iso_weights(k, p, x, z, lambda, a_e);
+end
+if p < n - 1
+    k = (p + 1:n - 1)';
+    w(k) = iso_weights(k, p, x, z, lambda, a_e);
+end
+k = find(w >= 1);
+if isempty(k), return, end
+d = x(n);
+h = z(k) + x(k) .* (d - x(k)) / (2 * a_e) - (z(1) * (d - x(k)) + z(n) * x(k)) / d;
+nu = h .* sqrt(2 * d ./ (lambda * x(k) .* (d - x(k))));
+[nu2, j] = max(nu);
+p2 = k(j);
+end
+
+function w = iso_weights(k, p, x, z, lambda, a_e)
+% Isolation weights of candidates k (ordered outward from p) relative to
+% edge p: the w_k of isolated_secondary (P.526-16 section 2.5, eq. (2)),
+% with heights from the line joining the antennas, Earth bulge included.
+n = numel(x);
+H = z(k) + x(k) .* (x(n) - x(k)) / (2 * a_e) - (z(1) * (x(n) - x(k)) + z(n) * x(k)) / x(n);
+xk = x(k);
+m = numel(H);
+run_min = cummin(H);
+at_min = cummax((H == run_min) .* (1:m)');
+c = [0; H(2:end) - run_min(1:end - 1)];
+iv = [1; at_min(1:end - 1)];
+d1 = abs(xk - xk(iv)); d2 = abs(xk(iv) - x(p));
+r1 = sqrt(lambda * d1 .* d2 ./ max(d1 + d2, eps));   % P.526-16 eq. (2)
+w = zeros(m, 1);
+ok = c > 0 & r1 > 0;
+w(ok) = min(1, c(ok) ./ (0.6 * r1(ok)));             % 0.6 F1: P.526-16 section 2.5
+end
+
+function [L, k_best, nu_best, w_best] = isolated_between(a, b, x, z, lambda, a_e)
+% Strongest weighted edge strictly between edges a and b, with nu on the
+% sub-path a..b (P.526-11 eq. (49)) and the isolation weight the smaller
+% of the weights from a and from b
+L = 0; k_best = a; nu_best = -Inf; w_best = 0;
+if b - a < 3
+    return
+end
+k = (a + 1:b - 1)';
+d_an = x(k) - x(a); d_nb = x(b) - x(k); d_ab = x(b) - x(a);
+h = z(k) + d_an .* d_nb / (2 * a_e) - (z(a) * d_nb + z(b) * d_an) / d_ab;
+nu = h .* sqrt(2 * d_ab ./ (lambda * d_an .* d_nb));
+w_a = iso_weights(k, a, x, z, lambda, a_e);
+w_b = flipud(iso_weights(flipud(k), b, x, z, lambda, a_e));
+w = min(w_a, w_b);
+J = zeros(numel(k), 1);
+on = nu > -0.78;
+J(on) = 6.9 + 20 * log10(sqrt((nu(on) - 0.1).^2 + 1) + nu(on) - 0.1);   % P.526-16 eq. (31)
+[L, j] = max(w .* J);
+if L > 0
+    k_best = k(j); nu_best = nu(j); w_best = w(j);
 end
 end
 

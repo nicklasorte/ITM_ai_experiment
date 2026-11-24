@@ -264,6 +264,12 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### B18 model-only stage (2026-11-24; registered before any scored run)
+- Planner and worker: Claude Opus 5.5, from Fable's draft (approved by Nick). Details: `experiments/batches/B18.md`.
+- Code (default off; 47 tests; parity 6.8e-13 dB): `"p526_cascaded_isolated_one"`, `"_tree3"`, `"_rival"` (multi_edge), `cfg.smooth_heights`, `cfg.profile_clutter` (ITU-R P.1812-8 section 3.2.1 eq. (1d), Table 2, read from the ITU Word file), and report-only `info.edge_switch` (gap between the two largest nu, loss with the runner-up as principal). P.452-18 equation numbers in comments corrected to (147)-(153d), checked against the PDF.
+- Results: 1801 (one secondary edge) removes the jump (R2-020 steps 30.6 to 0.5 dB; real-path height failures 119 row-ends on 10 paths to 29 on 3) but adds 22 violated censored rows, +1.08 points: 0.08 over the repair rule, so not scored. 1802 fails the battery; 1803 and 1807 create new height failures (30.7 dB on R2-080-T4); 1805 and 1806 CERTAIN_HARM. 1804 (ITM effective heights) is open and goes to scoring at k = 5 (screened interval -1.50 to +1.18, emulator mean -0.44; censored 21.7 %).
+- Priors that missed: 1801's censored cost (prior +6 to +12 points; actual +1.08), 1802's continuity (prior 3-10 dB steps; actual under 0.5 on R2-020, but it fails elsewhere), 1803 as a repair (it isn't).
+
 ### Decisions from Nick after phase plan rev 3 (2026-11-24)
 - "All approved": (1) the principal-edge jump stays in 707 through the lockbox, documented, with report-only fields in `info`; (2) run B18 as drafted, screen first; (3) open the report-only evaluator PR E2; (4) score the lockbox after B18, with a delta-Bullington comparator (R03) added to the panel and predictions registered first; (5) the censored gate stays as it is until after the lockbox; (6) hold the canopy-height data PR unless 1806 survives the screen.
 

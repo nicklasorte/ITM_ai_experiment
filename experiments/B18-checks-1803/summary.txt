@@ -1,0 +1,13 @@
+B18 model-only checks. Generated 2026-11-24 11:49.
+
+== 707  {"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3"}
+  sweep P2_R2_R2-020-T1_O, largest step per 0.05 m (dB) at [230 410 751 910 1846 4595 9190] MHz: [14.7 16.8 19.3 20 23 27 30]
+  sweep P2_R2_R2-020-T2_O, largest step per 0.05 m (dB) at [230 410 751 910 1846 4595 9190] MHz: [14.8 17.1 19.7 20.5 23.6 27.6 30.6]
+  real-path height check: 119 row-ends over 1 dB on 10 paths; worst 27.0 dB (P2_R2_R2-020-T2_O, 9190 MHz, antenna 2)
+  battery: pass 1; pointwise continuity worst 23.2 dB (distance_rough); height_gain_real worst 27.0 dB
+
+== 1803  {"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3","smooth_heights":"p452_ducting"}
+  sweep P2_R2_R2-020-T1_O, largest step per 0.05 m (dB) at [230 410 751 910 1846 4595 9190] MHz: [14.7 16.8 19.3 20 23 27 30]
+  sweep P2_R2_R2-020-T2_O, largest step per 0.05 m (dB) at [230 410 751 910 1846 4595 9190] MHz: [14.8 17.1 19.7 20.5 23.6 27.6 30.6]
+  real-path height check: 199 row-ends over 1 dB on 9 paths; worst 30.7 dB (P2_R2_R2-080-T4_O, 9190 MHz, antenna 1)
+  battery: pass 1; pointwise continuity worst 21.9 dB (distance_rough); height_gain_real worst 30.7 dB

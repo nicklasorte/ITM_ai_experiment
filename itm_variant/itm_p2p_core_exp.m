@@ -116,7 +116,11 @@ if delta
         error('itmexp:cfg', 'Delta-Bullington needs a terrain profile; area mode has none.');
     end
     A_itm_db = A_ref_db;
-    A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m);
+    if want_info
+        [A_ref_db, edge_switch] = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m);
+    else
+        A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m);
+    end
     if isfield(cfg, 'diffraction_bound') && cfg.diffraction_bound ~= "none"
         % Batch B06. Beyond the horizon the troposcatter field is present
         % whatever the terrain does to the diffracted field, so the scatter
@@ -186,6 +190,7 @@ end
 %   "none"      no term (default)
 %   "p833_eq1"  path_vegetation_rev1
 A_veg_db = 0;
+if ~exist('edge_switch', 'var'), edge_switch = struct(); end
 if isfield(cfg, 'path_vegetation') && cfg.path_vegetation ~= "none"
     A_veg_db = vegetation_term(cfg, area, pfl, h_m, f_mhz, gamma_e, mobile_end);
     A_ref_db = A_ref_db + A_veg_db;
@@ -258,6 +263,7 @@ if want_info
         'warning_messages', {itm_warning_text(wbits)}, ...
         'A_ref_undefined', lines.A_ref_undefined, ...
         'A_veg_db', A_veg_db, ...
+        'edge_switch', edge_switch, ...
         'lines', lines);
 end
 end
@@ -787,7 +793,7 @@ q = (term1 + (-theta_los * a_e + d_ML) / d_m) * c_min(delta_h_d * f_mhz / 47.7, 
 w = cfg.cal.w_const / (cfg.cal.w_const + c_sqrt(q));
 end
 
-function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m)
+function [A_ref, E] = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m)
 % Reference attenuation by the delta-Bullington construction (batch B04).
 %   L_ba  Bullington loss of the actual profile with the actual antennas
 %   L_bs  Bullington loss of a zero-height profile with the antennas at
@@ -796,8 +802,10 @@ function A_ref = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, 
 %         path (straight terrain from h_st to h_sr, same antennas), standing
 %         in for the spherical-earth loss L_sph
 % Smooth-earth surface: least-squares fit with the obstruction adjustment
-% and the terminal-ground limits, ITU-R P.452-18 Attachment 2 section 5,
-% eq. (161)-(167); the same construction as ITU-R P.526-16 section 4.5.2,
+% and the terminal-ground limits, ITU-R P.452-18 Attachment 2 sections
+% 5.1.6.2-5.1.6.3, eq. (147)-(153d) (numbers checked against the P.452-18
+% PDF on 2026-11-24; earlier comments cited them as (161)-(167)); the same
+% construction as ITU-R P.526-16 section 4.5.2,
 % eq. (58)-(64). Bullington: ITU-R P.526-16 section 4.5.1, eq. (49)-(57).
 % Forms:
 %   "delta_bullington"       L_ba + max(A_s - L_bs, 0)   P.452-18 eq. (38)-(40)
@@ -833,26 +841,72 @@ d = x(end);
 hts = g(1) + h_m(1);
 hrs = g(end) + h_m(2);
 dd = x(2:end) - x(1:end - 1);
-v1 = sum(dd .* (g(2:end) + g(1:end - 1)));                                            % eq. (161)
-v2 = sum(dd .* (g(2:end) .* (2 * x(2:end) + x(1:end - 1)) + g(1:end - 1) .* (x(2:end) + 2 * x(1:end - 1))));  % eq. (162)
-hst = (2 * v1 * d - v2) / d^2;                                                        % eq. (163)
-hsr = (v2 - v1 * d) / d^2;                                                            % eq. (164)
-if np >= 2
+v1 = sum(dd .* (g(2:end) + g(1:end - 1)));                                            % eq. (147)
+v2 = sum(dd .* (g(2:end) .* (2 * x(2:end) + x(1:end - 1)) + g(1:end - 1) .* (x(2:end) + 2 * x(1:end - 1))));  % eq. (148)
+hst = (2 * v1 * d - v2) / d^2;                                                        % eq. (149)
+hsr = (v2 - v1 * d) / d^2;                                                            % eq. (150)
+smooth = "p452_diffraction";
+if isfield(cfg, 'smooth_heights'), smooth = cfg.smooth_heights; end
+if smooth == "p452_diffraction" && np >= 2
     ii = 2:np;
-    HH = g - (hts * (d - x) + hrs * x) / d;                                           % eq. (165d)
-    hobs = max(HH(ii));                                                               % eq. (165a)
+    HH = g - (hts * (d - x) + hrs * x) / d;                                           % eq. (151d)
+    hobs = max(HH(ii));                                                               % eq. (151a)
     if hobs > 0
-        a_t = max(HH(ii) ./ x(ii));                                                   % eq. (165b)
-        a_r = max(HH(ii) ./ (d - x(ii)));                                             % eq. (165c)
-        hst = hst - hobs * a_t / (a_t + a_r);                                         % eq. (166c), (166e)
-        hsr = hsr - hobs * a_r / (a_t + a_r);                                         % eq. (166d), (166f)
+        a_t = max(HH(ii) ./ x(ii));                                                   % eq. (151b)
+        a_r = max(HH(ii) ./ (d - x(ii)));                                             % eq. (151c)
+        hst = hst - hobs * a_t / (a_t + a_r);                                         % eq. (152c), (152e)
+        hsr = hsr - hobs * a_r / (a_t + a_r);                                         % eq. (152d), (152f)
     end
 end
-hst = min(hst, g(1));                                                                 % eq. (167a), (167b)
-hsr = min(hsr, g(end));                                                               % eq. (167c), (167d)
-hp = [hts - hst, hrs - hsr];                                                          % heights above the smooth surface
+hst = min(hst, g(1));                                                                 % eq. (153a), (153b); (154a)
+hsr = min(hsr, g(end));                                                               % eq. (153c), (153d); (154b)
+% Heights of the antennas above the smooth surface (batch B18,
+% cfg.smooth_heights). The antennas stay at their altitudes hts and hrs;
+% only the reference surface under them changes.
+%   "p452_diffraction"  P.452-18 section 5.1.6.3: the least-squares surface
+%                       lowered by the obstruction adjustment (eq. (151a)-
+%                       (153d)), as section 4.2.3 eq. (38) uses (default)
+%   "p452_ducting"      P.452-18 section 5.1.6.4: the least-squares surface
+%                       limited by the terminal ground only (eq. (154a),
+%                       (154b)); heights by eq. (156). It doesn't depend on
+%                       the antenna heights. P.452 uses it for its ducting
+%                       model, not for diffraction (B18, candidate 1803)
+%   "itm_effective"     ITM's effective heights h_e of the actual profile
+%                       (QuickPfl; NTIA TR-82-100) (B18, candidate 1804)
+%   "structural"        the antenna heights above local ground: the surface
+%                       runs between the two terminal ground points
+%                       (Paul 2003 compares h_e with structural heights;
+%                       B18, candidate 1805)
+switch smooth
+    case {"p452_diffraction", "p452_ducting"}
+        % hst and hsr as above (the obstruction adjustment ran only for the default)
+    case "itm_effective"
+        hst = hts - h_e_m(1); hsr = hrs - h_e_m(2);
+    case "structural"
+        hst = g(1); hsr = g(end);
+    otherwise
+        error('itmexp:cfg', 'Unknown cfg.smooth_heights "%s".', smooth);
+end
+hp = [hts - hst, hrs - hsr];                                                          % heights above the smooth surface, eq. (156)
+if any(hp <= 0) || ~all(isfinite(hp))
+    error('itmexp:delta', 'Antenna height above the smooth surface must be positive (%g, %g m).', hp(1), hp(2));
+end
 a_e = 1 / gamma_e;
 z = g; z(1) = hts; z(end) = hrs;
+% Representative clutter heights on the actual profile (batch B18,
+% cfg.profile_clutter). ITU-R P.1812-8 section 3.2.1 eq. (1d): the surface
+% height g_i is the terrain height plus the representative clutter height
+% of point i, for i = 2 to n - 1, not at the terminals; Table 2 gives 15 m
+% for urban/trees/forest. P.1812 diffracts over g in its delta-Bullington
+% (section 4.3.4) and fits the smooth surface to the terrain heights h
+% (Attachment 1 section 5.6, eq. (83)-(89d)), so only L_ba sees the clutter.
+%   "none"                  no clutter on the profile (default)
+%   "p1812_representative"  15 m on samples classed woodland (NLCD 2001 41,
+%                           42, 43, 90; the "trees_forest" mapping of B11),
+%                           Phase 2 rows only (candidate 1806)
+if isfield(cfg, 'profile_clutter') && cfg.profile_clutter ~= "none"
+    z = z + profile_clutter_heights(cfg, np);
+end
 switch cfg.diffraction
     case {"delta_bullington", "delta_bullington_p526", "delta_bullington_afo"}
         method = "bullington";
@@ -866,6 +920,10 @@ switch cfg.diffraction
         method = "ep_isolated";
     case {"delta_cascaded_isolated", "delta_cascaded_isolated_afo"}
         method = "p526_cascaded_isolated";
+    case "delta_cascaded_isolated_one"
+        method = "p526_cascaded_isolated_one";
+    case "delta_cascaded_isolated_tree3"
+        method = "p526_cascaded_isolated_tree3";
     case "delta_deygout_isolated"
         method = "deygout_isolated";
     case "delta_bullington_uc"
@@ -876,6 +934,16 @@ switch cfg.diffraction
         error('itmexp:cfg', 'Unknown delta form "%s".', cfg.diffraction);
 end
 L_ba = multi_edge_diffraction_rev1(method, x, z, f_mhz, a_e);
+E = struct();
+if nargout > 1 && method == "p526_cascaded_isolated"
+    % Report only (B18, Nick's decision 2026-11-24): how close the row is to
+    % a switch of principal edge, and the loss if the runner-up ridge were
+    % principal. No effect on the loss.
+    [L_alt, D_alt] = multi_edge_diffraction_rev1("p526_cascaded_isolated_rival", x, z, f_mhz, a_e);
+    E.nu_gap = D_alt.nu(1) - D_alt.nu(2);
+    E.L_ba_db = L_ba;
+    E.L_ba_rival_db = L_alt;
+end
 z0 = zeros(size(g)); z0(1) = hp(1); z0(end) = hp(2);
 L_bs = multi_edge_diffraction_rev1(method, x, z0, f_mhz, a_e);
 % ITM on the smooth-earth equivalent path, every switch at "itm"
@@ -900,6 +968,29 @@ if ~isfinite(A_ref) || ~isreal(A_ref)
     error('itmexp:delta', 'Non-finite delta-Bullington reference attenuation.');
 end
 end
+
+function dz = profile_clutter_heights(cfg, np)
+%PROFILE_CLUTTER_HEIGHTS Representative clutter heights to add to the profile (B18; see the call site).
+if cfg.profile_clutter ~= "p1812_representative"
+    error('itmexp:cfg', 'Unknown cfg.profile_clutter "%s".', cfg.profile_clutter);
+end
+if ~isfield(cfg, 'row')
+    error('itmexp:cfg', ['Profile clutter needs the row metadata cfg.row from the evaluator. ' ...
+        'Without it every row would silently get none.']);
+end
+dz = zeros(np + 1, 1);
+if cfg.row.set == ""
+    return                                   % long-term rows and synthetic sweeps: no land cover
+end
+cls = landcover_profile_rev1(cfg.row.path_id, np + 1);
+if cfg.row.reversed
+    cls = flipud(cls);
+end
+R = 15;                                      % m, ITU-R P.1812-8 Table 2, urban/trees/forest
+dz(ismember(cls, [41 42 43 90])) = R;
+dz([1 end]) = 0;                             % eq. (1d): not at the terminals
+end
+
 
 function ctx = profile_context(pfl, h_m, a_e, f_mhz, cfg)
 % What the profile-based submodels need from the terrain profile:

@@ -983,3 +983,69 @@ tc.verifyEqual(a1, a0, 'AbsTol', 1e-12);
 c.path_vegetation = "bogus";
 tc.verifyError(@() itm_p2p_core_exp(10, 10, pf, 900, 50, 50, 50, 5, 301, 1, 15, 0.005, 12, false, [], c), 'itmexp:cfg');
 end
+
+function test_b18_cascade_bracket(tc)
+% B18 repair bracket: "p526_cascaded_isolated_one" (one secondary edge),
+% "p526_cascaded_isolated_tree3" (three edges when three exist) and the
+% diagnostic "p526_cascaded_isolated_rival"
+f = 2000; a = 8.5e6;
+x = (0:30:20010)';
+rng(7);
+for trial = 1:20
+    z = 200 + cumsum(randn(size(x))) * 3;
+    z(1) = z(1) + 10; z(end) = z(end) + 10;
+    L0 = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z, f, a);
+    L1 = multi_edge_diffraction_rev1("p526_cascaded_isolated_one", x, z, f, a);
+    L3 = multi_edge_diffraction_rev1("p526_cascaded_isolated_tree3", x, z, f, a);
+    tc.verifyLessThanOrEqual(L1, L0 + 1e-9);
+    tc.verifyGreaterThanOrEqual(L3, L0 - 1e-9);
+    % one secondary edge: reversal is exact
+    tc.verifyEqual(multi_edge_diffraction_rev1("p526_cascaded_isolated_one", x(end) - flipud(x), flipud(z), f, a), L1, 'AbsTol', 1e-9);
+end
+% One ridge: no secondary edges, all three forms agree
+z = 100 * ones(size(x)); z(330) = 180; z(1) = 110; z(end) = 110;
+L0 = multi_edge_diffraction_rev1("p526_cascaded_isolated", x, z, f, a);
+tc.verifyEqual(multi_edge_diffraction_rev1("p526_cascaded_isolated_one", x, z, f, a), L0, 'AbsTol', 1e-12);
+tc.verifyEqual(multi_edge_diffraction_rev1("p526_cascaded_isolated_tree3", x, z, f, a), L0, 'AbsTol', 1e-12);
+[Lr, Dr] = multi_edge_diffraction_rev1("p526_cascaded_isolated_rival", x, z, f, a);
+tc.verifyEqual(Lr, L0, 'AbsTol', 1e-12);
+tc.verifyEqual(Dr.nu(2), -Inf);
+% Two separated ridges: the rival is the other ridge, and the gap is >= 0
+z(500) = 170;
+[~, Dr] = multi_edge_diffraction_rev1("p526_cascaded_isolated_rival", x, z, f, a);
+tc.verifyEqual(sort(Dr.edges), [330 500]);
+tc.verifyGreaterThanOrEqual(Dr.nu(1) - Dr.nu(2), 0);
+end
+
+function test_b18_smooth_heights_and_profile_clutter(tc)
+% cfg.smooth_heights and cfg.profile_clutter (B18), through the core
+base = params_exp();
+base.diffraction = "delta_cascaded_isolated"; base.diffraction_bound = "itm_troposcatter_line";
+base.row = struct('set', "", 'siting', "", 'reversed', false, 'path_id', "x");
+np = 400; xi = 50;
+pf_clear = [np; xi; 100 + zeros(np + 1, 1)];
+g = 100 + zeros(np + 1, 1); g(200) = 260; pf_obs = [np; xi; g];
+call = @(c, pf) itm_p2p_core_exp(10, 10, pf, 900, 50, 50, 50, 5, 301, 1, 15, 0.005, 12, false, [], c);
+a0 = call(base, pf_obs);
+c = base; c.smooth_heights = "p452_diffraction";
+tc.verifyEqual(call(c, pf_obs), a0, 'AbsTol', 1e-12);        % default spelled out
+c.smooth_heights = "p452_ducting";
+tc.verifyEqual(call(c, pf_clear), call(base, pf_clear), 'AbsTol', 1e-9);   % no obstruction: same surface
+tc.verifyNotEqual(call(c, pf_obs), a0);                       % obstruction adjustment removed
+for v = ["itm_effective", "structural"]
+    c.smooth_heights = v;
+    tc.verifyTrue(isfinite(call(c, pf_obs)));
+end
+c.smooth_heights = "bogus";
+tc.verifyError(@() call(c, pf_obs), 'itmexp:cfg');
+% Profile clutter: long-term and synthetic rows unchanged; unknown value errors
+c = base; c.profile_clutter = "p1812_representative";
+tc.verifyEqual(call(c, pf_obs), a0, 'AbsTol', 1e-12);
+c.profile_clutter = "bogus";
+tc.verifyError(@() call(c, pf_obs), 'itmexp:cfg');
+% Report-only edge-switch fields
+[~, info] = itm_p2p_core_exp(10, 10, pf_obs, 900, 50, 50, 50, 5, 301, 1, 15, 0.005, 12, true, [], base);
+tc.verifyTrue(isfield(info.edge_switch, 'nu_gap') && isfield(info.edge_switch, 'L_ba_rival_db'));
+[~, info0] = itm_p2p_core_exp(10, 10, pf_obs, 900, 50, 50, 50, 5, 301, 1, 15, 0.005, 12, true, [], params_exp());
+tc.verifyTrue(isempty(fieldnames(info0.edge_switch)));
+end

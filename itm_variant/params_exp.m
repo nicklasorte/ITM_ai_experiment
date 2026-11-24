@@ -48,6 +48,10 @@ cfg.diffraction = "itm";
 %                            section 4.4.2 and isolation-weighted secondary
 %                            edges (ITU-R P.526-16 section 2.5), without and
 %                            with A_fo (B06)
+%   "delta_cascaded_isolated_one" | "delta_cascaded_isolated_tree3"
+%                            the same cascade with one secondary edge in
+%                            total, or three edges whenever three exist
+%                            (B18 repair bracket, candidates 1801 and 1802)
 % Where the profile-based loss applies (only when cfg.diffraction ~= "itm"):
 %   "transhorizon"   transhorizon paths only (batch B01)
 %   "blocked_paths"  also line-of-sight-region paths whose profile blocks
@@ -96,6 +100,15 @@ cfg.terminal_clutter_open = "none";
 % horizon, with NLCD 2001 along the Phase 2 profile (PR #10;
 % path_vegetation_rev1). Phase 2 rows only; needs cfg.row.path_id.
 cfg.path_vegetation = "none";
+% Heights above the smooth surface in the delta construction (B18):
+% "p452_diffraction" (P.452-18 section 5.1.6.3, default), "p452_ducting"
+% (section 5.1.6.4 eq. (154a)-(156): no obstruction adjustment),
+% "itm_effective" (ITM's h_e), "structural" (antenna above local ground).
+cfg.smooth_heights = "p452_diffraction";
+% Representative clutter heights on the actual profile for L_ba (B18):
+% "none" or "p1812_representative" (ITU-R P.1812-8 section 3.2.1 eq. (1d),
+% Table 2: 15 m on woodland samples, not at the terminals; Phase 2 rows only).
+cfg.profile_clutter = "none";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights
