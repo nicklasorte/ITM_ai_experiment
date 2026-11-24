@@ -78,3 +78,25 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
 - Worker agents follow the current batch plan in `experiments/batches/`
   exactly. If a step fails, a spec is ambiguous, or the code needs more than
   the plan says, stop and hand back to the planner instead of improvising.
+
+## Batch results
+
+Every results table in a batch plan (`experiments/batches/B*.md`) and every
+LOG entry follows these rules. Three batches in a row (B23, B24, B25) needed
+corrections that these rules would have caught.
+
+- Each row of a results table has a **Population** column: the rows, pairs,
+  sites or sweep its number comes from, for example "R1 open blocked-blocked
+  pairs, 29 bases" or "one row: R1-005-T5_O, 230 MHz".
+- A sentence that states a direction, cause or replication names the same
+  population. Don't widen it ("the inversion", "all sites") beyond the data.
+- A summary number pooled across strata isn't used to explain a result in
+  one stratum.
+- Check each registered prediction against the quantity it names.
+- Label results that hold by construction (closure sums, symmetric
+  equations, a term added linearly, a field the change can't reach). They
+  aren't evidence.
+- List every registered check that didn't run, or ran differently, under
+  "Not done".
+- Before a batch is reported as done, one fresh reviewer compares each claim
+  sentence with the data it was computed on.
