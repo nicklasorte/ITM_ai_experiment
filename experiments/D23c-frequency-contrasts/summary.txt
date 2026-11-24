@@ -1,0 +1,66 @@
+D23c: matched-frequency residual contrasts (B23). Development data only; not a scored run.
+
+Registered frequency pairs: 4765 (high-band 2457, low-band 2308); both rows detected: 3862.
+T = (measured - predicted at the high frequency) - (measured - predicted at the low frequency); positive = additional high-frequency underprediction. FSPL cancels (verified with listed versus profile distance, max difference 9.1e-13 dB). Primary pair: lowest and highest eligible frequency with equal structural heights, high frequency above 3 GHz and ratio at least 2 (planner-chosen octave rule).
+
+Equal-height rule outcome: R1/R2/R3 transmitter height changes from 6.6 m to 7.3 m between 751 and 910 MHz, so primary pairs there span 910 to 9190 MHz only (about 3.3 octaves).
+
+## Cohort: strict
+
+Primary: open siting, clear at both frequencies, high band, model 707.
+
+| Site | pairs | bases | mean T (dB) | interval | status |
+| --- | --- | --- | --- | --- | --- |
+| R1 | 208 | 16 | +3.94 | [+0.78, +7.25] | POS-imprecise  |
+| R2 | 0 | 0 | n/a | n/a | no pairs |
+| R3 | 0 | 0 | n/a | n/a | no pairs |
+| VA | 0 | 0 | n/a | n/a | no pairs |
+
+**Disposition (strict): INCONCLUSIVE**. imprecise interval at R1.
+
+O blocked-blocked (high band, 707):
+  R1: 244 pairs, 19 bases, mean T -1.16 dB [-3.68, +1.18] (NULL)
+
+O transition (high band, 707):
+
+C (high band, 707):
+  R1: 74 pairs, 6 bases, mean T +10.13 dB [+1.89, +19.17] (DESCRIPTIVE)
+
+## Cohort: exploratory (strict + limited)
+
+Primary: open siting, clear at both frequencies, high band, model 707.
+
+| Site | pairs | bases | mean T (dB) | interval | status |
+| --- | --- | --- | --- | --- | --- |
+| R1 | 208 | 16 | +3.94 | [+0.78, +7.25] | POS-imprecise  |
+| R2 | 47 | 4 | +9.10 | [-2.32, +19.77] | DESCRIPTIVE descriptive only (<10 bases) |
+| R3 | 600 | 41 | +1.37 | [-0.12, +3.06] | NULL  |
+| VA | 109 | 107 | +4.61 | [+2.73, +6.52] | POS-imprecise  |
+
+**Disposition (exploratory (strict + limited)): INCONCLUSIVE**. imprecise interval at R1, VA.
+
+O blocked-blocked (high band, 707):
+  R1: 244 pairs, 19 bases, mean T -1.16 dB [-3.68, +1.18] (NULL)
+  R2: 127 pairs, 13 bases, mean T +2.88 dB [-4.32, +9.45] (NULL)
+  R3: 192 pairs, 16 bases, mean T -1.82 dB [-4.57, +1.20] (NULL)
+  VA: 65 pairs, 65 bases, mean T +6.01 dB [+3.59, +8.49] (POS-imprecise)
+
+O transition (high band, 707):
+
+C (high band, 707):
+  R1: 74 pairs, 6 bases, mean T +10.13 dB [+1.89, +19.17] (DESCRIPTIVE)
+  R2: 14 pairs, 2 bases, mean T +33.51 dB [+29.76, +37.26] (DESCRIPTIVE)
+  VA: 48 pairs, 35 bases, mean T +4.15 dB [+1.09, +7.60] (POS-imprecise)
+
+Low-band secondary contrasts (both frequencies at most 1 GHz, ratio at least 2) and the stock and R02 models are in site_stats_rev1.csv.
+
+## Components (report only; raw differences before clipping are not causal final-loss contributions)
+
+     pairs  mean_dA_ref  mean_dA_s  bound_changes
+set                                              
+R1     452         3.73      -0.28              0
+R2     174         7.83       0.00              0
+R3     792         1.28      -0.04              0
+VA     174         0.87      -0.16              0
+
+No frequency multiplier or offset is fitted. Where only the exploratory cohort shows a pattern it is labelled exploratory. An observed pattern alone cannot identify unmodeled clutter or a diffraction mechanism.

@@ -1,0 +1,123 @@
+cohort,stratum,set,metric,n_pairs,n_bases,mean,lo,hi,note,disp
+strict,O blocked-blocked (primary),R1,signed 707 contrast error,149,29,5.643316397664951,3.8050216982512794,7.492005354098914,,POS-imprecise
+strict,O blocked-blocked (primary),R1,|e_stock|-|e_707|,149,29,3.158980190369585,1.984271425891878,4.192712336599167,,POS-imprecise
+strict,O blocked-blocked (primary),R1,|e_R02|-|e_707|,149,29,3.158980190369596,1.9842714258919105,4.192712336599172,,POS-imprecise
+strict,O blocked-blocked (primary),R2,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),R2,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),R2,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),R3,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),R3,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),R3,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),VA,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),VA,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),VA,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O clear-clear,R1,signed 707 contrast error,108,17,3.235866547729648,1.643918421637488,4.8208741869857015,,POS-imprecise
+strict,O clear-clear,R1,|e_stock|-|e_707|,108,17,2.9393329426341968,1.5935941537073863,4.705660137742045,,POS-imprecise
+strict,O clear-clear,R1,|e_R02|-|e_707|,108,17,2.9393329426341874,1.5935941537073852,4.705660137742029,,POS-imprecise
+strict,O clear-clear,R2,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O clear-clear,R2,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O clear-clear,R2,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O clear-clear,R3,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O clear-clear,R3,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O clear-clear,R3,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O clear-clear,VA,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O clear-clear,VA,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O clear-clear,VA,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O transition,R1,signed 707 contrast error,6,2,5.835103305932331,2.69443878204766,8.975767829817002,descriptive only (<10 bases),DESCRIPTIVE
+strict,O transition,R1,|e_stock|-|e_707|,6,2,-0.12888621098839792,-1.5182936274994603,1.2605212055226644,descriptive only (<10 bases),DESCRIPTIVE
+strict,O transition,R1,|e_R02|-|e_707|,6,2,-0.12888621098839792,-1.5182936274994603,1.2605212055226644,descriptive only (<10 bases),DESCRIPTIVE
+strict,O transition,R2,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O transition,R2,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O transition,R2,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O transition,R3,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O transition,R3,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O transition,R3,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O transition,VA,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,O transition,VA,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,O transition,VA,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",R1,signed 707 contrast error,44,7,4.834314501159446,2.5065915709299196,8.022992302100915,descriptive only (<10 bases),DESCRIPTIVE
+strict,"C (all classes, actual heights)",R1,|e_stock|-|e_707|,44,7,4.140720439655736,2.1592594867849164,6.329430572286053,descriptive only (<10 bases),DESCRIPTIVE
+strict,"C (all classes, actual heights)",R1,|e_R02|-|e_707|,44,7,4.140720439655736,2.1592594867849164,6.329430572286053,descriptive only (<10 bases),DESCRIPTIVE
+strict,"C (all classes, actual heights)",R2,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",R2,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",R2,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",R3,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",R3,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",R3,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",VA,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",VA,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,"C (all classes, actual heights)",VA,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),R1,signed 707 contrast error,32,5,4.8013219875112405,-0.25967233178434856,9.862316306806829,descriptive only (<10 bases),DESCRIPTIVE
+strict,A (all classes; not verified open),R1,|e_stock|-|e_707|,32,5,1.3843696630924218,-0.8240511394572895,3.414023970680199,descriptive only (<10 bases),DESCRIPTIVE
+strict,A (all classes; not verified open),R1,|e_R02|-|e_707|,32,5,1.3843696630924218,-0.8240511394572895,3.414023970680199,descriptive only (<10 bases),DESCRIPTIVE
+strict,A (all classes; not verified open),R2,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),R2,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),R2,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),R3,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),R3,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),R3,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),VA,signed 707 contrast error,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),VA,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+strict,A (all classes; not verified open),VA,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+strict,O blocked-blocked (primary),all,sign concordance (fraction),149,29,0.8220032840722497,0.7574712643678163,0.8877011494252872,,NULL
+exploratory (strict + limited),O blocked-blocked (primary),R1,signed 707 contrast error,149,29,5.643316397664951,3.8050216982512794,7.492005354098914,,POS-imprecise
+exploratory (strict + limited),O blocked-blocked (primary),R1,|e_stock|-|e_707|,149,29,3.158980190369585,1.984271425891878,4.192712336599167,,POS-imprecise
+exploratory (strict + limited),O blocked-blocked (primary),R1,|e_R02|-|e_707|,149,29,3.158980190369596,1.9842714258919105,4.192712336599172,,POS-imprecise
+exploratory (strict + limited),O blocked-blocked (primary),R2,signed 707 contrast error,142,34,3.1417519510433642,0.5875161649892036,5.709305396082739,,POS-imprecise
+exploratory (strict + limited),O blocked-blocked (primary),R2,|e_stock|-|e_707|,142,34,2.4579539364419354,0.2096574889602895,4.8717661271351105,,POS-imprecise
+exploratory (strict + limited),O blocked-blocked (primary),R2,|e_R02|-|e_707|,142,34,2.4579539364419447,0.2096574889602902,4.871766127135101,,POS-imprecise
+exploratory (strict + limited),O blocked-blocked (primary),R3,signed 707 contrast error,70,13,1.648757938528604,0.24256860884947337,2.7698722117310504,,POS-imprecise
+exploratory (strict + limited),O blocked-blocked (primary),R3,|e_stock|-|e_707|,70,13,3.9581422771391264,3.1220081365683123,4.737815183833756,,POS
+exploratory (strict + limited),O blocked-blocked (primary),R3,|e_R02|-|e_707|,70,13,3.958142277139137,3.1220081365683234,4.737815183833766,,POS
+exploratory (strict + limited),O blocked-blocked (primary),VA,signed 707 contrast error,4,1,6.98918667918749,,,single cluster: no interval,DESCRIPTIVE
+exploratory (strict + limited),O blocked-blocked (primary),VA,|e_stock|-|e_707|,4,1,0.6036770166850189,,,single cluster: no interval,DESCRIPTIVE
+exploratory (strict + limited),O blocked-blocked (primary),VA,|e_R02|-|e_707|,4,1,0.6036770166850189,,,single cluster: no interval,DESCRIPTIVE
+exploratory (strict + limited),O clear-clear,R1,signed 707 contrast error,108,17,3.235866547729648,1.643918421637488,4.8208741869857015,,POS-imprecise
+exploratory (strict + limited),O clear-clear,R1,|e_stock|-|e_707|,108,17,2.9393329426341968,1.5935941537073863,4.705660137742045,,POS-imprecise
+exploratory (strict + limited),O clear-clear,R1,|e_R02|-|e_707|,108,17,2.9393329426341874,1.5935941537073852,4.705660137742029,,POS-imprecise
+exploratory (strict + limited),O clear-clear,R2,signed 707 contrast error,23,4,8.817688424246201,4.90722489677872,12.72815195171368,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O clear-clear,R2,|e_stock|-|e_707|,23,4,1.29597387062416,0.0,3.8879216118724798,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O clear-clear,R2,|e_R02|-|e_707|,23,4,1.29597387062416,0.0,3.8879216118724798,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O clear-clear,R3,signed 707 contrast error,243,40,4.175146907380044,2.957504804179592,5.50715673235748,,POS-imprecise
+exploratory (strict + limited),O clear-clear,R3,|e_stock|-|e_707|,243,40,0.6378437356196576,0.30234634561118806,1.0576143602655592,,NULL
+exploratory (strict + limited),O clear-clear,R3,|e_R02|-|e_707|,243,40,0.637843735619666,0.30234634561118806,1.0576143602655756,,NULL
+exploratory (strict + limited),O clear-clear,VA,signed 707 contrast error,0,0,,,,no pairs,NONE
+exploratory (strict + limited),O clear-clear,VA,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),O clear-clear,VA,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),O transition,R1,signed 707 contrast error,6,2,5.835103305932331,2.69443878204766,8.975767829817002,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O transition,R1,|e_stock|-|e_707|,6,2,-0.12888621098839792,-1.5182936274994603,1.2605212055226644,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O transition,R1,|e_R02|-|e_707|,6,2,-0.12888621098839792,-1.5182936274994603,1.2605212055226644,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O transition,R2,signed 707 contrast error,7,1,-8.15414449684843,,,single cluster: no interval,DESCRIPTIVE
+exploratory (strict + limited),O transition,R2,|e_stock|-|e_707|,7,1,33.07253346852428,,,single cluster: no interval,DESCRIPTIVE
+exploratory (strict + limited),O transition,R2,|e_R02|-|e_707|,7,1,33.07253346852428,,,single cluster: no interval,DESCRIPTIVE
+exploratory (strict + limited),O transition,R3,signed 707 contrast error,31,5,-5.717425942649781,-15.281067923452175,2.110544480127288,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O transition,R3,|e_stock|-|e_707|,31,5,12.192412729625712,4.238227396151208,18.976885901121953,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O transition,R3,|e_R02|-|e_707|,31,5,12.192412729625712,4.238227396151208,18.976885901121953,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),O transition,VA,signed 707 contrast error,0,0,,,,no pairs,NONE
+exploratory (strict + limited),O transition,VA,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),O transition,VA,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),"C (all classes, actual heights)",R1,signed 707 contrast error,44,7,4.834314501159446,2.5065915709299196,8.022992302100915,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),"C (all classes, actual heights)",R1,|e_stock|-|e_707|,44,7,4.140720439655736,2.1592594867849164,6.329430572286053,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),"C (all classes, actual heights)",R1,|e_R02|-|e_707|,44,7,4.140720439655736,2.1592594867849164,6.329430572286053,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),"C (all classes, actual heights)",R2,signed 707 contrast error,16,4,6.745674858907247,2.599726313806573,10.89162340400792,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),"C (all classes, actual heights)",R2,|e_stock|-|e_707|,16,4,3.8182113438913645,2.0218211538258224,5.908753014333499,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),"C (all classes, actual heights)",R2,|e_R02|-|e_707|,16,4,3.8182113438913645,2.0218211538258224,5.908753014333499,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),"C (all classes, actual heights)",R3,signed 707 contrast error,0,0,,,,no pairs,NONE
+exploratory (strict + limited),"C (all classes, actual heights)",R3,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),"C (all classes, actual heights)",R3,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),"C (all classes, actual heights)",VA,signed 707 contrast error,426,95,-3.8966387867624412,-4.915622574303826,-2.8126693050826006,,NEG-imprecise
+exploratory (strict + limited),"C (all classes, actual heights)",VA,|e_stock|-|e_707|,426,95,3.7067011050004375,2.4666854311573925,4.99245776367325,,POS-imprecise
+exploratory (strict + limited),"C (all classes, actual heights)",VA,|e_R02|-|e_707|,426,95,3.706701105000432,2.46668543115739,4.992457763673243,,POS-imprecise
+exploratory (strict + limited),A (all classes; not verified open),R1,signed 707 contrast error,32,5,4.8013219875112405,-0.25967233178434856,9.862316306806829,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),A (all classes; not verified open),R1,|e_stock|-|e_707|,32,5,1.3843696630924218,-0.8240511394572895,3.414023970680199,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),A (all classes; not verified open),R1,|e_R02|-|e_707|,32,5,1.3843696630924218,-0.8240511394572895,3.414023970680199,descriptive only (<10 bases),DESCRIPTIVE
+exploratory (strict + limited),A (all classes; not verified open),R2,signed 707 contrast error,0,0,,,,no pairs,NONE
+exploratory (strict + limited),A (all classes; not verified open),R2,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),A (all classes; not verified open),R2,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),A (all classes; not verified open),R3,signed 707 contrast error,0,0,,,,no pairs,NONE
+exploratory (strict + limited),A (all classes; not verified open),R3,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),A (all classes; not verified open),R3,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),A (all classes; not verified open),VA,signed 707 contrast error,0,0,,,,no pairs,NONE
+exploratory (strict + limited),A (all classes; not verified open),VA,|e_stock|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),A (all classes; not verified open),VA,|e_R02|-|e_707|,0,0,,,,no pairs,NONE
+exploratory (strict + limited),O blocked-blocked (primary),all,sign concordance (fraction),365,77,0.8081323438466297,0.7491017316017315,0.8617864873222016,,NULL

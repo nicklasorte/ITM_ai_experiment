@@ -1,0 +1,193 @@
+kind,cohort,stratum,set,model,n_pairs,n_bases,mean,lo,hi,note,disp
+FRQ_HIGH,strict,O clear-clear (primary),R1,707,208,16,3.9434991794823055,0.7789259663900227,7.251204744613253,,POS-imprecise
+FRQ_HIGH,strict,O clear-clear (primary),R1,stock,208,16,2.8444420257508294,-0.0014914119301576581,5.925150131577259,,NULL
+FRQ_HIGH,strict,O clear-clear (primary),R1,R02,208,16,2.844442025750824,-0.0014914119301625405,5.9251501315772535,,NULL
+FRQ_HIGH,strict,O clear-clear (primary),R2,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O clear-clear (primary),R2,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O clear-clear (primary),R2,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O clear-clear (primary),R3,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O clear-clear (primary),R3,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O clear-clear (primary),R3,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O clear-clear (primary),VA,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O clear-clear (primary),VA,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O clear-clear (primary),VA,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,R1,707,244,19,-1.157330987099488,-3.6845788741916046,1.1757434652297583,,NULL
+FRQ_HIGH,strict,O blocked-blocked,R1,stock,244,19,-13.972191533739844,-17.92562575504379,-10.077671498477402,,NEG-imprecise
+FRQ_HIGH,strict,O blocked-blocked,R1,R02,244,19,-13.972191533739856,-17.925625755043807,-10.077671498477416,,NEG-imprecise
+FRQ_HIGH,strict,O blocked-blocked,R2,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,R2,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,R2,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,R3,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,R3,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,R3,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,VA,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,VA,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O blocked-blocked,VA,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R1,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R1,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R1,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R2,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R2,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R2,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R3,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R3,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,R3,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,VA,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,VA,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,O transition,VA,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,R1,707,74,6,10.127698187255167,1.8947691252626901,19.168640514357122,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,strict,C,R1,stock,74,6,4.87419806741932,-5.488187394130616,18.89428525590768,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,strict,C,R1,R02,74,6,4.87419806741932,-5.488187394130629,18.89428525590767,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,strict,C,R2,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,R2,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,R2,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,R3,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,R3,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,R3,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,VA,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,VA,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,strict,C,VA,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R1,707,208,16,3.9434991794823055,0.7789259663900227,7.251204744613253,,POS-imprecise
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R1,stock,208,16,2.8444420257508294,-0.0014914119301576581,5.925150131577259,,NULL
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R1,R02,208,16,2.844442025750824,-0.0014914119301625405,5.9251501315772535,,NULL
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R2,707,47,4,9.10132146297569,-2.3239374656264236,19.76799109222155,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R2,stock,47,4,8.300423793613467,-2.6854832276067047,18.44993537007572,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R2,R02,47,4,8.300423793613467,-2.6854832276067047,18.44993537007572,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R3,707,600,41,1.3720479256235727,-0.11979800216605174,3.056500433758136,,NULL
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R3,stock,600,41,0.674594876992383,-0.7399892540811203,2.2186068438086832,,NULL
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),R3,R02,600,41,0.674594876992383,-0.7399892540811203,2.2186068438086832,,NULL
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),VA,707,109,107,4.6102366971992135,2.72761001797651,6.515779499978845,,POS-imprecise
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),VA,stock,109,107,4.550127143347725,2.705216467962876,6.404994857376835,,POS-imprecise
+FRQ_HIGH,exploratory (strict + limited),O clear-clear (primary),VA,R02,109,107,4.550127143347715,2.705216467962876,6.404994857376834,,POS-imprecise
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R1,707,244,19,-1.157330987099488,-3.6845788741916046,1.1757434652297583,,NULL
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R1,stock,244,19,-13.972191533739844,-17.92562575504379,-10.077671498477402,,NEG-imprecise
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R1,R02,244,19,-13.972191533739856,-17.925625755043807,-10.077671498477416,,NEG-imprecise
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R2,707,127,13,2.8804159724556118,-4.315276939717239,9.446141901897171,,NULL
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R2,stock,127,13,-15.204805357945439,-21.86426859400917,-8.937812213828074,,NEG-imprecise
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R2,R02,127,13,-15.204805357945453,-21.86426859400919,-8.93781221382811,,NEG-imprecise
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R3,707,192,16,-1.8219947530261984,-4.572223976292661,1.196875147466285,,NULL
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R3,stock,192,16,-14.472340063155423,-19.028855517710934,-9.73572184031358,,NEG-imprecise
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,R3,R02,192,16,-14.472340063155432,-19.02885551771094,-9.735721840313591,,NEG-imprecise
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,VA,707,65,65,6.009619432204343,3.5911934298089934,8.493611074085944,,POS-imprecise
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,VA,stock,65,65,2.0077184948094646,-0.29718130596353326,4.29688784337591,,NULL
+FRQ_HIGH,exploratory (strict + limited),O blocked-blocked,VA,R02,65,65,2.0077184948094646,-0.29718130596353326,4.29688784337591,,NULL
+FRQ_HIGH,exploratory (strict + limited),O transition,R1,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,R1,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,R1,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,R2,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,R2,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,R2,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,R3,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,R3,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,R3,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,VA,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,VA,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),O transition,VA,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),C,R1,707,74,6,10.127698187255167,1.8947691252626901,19.168640514357122,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),C,R1,stock,74,6,4.87419806741932,-5.488187394130616,18.89428525590768,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),C,R1,R02,74,6,4.87419806741932,-5.488187394130629,18.89428525590767,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),C,R2,707,14,2,33.50943270011246,29.758839359551224,37.2600260406737,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),C,R2,stock,14,2,25.81566369487448,20.1237365934861,31.507590796262864,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),C,R2,R02,14,2,25.815663694874416,20.123736593485972,31.507590796262864,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_HIGH,exploratory (strict + limited),C,R3,707,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),C,R3,stock,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),C,R3,R02,0,0,,,,no pairs,NONE
+FRQ_HIGH,exploratory (strict + limited),C,VA,707,48,35,4.154664133917227,1.0886404927146855,7.6047092445437485,,POS-imprecise
+FRQ_HIGH,exploratory (strict + limited),C,VA,stock,48,35,4.133302378120197,0.3280186815575732,8.201011352639311,,POS-imprecise
+FRQ_HIGH,exploratory (strict + limited),C,VA,R02,48,35,4.133302378120197,0.3280186815575732,8.201011352639311,,POS-imprecise
+FRQ_LOW,strict,O clear-clear (primary),R1,707,207,17,-0.44062808234399925,-2.950992582995473,2.28635071670415,,NULL
+FRQ_LOW,strict,O clear-clear (primary),R1,stock,207,17,-1.8192158180487847,-4.684708069546631,1.161091497257342,,NULL
+FRQ_LOW,strict,O clear-clear (primary),R1,R02,207,17,-1.8192158180487894,-4.684708069546644,1.161091497257342,,NULL
+FRQ_LOW,strict,O clear-clear (primary),R2,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O clear-clear (primary),R2,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O clear-clear (primary),R2,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O clear-clear (primary),R3,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O clear-clear (primary),R3,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O clear-clear (primary),R3,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O clear-clear (primary),VA,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O clear-clear (primary),VA,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O clear-clear (primary),VA,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,R1,707,287,24,-0.9092552742355684,-3.3032068997222748,1.6918387724845128,,NULL
+FRQ_LOW,strict,O blocked-blocked,R1,stock,287,24,-6.2867824059088475,-9.35613113620075,-3.3634257166420785,,NEG-imprecise
+FRQ_LOW,strict,O blocked-blocked,R1,R02,287,24,-6.286782405908841,-9.356131136200739,-3.363425716642075,,NEG-imprecise
+FRQ_LOW,strict,O blocked-blocked,R2,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,R2,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,R2,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,R3,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,R3,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,R3,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,VA,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,VA,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O blocked-blocked,VA,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R1,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R1,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R1,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R2,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R2,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R2,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R3,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R3,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,R3,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,VA,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,VA,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,O transition,VA,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,R1,707,77,6,0.24193598295828966,-6.101993894538398,7.519024131820633,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,strict,C,R1,stock,77,6,1.5954232572119882,-4.122062363848472,8.34183121874998,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,strict,C,R1,R02,77,6,1.5954232572120013,-4.1220623638484595,8.34183121874998,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,strict,C,R2,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,R2,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,R2,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,R3,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,R3,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,R3,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,VA,707,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,VA,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,strict,C,VA,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R1,707,207,17,-0.44062808234399925,-2.950992582995473,2.28635071670415,,NULL
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R1,stock,207,17,-1.8192158180487847,-4.684708069546631,1.161091497257342,,NULL
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R1,R02,207,17,-1.8192158180487894,-4.684708069546644,1.161091497257342,,NULL
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R2,707,47,4,12.62628834049184,6.154238026644849,18.898400760082065,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R2,stock,47,4,10.063903272275674,6.154238026644849,14.799330825607965,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R2,R02,47,4,10.063903272275672,6.154238026644849,14.799330825607957,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R3,707,550,38,1.6737406310899536,0.579405828727532,2.739952978119394,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R3,stock,550,38,0.10389283722370612,-0.6499967114427152,0.8425431663101225,,NULL
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),R3,R02,550,38,0.10389283722370782,-0.6499967114427153,0.8425431663101258,,NULL
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),VA,707,120,118,9.01514858978514,7.6867093821289085,10.345629008518674,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),VA,stock,120,118,7.952782241573219,6.639059254459258,9.246100318366215,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),O clear-clear (primary),VA,R02,120,118,7.952782241573219,6.639059254459258,9.246100318366215,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R1,707,287,24,-0.9092552742355684,-3.3032068997222748,1.6918387724845128,,NULL
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R1,stock,287,24,-6.2867824059088475,-9.35613113620075,-3.3634257166420785,,NEG-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R1,R02,287,24,-6.286782405908841,-9.356131136200739,-3.363425716642075,,NEG-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R2,707,222,18,5.390544429818104,1.8760051634357837,8.988921245247383,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R2,stock,222,18,-4.879327256785564,-8.035464183090443,-1.2504911336075928,,NEG-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R2,R02,222,18,-4.879327256785562,-8.035464183090431,-1.2504911336075877,,NEG-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R3,707,153,14,-1.1014698489978143,-3.5978598088158913,1.1347409269460929,,NULL
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R3,stock,153,14,-6.542457959892013,-9.482377812523698,-3.929504740750387,,NEG-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,R3,R02,153,14,-6.542457959892013,-9.482377812523698,-3.929504740750387,,NEG-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,VA,707,139,137,8.787543387300804,7.669598800793861,9.956875409824473,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,VA,stock,139,137,7.023496944789039,5.913697999650337,8.163594363874283,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),O blocked-blocked,VA,R02,139,137,7.023496944789032,5.913697999650338,8.163594363874262,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),O transition,R1,707,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,R1,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,R1,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,R2,707,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,R2,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,R2,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,R3,707,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,R3,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,R3,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,VA,707,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,VA,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),O transition,VA,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),C,R1,707,77,6,0.24193598295828966,-6.101993894538398,7.519024131820633,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),C,R1,stock,77,6,1.5954232572119882,-4.122062363848472,8.34183121874998,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),C,R1,R02,77,6,1.5954232572120013,-4.1220623638484595,8.34183121874998,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),C,R2,707,26,2,12.806464793489997,5.543396623044647,20.069532963935348,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),C,R2,stock,26,2,10.367783960656839,3.7241368086536464,17.01143111266003,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),C,R2,R02,26,2,10.367783960656878,3.724136808653724,17.01143111266003,descriptive only (<10 bases),DESCRIPTIVE
+FRQ_LOW,exploratory (strict + limited),C,R3,707,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),C,R3,stock,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),C,R3,R02,0,0,,,,no pairs,NONE
+FRQ_LOW,exploratory (strict + limited),C,VA,707,189,97,4.937344352575016,3.627350886930294,6.224196354449262,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),C,VA,stock,189,97,6.652876284001221,5.406325783996298,7.867862793413512,,POS-imprecise
+FRQ_LOW,exploratory (strict + limited),C,VA,R02,189,97,6.652876284001242,5.406325783996314,7.86786279341352,,POS-imprecise

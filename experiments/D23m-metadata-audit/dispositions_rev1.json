@@ -1,0 +1,32 @@
+{
+ "D23a": {
+  "strict": [
+   "INCONCLUSIVE",
+   "imprecise interval at R1"
+  ],
+  "exploratory (strict + limited)": [
+   "INCONCLUSIVE",
+   "imprecise interval at R1, R2, R3"
+  ]
+ },
+ "D23c": {
+  "strict": [
+   "INCONCLUSIVE",
+   "imprecise interval at R1"
+  ],
+  "exploratory (strict + limited)": [
+   "INCONCLUSIVE",
+   "imprecise interval at R1, VA"
+  ]
+ },
+ "D23b": {
+  "strict": [
+   "INCONCLUSIVE",
+   "rule not met"
+  ],
+  "exploratory (strict + limited)": [
+   "INCONCLUSIVE",
+   "rule not met"
+  ]
+ }
+}

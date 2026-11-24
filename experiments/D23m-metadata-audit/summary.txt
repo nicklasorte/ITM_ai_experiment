@@ -1,0 +1,50 @@
+D23m: metadata audit and pair registry (B23)
+
+Frozen rows 16805; in scope 16805 (baseline-error rows excluded: 0).
+Raw reconstruction: 17143 rows rebuilt; frozen rows reproduced 16805 of 16805; mismatches {'runs': 0, 'censored': 0, 'set': 0, 'htx': 0, 'hrx': 0, 'f': 0, 'd_km': 0, 'median': 0, 'fs': 0}.
+Raw (path,siting,config,frequency) rows with no frozen row: 338.
+Profiles hashed and matched to the index: 515.
+
+## Provenance tiers (fixed before outcomes)
+
+- R1: **strict**. Polarization: horizontal [ERL 65-ITS 58 Pt I, Sec. 2, p. 6 ('horizontal polarization only')]. Calibration: Pt I Sec. 3, p. 22 (receiver calibrated at start and end of each site's recording). Pt I Sec. 5, pp. 26-27: unlogged open/concealed transmitter impedance change, estimated <= ~2 dB.
+- R2: **limited**. Polarization: not stated in the text read (Pt II defers equipment and procedures to Pt I) [ERL 65-ITS 58-2, pp. 2-3 refer to Part I]. Calibration: by reference to Part I only. no open/concealed error estimate found in text read.
+- R3: **limited**. Polarization: horizontal [ERL 65-ITS 58-3, Sec. 2, p. 6 ('horizontal polarization only')]. Calibration: calibration procedure not found in the text read; Sec. 5 p. 15 omits curves for 'obvious calibration errors'. no open/concealed error estimate; Sec. 2 p. 3: companion sites <= 100 m apart, 'essentially a common terrain profile'.
+- VA: **limited**. Polarization: transmitter horizontal; receiver not stated [NTIA 91-282, Sec. 2.1, p. 7]. Calibration: Sec. 2.2 p. 7, Sec. 3 p. 8 (signal-generator calibration; recorders in 5 dB steps). Hi/Lo receiver heights not defined in the report text read.
+
+Strict needs documented polarization and calibration in the set's own report; only R1 meets it. Limited keeps the frozen-input match but leaves a historical comparability field unknown. Text of each report was read only to its first 100,000 characters; R2/R3/VA fields reported as 'not found' are 'not found in the text read'.
+
+## Twin facts (C/O pairs)
+
+C/O pairs: 1400; same profile hash: 465; different mobile coordinates: 935; different listed distance: 935.
+
+## Registered pairs
+
+    kind set    tier siting  pairs
+FRQ_HIGH  R1  strict      A     65
+FRQ_HIGH  R1  strict      C     78
+FRQ_HIGH  R1  strict      O    520
+FRQ_HIGH  R2 limited      C     52
+FRQ_HIGH  R2 limited      O    507
+FRQ_HIGH  R3 limited      O    792
+FRQ_HIGH  VA limited      C    190
+FRQ_HIGH  VA limited      O    253
+ FRQ_LOW  R1  strict      A     52
+ FRQ_LOW  R1  strict      C     78
+ FRQ_LOW  R1  strict      O    544
+ FRQ_LOW  R2 limited      C     39
+ FRQ_LOW  R2 limited      O    442
+ FRQ_LOW  R3 limited      O    703
+ FRQ_LOW  VA limited      C    190
+ FRQ_LOW  VA limited      O    260
+  HGT_RX  R1  strict      A     32
+  HGT_RX  R1  strict      C     46
+  HGT_RX  R1  strict      O    289
+  HGT_RX  R2 limited      C     26
+  HGT_RX  R2 limited      O    262
+  HGT_RX  R3 limited      O    344
+  HGT_RX  VA limited      C    653
+  HGT_RX  VA limited      O      7
+
+Ambiguous height groups excluded: 0. Pair selection is invariant to row order.
+Pair registry SHA-256: 73fd7ec5b1625cb3f675fe90a3512455d8d84d0ab6c96e187abac22280914bee

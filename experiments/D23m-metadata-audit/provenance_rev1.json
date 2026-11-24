@@ -1,0 +1,67 @@
+{
+ "git_head": "58db0e83fdd1f788b58d3040f6123622b327d4d9",
+ "python": "3.13.18",
+ "numpy": "2.5.3",
+ "pandas": "3.0.5",
+ "seed": 20261124,
+ "links_sha256": "d18b9f700cd125dbe59dd17cb0c9719e864db8120cc255ea73724c909d73a343",
+ "folds_sha256": "06d9f440607a1579f72a567ae40ecb7f5158d8e80c4d9fc318b527b655a7fb8c",
+ "raw_zip_sha256": "30e611b88b2188aedbe408c04b05e90dd52e35f2512c3bcf6d120142458ac668",
+ "profile_index_sha256": "a83f44741a1fd870ae03ba0b335789afd0ccb2cfb518270169139e0f6d902ec6",
+ "n_frozen_rows": 16805,
+ "n_baseline_error_rows": 0,
+ "n_inscope": 16805,
+ "raw_reconstruction_mismatches": {
+  "runs": 0,
+  "censored": 0,
+  "set": 0,
+  "htx": 0,
+  "hrx": 0,
+  "f": 0,
+  "d_km": 0,
+  "median": 0,
+  "fs": 0
+ },
+ "raw_rows_reconstructed": 17143,
+ "raw_rows_without_frozen_row": 338,
+ "co_pairs": 1400,
+ "co_pairs_same_profile_hash": 465,
+ "co_pairs_different_mobile_coordinates": 935,
+ "co_pairs_different_listed_distance": 935,
+ "selection_shuffle_invariant": true,
+ "height_groups_excluded_ambiguous": 0,
+ "pair_registry_sha256": "73fd7ec5b1625cb3f675fe90a3512455d8d84d0ab6c96e187abac22280914bee",
+ "co_pair_registry_sha256": "fcbade2a4f44ee5332680d49f83dd19245f145080d9e7ccb0407b18a4a6678e0",
+ "manifest_sha256": "ba1bdb8fd37ba11ce8cd98109e6101832078d6c625c6c2765350797a3bd466b6",
+ "tiers": {
+  "R1": {
+   "tier": "strict",
+   "polarization": "horizontal",
+   "polarization_source": "ERL 65-ITS 58 Pt I, Sec. 2, p. 6 ('horizontal polarization only')",
+   "calibration": "Pt I Sec. 3, p. 22 (receiver calibrated at start and end of each site's recording)",
+   "co_note": "Pt I Sec. 5, pp. 26-27: unlogged open/concealed transmitter impedance change, estimated <= ~2 dB"
+  },
+  "R2": {
+   "tier": "limited",
+   "polarization": "not stated in the text read (Pt II defers equipment and procedures to Pt I)",
+   "polarization_source": "ERL 65-ITS 58-2, pp. 2-3 refer to Part I",
+   "calibration": "by reference to Part I only",
+   "co_note": "no open/concealed error estimate found in text read"
+  },
+  "R3": {
+   "tier": "limited",
+   "polarization": "horizontal",
+   "polarization_source": "ERL 65-ITS 58-3, Sec. 2, p. 6 ('horizontal polarization only')",
+   "calibration": "calibration procedure not found in the text read; Sec. 5 p. 15 omits curves for 'obvious calibration errors'",
+   "co_note": "no open/concealed error estimate; Sec. 2 p. 3: companion sites <= 100 m apart, 'essentially a common terrain profile'"
+  },
+  "VA": {
+   "tier": "limited",
+   "polarization": "transmitter horizontal; receiver not stated",
+   "polarization_source": "NTIA 91-282, Sec. 2.1, p. 7",
+   "calibration": "Sec. 2.2 p. 7, Sec. 3 p. 8 (signal-generator calibration; recorders in 5 dB steps)",
+   "co_note": "Hi/Lo receiver heights not defined in the report text read"
+  }
+ },
+ "profiles_hashed": 515
+}

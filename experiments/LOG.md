@@ -1471,3 +1471,33 @@ appended row 1804 to results/results.tsv
   not A_h in isolation.
 - B20.md and the script docstring are corrected. D23b (B23, not yet
   approved) separates the two parts.
+
+## 2026-11-24: B23 executed (Package A diagnostics, no scored runs)
+
+- Nick approved B23 ("Run b23"). Development data only; 0 scored, 0 kept;
+  no model, evaluator or data change; no lockbox data.
+- **Checks:** all section 8 self-tests pass. The raw archive reproduces all
+  16,805 frozen rows exactly. 707 reproduces on every row to 5e-13 dB, info
+  on/off is identical, the stock baseline matches, and N_s matches the core.
+  The D20c arithmetic replays exactly. The factorial closes to 1e-9 dB.
+- **Provenance:** only R1 is strict (horizontal polarization and calibration
+  documented in its report). R2, R3 and VA are limited. The R1 report
+  estimates up to about 2 dB of unlogged open/concealed impedance change.
+- **D23a (height):** INCONCLUSIVE on the registered precision rule. 707
+  underestimates the measured loss reduction from raising the fixed antenna
+  on obstructed open paths: R1 +5.6 dB [+3.8, +7.5], R2 +3.1 [+0.6, +5.7],
+  R3 +1.7 [+0.2, +2.8] (R2 and R3 exploratory). No interval is narrower
+  than the 1 dB half-width rule.
+- **D23b (clutter):** the C/O difference is not the P.2108-1 term alone. On
+  1,400 twin pairs: geometry g -2.3 dB, additive +14.8, interaction 0.0,
+  baseline mismatch +2.0 (twins are different terminals), total +14.5.
+  |g| >= 1 dB on 870 rows. Predictive support is INCONCLUSIVE: strict R1
+  has 7 bases; exploratory VA beats a refitted constant by 6.4 dB but not
+  zero.
+- **D23c (frequency):** INCONCLUSIVE on precision. T = +3.9 dB at R1
+  [+0.8, +7.3] and +4.6 at VA, near zero at R3; no frequency term fitted.
+- Details and the handoff table: `experiments/batches/B23.md` Results.
+  Self-run checks only; no independent reviewer ran. Results that leave the
+  repo need Nick's read first.
+- **Next:** B21 (smooth-surface candidate) stays next. D23a is directional
+  evidence to weigh when judging it, not a repair gate.

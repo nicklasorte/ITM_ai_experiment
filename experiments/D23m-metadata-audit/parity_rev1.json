@@ -1,0 +1,11 @@
+{
+  "rows": 16805,
+  "max_abs_diff_707_db": 5.1159076974727213E-13,
+  "info_onoff_rows": 841,
+  "info_onoff_max_db": 0,
+  "stock_rows": 421,
+  "stock_max_db": 5.4001247917767614E-13,
+  "cfg_fields_differing": 0,
+  "matlab": "25.2.0.3150157 (R2025b) Update 4",
+  "matlab_itm": "9bd6a4e"
+}

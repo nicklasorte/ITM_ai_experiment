@@ -1,0 +1,59 @@
+{
+ "replay": {
+  "n_pairs": 1400,
+  "n_both_detected": 1165,
+  "mean_dm": 11.3,
+  "mean_d707": 14.0,
+  "const704": 16.75,
+  "loso": {
+   "R1": {
+    "n": 591,
+    "rms_p2108": 11.096528546647338,
+    "rms_refit": 12.12243416624052,
+    "rms_704": 10.45613780044232,
+    "const": 7.99083471855123
+   },
+   "R2": {
+    "n": 232,
+    "rms_p2108": 17.902840337891707,
+    "rms_refit": 13.598417309598766,
+    "rms_704": 13.23587884728343,
+    "const": 10.526747988678176
+   },
+   "VA": {
+    "n": 342,
+    "rms_p2108": 7.395176168474751,
+    "rms_refit": 12.954778384638404,
+    "rms_704": 14.900155028825743,
+    "const": 14.490394899009898
+   }
+  },
+  "status": "reproduced: counts, means, 704 constant and every leave-one-site-out row match experiments/D20c-paired-clutter/summary.txt"
+ },
+ "attribution": {
+  "rows": 1400,
+  "rows_h_lt_R": 1236,
+  "rows_abs_g_ge1": 870,
+  "rows_abs_m_ge1": 644,
+  "rows_abs_i_ge1": 0,
+  "max_abs_g": 18.342415153283994,
+  "max_abs_m": 29.109566448411016,
+  "max_abs_i": 0.0006347696690056637,
+  "mean_a0": 14.81370116323439,
+  "mean_a1": 14.813701273845433,
+  "mean_g": -2.310875428596546,
+  "mean_i": 1.1061104144362486e-07,
+  "mean_m": 2.016187947018539,
+  "mean_total": 14.519013792267426
+ },
+ "decisions": {
+  "strict": [
+   "INCONCLUSIVE",
+   "rule not met"
+  ],
+  "exploratory (strict + limited)": [
+   "INCONCLUSIVE",
+   "rule not met"
+  ]
+ }
+}

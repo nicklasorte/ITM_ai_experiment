@@ -1,0 +1,89 @@
+D23b: factorial clutter/geometry attribution (B23). Development data only; not a scored run.
+
+## D20c replay (original grouping and arithmetic, before any new contrast)
+
+reproduced: counts, means, 704 constant and every leave-one-site-out row match experiments/D20c-paired-clutter/summary.txt.
+Pairs 1400; both detected 1165; measured mean 11.3 dB; 707 predicted mean 14.0 dB; 704 constant 16.75 dB.
+The original D20c decision is unchanged and is not reopened here.
+
+## Attribution (all 1,400 C/O twin pairs; model only, no measurement involved)
+
+Closure of n = g + a1 = g + a0 + i and total = n + m = G11 - L_O holds to 1e-9 dB on every row; G11 equals the parent and the parent equals stored 707 on all 1400 C rows (MATLAB check, max 5e-13 dB).
+Rows with h < R (height substitution active): 1236 of 1400; with h >= R all four cells coincide.
+
+           domain height_class  rows  mean_g  mean_a0  mean_a1  mean_i  mean_m  mean_total  rows_abs_g_ge1  rows_abs_i_ge1  rows_abs_m_ge1  rows_g_nonzero  rows_m_nonzero
+              all          all  1400   -2.31    14.81    14.81     0.0    2.02       14.52             870               0             644            1236             935
+              all          h<R  1236   -2.62    16.78    16.78     0.0    2.28       16.45             870               0             644            1236             935
+              all         h>=R   164    0.00     0.00     0.00     0.0    0.00        0.00               0               0               0               0               0
+      30-3000 MHz          all  1008   -2.12    12.90    12.90    -0.0    1.69       12.47             626               0             452             844             675
+      30-3000 MHz          h<R   844   -2.53    15.40    15.40    -0.0    2.02       14.90             626               0             452             844             675
+      30-3000 MHz         h>=R   164    0.00     0.00     0.00     0.0    0.00        0.00               0               0               0               0               0
+>3000 MHz (hold3)          all   392   -2.81    19.74    19.74     0.0    2.85       19.78             244               0             192             392             260
+>3000 MHz (hold3)          h<R   392   -2.81    19.74    19.74     0.0    2.85       19.78             244               0             192             392             260
+
+Rows with |g| >= 1 dB: 870; |i| >= 1 dB: 0; |m| >= 1 dB: 644. Largest |g| 18.34 dB, |i| 0.00 dB, |m| 29.11 dB.
+Counterexample to additive-only attribution (largest |g|): P2_R2_R2-003-T5_C_f9190_h5_c5, f = 9190 MHz, h = 7.3 m, R = 15 m: g = -18.34 dB, a0 = +23.14, a1 = +23.14, i = -0.00, m = -3.02, total +1.78 dB.
+Nonzero i shows nonlinear dependence in the model, not an observed interaction. Raw component differences are not causal final-loss contributions.
+
+## Twin facts
+
+Same profile hash in 465 of 1400 pairs; different mobile coordinates in 935; different listed distance in 935. The twins do not generally share one profile, so m (G00 minus the open parent) includes the twin's own geometry as well as the model baseline.
+
+## Predictive comparison on exact (both-detected) pairs
+
+MAE is site-balanced: per-base mean of |prediction - measured difference|, then mean over bases. Full = parent configuration; geom-only = G10; add-only = G01 (known double-counting ablation, not a candidate); none = G00; LOSO = equal-base mean of other sites' exact training contrasts.
+
+                        cohort            domain set  pairs  bases  MAE_d_full  MAE_d_geom_only  MAE_d_add_only_actual  MAE_d_none  MAE_d_704  MAE_d_zero  MAE_d_loso_eqbase  rowRMS_full  rowRMS_loso_rowmean
+                        strict               all  R1    591      7        8.44            15.16                   9.59       12.63       8.68       14.34              10.70        11.10                12.12
+                        strict       30-3000 MHz  R1    439      7        7.34            12.26                   8.91        9.72       8.11       11.16               7.66         9.65                 7.83
+                        strict >3000 MHz (hold3)  R1    152      6       12.04            23.96                  11.77       21.65      10.28       24.57              20.64        14.49                19.85
+exploratory (strict + limited)               all  R1    591      7        8.44            15.16                   9.59       12.63       8.68       14.34              10.70        11.10                12.12
+exploratory (strict + limited)               all  R2    232      4       14.88            16.48                  13.68       13.71      11.29       15.15              12.78        17.90                13.60
+exploratory (strict + limited)               all  VA    342     67        5.18             5.80                   5.30        5.54      13.82        5.54              11.59         7.40                12.95
+exploratory (strict + limited)       30-3000 MHz  R1    439      7        7.34            12.26                   8.91        9.72       8.11       11.16               7.66         9.65                 7.83
+exploratory (strict + limited)       30-3000 MHz  R2    182      4       13.44            14.29                  12.88       12.05      10.86       13.16              11.06        15.77                11.33
+exploratory (strict + limited)       30-3000 MHz  VA    301     67        4.74             5.34                   4.85        5.10      14.09        5.10              11.78         6.69                13.08
+exploratory (strict + limited) >3000 MHz (hold3)  R1    152      6       12.04            23.96                  11.77       21.65      10.28       24.57              20.64        14.49                19.85
+exploratory (strict + limited) >3000 MHz (hold3)  R2     50      3       21.66            22.98                  18.61       18.39      13.56       20.47              17.55        24.12                19.77
+exploratory (strict + limited) >3000 MHz (hold3)  VA     41     27        9.03            10.80                   9.23       10.38      10.27       10.38               9.16        11.30                12.01
+
+Full configuration versus the LOSO constant and versus zero (positive = full has the smaller absolute error; equal-base mean, conditional bootstrap):
+
+                        cohort            domain set  bases  full_beats_d_loso_eqbase_mean  full_beats_d_loso_eqbase_lo  full_beats_d_loso_eqbase_hi full_beats_d_loso_eqbase_disp  full_beats_d_zero_mean  full_beats_d_zero_lo  full_beats_d_zero_hi full_beats_d_zero_disp
+                        strict               all  R1      7                           2.27                        -2.52                         7.00                   DESCRIPTIVE                    5.90                  0.74                 10.95            DESCRIPTIVE
+                        strict       30-3000 MHz  R1      7                           0.32                        -4.66                         5.05                   DESCRIPTIVE                    3.82                 -1.68                  9.01            DESCRIPTIVE
+                        strict >3000 MHz (hold3)  R1      6                           8.60                         1.26                        15.80                   DESCRIPTIVE                   12.53                  5.13                 19.83            DESCRIPTIVE
+exploratory (strict + limited)               all  R1      7                           2.27                        -2.52                         7.00                   DESCRIPTIVE                    5.90                  0.74                 10.95            DESCRIPTIVE
+exploratory (strict + limited)               all  R2      4                          -2.10                        -9.57                         5.41                   DESCRIPTIVE                    0.27                 -8.61                  9.11            DESCRIPTIVE
+exploratory (strict + limited)               all  VA     67                           6.41                         5.63                         7.20                           POS                    0.36                 -0.35                  1.09                   NULL
+exploratory (strict + limited)       30-3000 MHz  R1      7                           0.32                        -4.66                         5.05                   DESCRIPTIVE                    3.82                 -1.68                  9.01            DESCRIPTIVE
+exploratory (strict + limited)       30-3000 MHz  R2      4                          -2.38                       -10.07                         5.35                   DESCRIPTIVE                   -0.28                 -9.38                  8.88            DESCRIPTIVE
+exploratory (strict + limited)       30-3000 MHz  VA     67                           7.04                         6.29                         7.76                           POS                    0.35                 -0.25                  0.96                   NULL
+exploratory (strict + limited) >3000 MHz (hold3)  R1      6                           8.60                         1.26                        15.80                   DESCRIPTIVE                   12.53                  5.13                 19.83            DESCRIPTIVE
+exploratory (strict + limited) >3000 MHz (hold3)  R2      3                          -4.11                       -17.39                         3.25                   DESCRIPTIVE                   -1.19                -17.48                  7.67            DESCRIPTIVE
+exploratory (strict + limited) >3000 MHz (hold3)  VA     27                           0.13                        -1.56                         1.90                          NULL                    1.35                 -1.85                  4.71                   NULL
+
+## Censored evidence (pairs with a censored row; informative bounds only)
+
+                        cohort set comparator  pairs  informative  violated  mean_depth
+                        strict  R1     d_full      6            6         5    5.589316
+                        strict  R1     d_zero      6            6         6   20.326397
+                        strict  R2     d_full      0            0         0    0.000000
+                        strict  R2     d_zero      0            0         0    0.000000
+                        strict  VA     d_full      0            0         0    0.000000
+                        strict  VA     d_zero      0            0         0    0.000000
+exploratory (strict + limited)  R1     d_full      6            6         5    5.589316
+exploratory (strict + limited)  R1     d_zero      6            6         6   20.326397
+exploratory (strict + limited)  R2     d_full    106           64        13    7.854775
+exploratory (strict + limited)  R2     d_zero    106           64        60   13.663376
+exploratory (strict + limited)  VA     d_full    123           47        23   17.696750
+exploratory (strict + limited)  VA     d_zero    123           47        34   17.770588
+
+## Decisions (B23 D23b)
+
+1. Attribution: 870 rows have |g| >= 1 dB and 644 have |m| >= 1 dB (of 1400); each such row is an explicit counterexample to an additive-only reading of the C/O difference. Counterexamples exist: the twin difference is height substitution plus clutter term plus a model-baseline mismatch, not the P.2108-1 term alone.
+2. Predictive evidence, strict: **INCONCLUSIVE** (rule not met). Every above-3 GHz figure is hold3, an extrapolation policy, not source-validated coverage.
+2. Predictive evidence, exploratory (strict + limited): **INCONCLUSIVE** (rule not met). Every above-3 GHz figure is hold3, an extrapolation policy, not source-validated coverage.
+3. Censored evidence is listed above and is reported separately; where detected-only support comes with worse informative-bound consistency, treat the result as mixed.
+
+Measurement caveat: Part I of ERL 65-ITS 58 estimates an unlogged transmitter impedance change of up to about 2 dB between open and concealed siting; differential calibration uncertainty for C/O contrasts is therefore at least that large for R1 and unquantified elsewhere, so the 1 dB resolution cannot separate small effects.

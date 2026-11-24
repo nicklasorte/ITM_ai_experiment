@@ -1,0 +1,5 @@
+item,count
+frozen rows,16805
+"baseline-error rows (out of scope, as run_eval_rev1)",0
+"raw (path,siting,config,frequency) rows with no frozen row",338
+raw combinations skipped by the builder: no valid values,1869

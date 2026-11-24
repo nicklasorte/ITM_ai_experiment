@@ -1,0 +1,17 @@
+kind,set,siting,tier,pairs,informative
+FRQ_HIGH,R1,A,strict,65,65
+FRQ_HIGH,R1,C,strict,78,78
+FRQ_HIGH,R1,O,strict,520,481
+FRQ_HIGH,R2,C,limited,52,26
+FRQ_HIGH,R2,O,limited,507,346
+FRQ_HIGH,R3,O,limited,792,792
+FRQ_HIGH,VA,C,limited,190,152
+FRQ_HIGH,VA,O,limited,253,244
+FRQ_LOW,R1,A,strict,52,52
+FRQ_LOW,R1,C,strict,78,78
+FRQ_LOW,R1,O,strict,544,527
+FRQ_LOW,R2,C,limited,39,39
+FRQ_LOW,R2,O,limited,442,416
+FRQ_LOW,R3,O,limited,703,703
+FRQ_LOW,VA,C,limited,190,190
+FRQ_LOW,VA,O,limited,260,260

@@ -1,0 +1,70 @@
+D23a: matched-height contrasts (B23). Development data only; not a scored run.
+
+Registered height pairs: 1659; both rows detected (primary exact): 1301; with a censored row: 358.
+Contrast = L_high - L_low (dB); e = predicted - measured (positive: too little loss reduction).
+Provenance tiers: strict = R1 only (see D23m summary). Calibration uncertainty of height contrasts is unquantified, so every directional statement is provisional (B23 section 3.4).
+
+## Cohort: strict
+
+Primary stratum: open siting, blocked at both heights; signed 707 contrast error, equal-base mean, 95 % conditional path-bootstrap interval.
+
+| Site | pairs | bases | mean e (dB) | interval | status |
+| --- | --- | --- | --- | --- | --- |
+| R1 | 149 | 29 | +5.64 | [+3.81, +7.49] | POS-imprecise  |
+| R2 | 0 | 0 | n/a | n/a | no pairs |
+| R3 | 0 | 0 | n/a | n/a | no pairs |
+| VA | 0 | 0 | n/a | n/a | no pairs |
+
+**Disposition (strict): INCONCLUSIVE**. imprecise interval at R1.
+
+O clear-clear:
+  R1: 108 pairs, 17 bases, mean e +3.24 dB [+1.64, +4.82] (POS-imprecise)
+
+O transition:
+  R1: 6 pairs, 2 bases, mean e +5.84 dB [+2.69, +8.98] (DESCRIPTIVE)
+
+C (all classes, actual heights):
+  R1: 44 pairs, 7 bases, mean e +4.83 dB [+2.51, +8.02] (DESCRIPTIVE)
+
+## Cohort: exploratory (strict + limited)
+
+Primary stratum: open siting, blocked at both heights; signed 707 contrast error, equal-base mean, 95 % conditional path-bootstrap interval.
+
+| Site | pairs | bases | mean e (dB) | interval | status |
+| --- | --- | --- | --- | --- | --- |
+| R1 | 149 | 29 | +5.64 | [+3.81, +7.49] | POS-imprecise  |
+| R2 | 142 | 34 | +3.14 | [+0.59, +5.71] | POS-imprecise  |
+| R3 | 70 | 13 | +1.65 | [+0.24, +2.77] | POS-imprecise  |
+| VA | 4 | 1 | +6.99 | n/a | DESCRIPTIVE single cluster: no interval |
+
+**Disposition (exploratory (strict + limited)): INCONCLUSIVE**. imprecise interval at R1, R2, R3.
+
+O clear-clear:
+  R1: 108 pairs, 17 bases, mean e +3.24 dB [+1.64, +4.82] (POS-imprecise)
+  R2: 23 pairs, 4 bases, mean e +8.82 dB [+4.91, +12.73] (DESCRIPTIVE)
+  R3: 243 pairs, 40 bases, mean e +4.18 dB [+2.96, +5.51] (POS-imprecise)
+
+O transition:
+  R1: 6 pairs, 2 bases, mean e +5.84 dB [+2.69, +8.98] (DESCRIPTIVE)
+  R2: 7 pairs, 1 bases, mean e -8.15 dB (DESCRIPTIVE)
+  R3: 31 pairs, 5 bases, mean e -5.72 dB [-15.28, +2.11] (DESCRIPTIVE)
+
+C (all classes, actual heights):
+  R1: 44 pairs, 7 bases, mean e +4.83 dB [+2.51, +8.02] (DESCRIPTIVE)
+  R2: 16 pairs, 4 bases, mean e +6.75 dB [+2.60, +10.89] (DESCRIPTIVE)
+  VA: 426 pairs, 95 bases, mean e -3.90 dB [-4.92, -2.81] (NEG-imprecise)
+
+Comparators (|e_stock| - |e_707| and |e_R02| - |e_707|; negative favours the comparator) are in site_stats_rev1.csv.
+C rows are classified at their actual structural heights; 707 substitutes the clutter height for the mobile terminal (D23b).
+A rows are not treated as verified open. No registered B21 comparator exists; none reported.
+
+Interval consistency (pairs with a censored row only; informative bounds only; not exact error):
+                        cohort set  pairs  informative  uninformative  raw_exact_not_detected  violated  mean_depth_db
+                        strict  R1     26            5             21                       1         3      17.735178
+                        strict  R2      0            0              0                       0         0       0.000000
+                        strict  R3      0            0              0                       0         0       0.000000
+                        strict  VA      0            0              0                       0         0       0.000000
+exploratory (strict + limited)  R1     26            5             21                       1         3      17.735178
+exploratory (strict + limited)  R2     90           12             78                       0         6       6.166689
+exploratory (strict + limited)  R3      0            0              0                       0         0       0.000000
+exploratory (strict + limited)  VA      3            1              2                       0         1       3.156301
