@@ -264,6 +264,9 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### Decisions from Nick after phase plan rev 3 (2026-11-24)
+- "All approved": (1) the principal-edge jump stays in 707 through the lockbox, documented, with report-only fields in `info`; (2) run B18 as drafted, screen first; (3) open the report-only evaluator PR E2; (4) score the lockbox after B18, with a delta-Bullington comparator (R03) added to the panel and predictions registered first; (5) the censored gate stays as it is until after the lockbox; (6) hold the canopy-height data PR unless 1806 survives the screen.
+
 ### Phase plan rev 3 and B18 draft (planner note, 2026-11-24)
 - Planner: Claude Fable 5.2. Plan only: no code, no runs. `experiments/proposals/phase_plan_rev3.md`, `experiments/batches/B18_draft.md`, tool `experiments/batches/hm_frontier_rev1.py` (hybrids, frontier and strata of stored runs).
 - Repair of the principal-edge jump: no design meets all four terms. Published methods that are continuous by construction are Bullington (fails the censored gate, 55.0 %) or a coupled field over every ridge (counts ridge 172 on T1: an estimated +2 dB at 230 MHz to +16 dB at 9190 MHz over 707's lower branch; knife edges without an empirical correction are 17-22 dB optimistic on rows with 0-2 edges, runs 501 and 505). Two-edge cascades don't jump (identity checked numerically); the jump is the one-secondary-per-side rule on a third ridge.
