@@ -1406,10 +1406,31 @@ appended row 1804 to results/results.tsv
   - 1901's bound doesn't bind on that sweep.
   - The P.452-18 obstruction-adjusted smooth surface is the leading suspect.
     The registration stays frozen.
-- [B20 draft](batches/B20_draft.md): three diagnostics, no scored runs:
+- [B20](batches/B20.md): three diagnostics, no scored runs:
   - D20a: which term flattens height gain.
   - D20b: whether the cascade correction C drives the obstructed-row
     overshoot.
   - D20c: whether P.2108-1 beats a constant on 1,400 matched open and
     concealed pairs.
 - Bonferroni k doesn't reset; the next scored candidate against 707 is k = 7.
+
+## 2026-11-24: phase plan rev 4 decisions (Nick: "Do all the things you recommend")
+
+1. **Correction to registration rev 2, defect 3, recorded here.** The
+   registration file itself stays frozen.
+   - The height-gain flattening (ridge sweep +0.17 dB against stock's
+     −23.3) isn't caused by the troposcatter bound.
+   - It's flat in all 15 runs that report it, across three diffraction
+     methods and two bounds. 1901's bound doesn't bind on that sweep.
+   - Only 1804, which changed the smooth-surface heights, restores it
+     (−18.1 dB).
+   - The leading suspect is the P.452-18 obstruction-adjusted smooth
+     surface. D20a tests it.
+   - Defect 3 otherwise stands: the bound has no published source.
+2. **Censored gate:** unchanged until Nick has scored the lockbox; decide
+   then.
+3. **Per-site censored reporting:** approved as an evaluator PR, report-only.
+4. **Repair rule, height-gain defect only:** the report-only real-path
+   height check (`height_gain_real`; 707: 27.0 dB over its 1 dB limit)
+   counts as the battery check that shows best failing. Fixed before B21.
+5. **B20 approved** and promoted from draft.

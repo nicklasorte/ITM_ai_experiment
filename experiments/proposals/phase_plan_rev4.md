@@ -209,6 +209,10 @@ The phase ends at the first of:
 
 ## 5. Decisions for Nick
 
+**Decided 2026-11-24** ("Do all the things you recommend"): 1 yes;
+2 deferred until after the lockbox is scored; 3 yes; 4 yes, for the
+height-gain defect only; 5 approved.
+
 1. **Record the defect-3 correction in the LOG?** The registration stays
    frozen; the LOG entry says the flattening comes from the smooth surface,
    with the evidence above. Recommended: yes.
