@@ -106,17 +106,28 @@ if ~isempty(P2)
     end
     lines(end + 1) = sprintf("  worst cell %.1f   censored violations %.1f%% (baseline %.1f%%)", ...
         round(A.p2.worst_cell, 1), A.p2.censored_violation_pct, B0.p2.censored_violation_pct);
+    if isfield(A.p2, 'cell_with_bounds')
+        lines(end + 1) = sprintf("  report only: Phase 2 cell RMS with censored rows as bounds %.2f (baseline %.2f); mean depth of a violation %.1f dB (baseline %.1f)", ...
+            A.p2.cell_with_bounds, B0.p2.cell_with_bounds, A.p2.censored_violation_depth_db, B0.p2.censored_violation_depth_db);
+    end
 end
 lines(end + 1) = sprintf("physics battery: %s", passfail(M.physics.pass));
 if isfield(M.physics, 'checks') && isfield(M.physics.checks, 'height_gain_real')
     hg = M.physics.checks.height_gain_real;
     lines(end + 1) = sprintf("  height gain on real paths (report only): worst excess %.1f dB (limit %g) at %s", ...
         hg.worst_excess_db, hg.limit_db, hg.worst_row);
+    if isfield(hg, 'n_row_ends_over')
+        lines(end + 1) = sprintf("    row-ends over the limit: %d on %d paths%s", hg.n_row_ends_over, numel(hg.paths_over), ...
+            list_paths(hg.paths_over));
+    end
 end
 if isfield(M.physics, 'checks') && isfield(M.physics.checks, 'continuity_pointwise')
     cp = M.physics.checks.continuity_pointwise;
     lines(end + 1) = sprintf("  pointwise continuity at 1/50/99%% (report only): worst step %.1f dB above stock's (limit %g), %s at %g %%, x = %g", ...
         cp.worst_excess_db, cp.limit_db, cp.worst_sweep, cp.worst_time_pct, cp.worst_at_x);
+    if isfield(cp, 'n_steps_over')
+        lines(end + 1) = sprintf("    steps over the limit: %d", cp.n_steps_over);
+    end
 end
 lines(end + 1) = sprintf("max |variant - baseline| = %.3g dB; runtime %.0f s", dmax, M.runtime_s);
 fprintf('%s\n', lines);
@@ -210,4 +221,17 @@ end
 
 function s = passfail(x)
 if isnan(x), s = "not run"; elseif x, s = "PASS"; else, s = "FAIL"; end
+end
+
+function s = list_paths(p)
+% First paths of a list, for the summary line (E2)
+if isempty(p)
+    s = "";
+else
+    s = " (" + strjoin(p(1:min(end, 8))', ", ") + ternary(numel(p) > 8, ", ...", "") + ")";
+end
+end
+
+function v = ternary(c, a, b)
+if c, v = a; else, v = b; end
 end

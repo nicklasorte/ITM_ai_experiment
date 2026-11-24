@@ -101,7 +101,7 @@ fvar_p = @(htx, hrx, pfl, f, clim, n0, pol) itm_p2p_core_exp(htx, hrx, pfl, f, p
     S.location, clim, n0, pol, S.epsilon, S.sigma, S.mdvar, false, [], cfg);
 fbase_p = @(htx, hrx, pfl, f, clim, n0, pol) itm_p2p_rev1(htx, hrx, pfl, f, pt, confidence=S.confidence, ...
     climate=clim, N_0=n0, polarization=pol, epsilon=S.epsilon, sigma=S.sigma, mdvar=S.mdvar, validity="off");
-pw = struct('sweep', {}, 'time_pct', {}, 'worst_excess_db', {}, 'at_x', {});
+pw = struct('sweep', {}, 'time_pct', {}, 'worst_excess_db', {}, 'at_x', {}, 'n_steps_over', {});
 for k = 1:numel(sweeps)
     sw = sweeps(k);
     Lv = cell2mat(arrayfun(@(x) reshape(sw.fun(x, fvar_p), 1, []), sw.x(:), 'UniformOutput', false));
@@ -110,13 +110,15 @@ for k = 1:numel(sweeps)
     ex = abs(diff(Lv, 1, 1)) - abs(diff(Lb, 1, 1));
     for j = 1:numel(pt)
         [m, i] = max(ex(:, j));
-        pw(end + 1) = struct('sweep', sw.name, 'time_pct', pt(j), 'worst_excess_db', m, 'at_x', sw.x(i + 1)); %#ok<AGROW>
+        pw(end + 1) = struct('sweep', sw.name, 'time_pct', pt(j), 'worst_excess_db', m, 'at_x', sw.x(i + 1), ...
+            'n_steps_over', nnz(ex(:, j) > 1)); %#ok<AGROW>
     end
 end
 [mx, i] = max([pw.worst_excess_db]);
 B.checks.continuity_pointwise = struct('worst_excess_db', mx, 'worst_sweep', pw(i).sweep, ...
     'worst_time_pct', pw(i).time_pct, 'worst_at_x', pw(i).at_x, 'limit_db', 1, ...
-    'within_limit', mx <= 1, 'report_only', true, 'by_sweep', pw);
+    'within_limit', mx <= 1, 'report_only', true, 'by_sweep', pw, ...
+    'n_steps_over', sum([pw.n_steps_over]));
 
 % ---- real links ----
 rng(1, 'twister');                          % fixed sample, same every run
@@ -145,6 +147,7 @@ end
 % ---- real-path height gain (all rows, both antennas raised 10 m) ----
 dh = 10;                                    % raise in metres
 xs = -Inf; xs_row = "";
+n_over = 0; paths_over = strings(0, 1);              % E2 counts (report only)
 for i = 1:height(P2)
     r = P2(i, :);
     p = profiles(ids == r.path_id);
@@ -163,6 +166,10 @@ for i = 1:height(P2)
         dbh = fbase(hh(1), hh(2), pfl, r.f_mhz, r.climate, r.N_0, r.pol) - b0;
         finite_ok = finite_ok && isfinite(dvh) && isreal(dvh);
         x = dvh - max(dbh, 0);
+        if x > 1
+            n_over = n_over + 1;
+            paths_over(end + 1, 1) = string(r.path_id); %#ok<AGROW>
+        end
         if x > xs
             xs = x; xs_row = sprintf('%s f %g MHz, antenna %d', r.path_id, r.f_mhz, e);
         end
@@ -170,7 +177,8 @@ for i = 1:height(P2)
 end
 % Report only: recorded in metrics.json and the summary, not in B.pass
 B.checks.height_gain_real = struct('worst_excess_db', xs, 'worst_row', string(xs_row), ...
-    'limit_db', 1, 'within_limit', xs <= 1, 'report_only', true);
+    'limit_db', 1, 'within_limit', xs <= 1, 'report_only', true, ...
+    'n_row_ends_over', n_over, 'paths_over', {unique(paths_over)});
 
 pv = prctile(dv, 95); pb = prctile(db, 95);
 ok = pv <= max(0.1, pb + 0.1);

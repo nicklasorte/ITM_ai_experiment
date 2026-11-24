@@ -57,6 +57,27 @@ for s = unique(site)'
 end
 c = P2.censored & isfinite(pred);
 R.p2.censored_violation_pct = 100 * mean(pred(c) < meas(c));
+% Report only (E2, 2026-11-24): censored rows scored as lower bounds. A
+% censored row's error is min(0, predicted - bound): zero when the
+% prediction is at or above the bound, the shortfall when below. Phase 2
+% cell RMS over detected and censored rows together, path weights and cells
+% as above; and the mean depth of a violation.
+ub = isfinite(pred) & (use | c);
+eb = pred(ub) - meas(ub);
+cb = P2.censored(ub);
+eb(cb) = min(eb(cb), 0);
+wb = path_weights(P2.path_id(ub));
+bb = discretize(P2.f_mhz(ub), S.band_edges_mhz);
+sb = P2.set(ub);
+[~, cell_rms_b] = cell_scores(eb, wb, sb + "|" + S.band_names(bb)');
+R.p2.cell_with_bounds = mean(cell_rms_b);
+for s = unique(sb)'
+    k = sb == s;
+    R.p2.site_with_bounds.(s) = sqrt(sum(wb(k) .* eb(k) .^ 2) / sum(wb(k)));
+end
+short = meas(c) - pred(c);
+R.p2.censored_violation_depth_db = mean(short(short > 0));
+if ~any(short > 0), R.p2.censored_violation_depth_db = 0; end
 
 % ---------------- Long-term ----------------
 if isempty(LT)
