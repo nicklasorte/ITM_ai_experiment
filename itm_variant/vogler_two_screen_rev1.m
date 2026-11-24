@@ -33,7 +33,8 @@ function [L_db, A, D] = vogler_two_screen_rev1(x_m, z_m, f_mhz, rel_tol)
 %   The remaining integral is done with MATLAB's integral on [0, T], with T
 %   where the integrand is below exp(-80) of its scale; where Re of
 %   beta_2 - alpha_1 t is negative, w is reflected (A&S 7.1.11) inside the
-%   exponent so nothing overflows.
+%   exponent so nothing overflows. The outer variable is the edge with the
+%   larger Re(beta) (I_2 is symmetric in the edges); see the comment there.
 %
 %   D: alpha, beta, C, nu (edge-to-edge diffraction parameters, nu_m =
 %   theta_m sqrt(2 r_m r_{m+1} / (lambda (r_m + r_{m+1})))), L_ep_db (the
@@ -79,7 +80,16 @@ if N == 1
 else
     alpha = sqrt(r(1) * r(3) / ((r(1) + r(2)) * (r(2) + r(3))));
     C = sqrt(r(2) * sum(r) / ((r(1) + r(2)) * (r(2) + r(3))));
-    b1 = beta(1); b2 = beta(2);
+    % I_2 is symmetric in the two edges, so the outer variable is taken at
+    % the edge with the larger Re(beta) (the more obstructing one). The
+    % other order makes the outer factor grow like exp(Re(beta)^2) when
+    % that edge is far below the ray, and the integral then cancels to
+    % about 1e-8 (B16a stage 1, R2-020-T1 at 9190 MHz, nu = -5).
+    if real(beta(2)) > real(beta(1))
+        b1 = beta(2); b2 = beta(1);
+    else
+        b1 = beta(1); b2 = beta(2);
+    end
     T = sqrt(80 / (1 - alpha^2)) + 2 * abs(real(b1)) + 2 * abs(real(b2)) / max(alpha, 1e-3);
     I = integral(@integrand, 0, T, 'RelTol', rel_tol, 'AbsTol', 1e-15);
     A = C / (2 * sqrt(pi)) * I;

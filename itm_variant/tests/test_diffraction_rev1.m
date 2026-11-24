@@ -924,6 +924,13 @@ tc.verifyEqual(vogler_two_screen_rev1(x, z, 1500), ...
 [L, ~, D] = vogler_two_screen_rev1([0 4000 9000 15000], [0 200 200 0], 1500);
 tc.verifyEqual(L, D.L_ep_db + D.L_c_db, 'AbsTol', 0.01);
 tc.verifyEqual(D.L_c_db, 10 * log10(9000 * 11000 / (5000 * 15000)), 'AbsTol', 1e-12);
+% Second screen far below the ray (nu about -5): both edge orders give the
+% same value, and it matches SciPy (quad + wofz, outer variable at the
+% obstructing edge), computed 2026-11-23: 43.948516289226305 dB
+xc = [0 6000 18690 19600]; zc = [0 300 1.5 0];
+Lc = vogler_two_screen_rev1(xc, zc, 9190);
+tc.verifyEqual(vogler_two_screen_rev1(xc(end) - fliplr(xc), fliplr(zc), 9190), Lc, 'AbsTol', 1e-9);
+tc.verifyEqual(Lc, 43.948516289226305, 'AbsTol', 1e-6);
 % Tighter integration tolerance changes nothing visible
 tc.verifyEqual(vogler_two_screen_rev1(x, z, 9190, 1e-12), vogler_two_screen_rev1(x, z, 9190), 'AbsTol', 1e-7);
 tc.verifyError(@() vogler_two_screen_rev1([0 1 2 3 4], [0 1 1 1 0], 1500), 'itmexp:vogler');

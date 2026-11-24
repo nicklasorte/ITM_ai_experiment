@@ -22,6 +22,8 @@ function S = b16a_oracle_rev1(out_dir)
 %     curvature enters as the bulge x (d - x) / (2 a_e) (P.526-11 eq. (49a)).
 %   - Checks: integration tolerance 1e-10 against 1e-12 on every 20th
 %     height; terminal reversal of the oracle (must be exact) and of 707.
+%     The CSV carries the flat-Earth screen coordinates (bulge applied), so
+%     b16a_crosscheck_rev1.py can recompute the coupled loss with SciPy.
 %   Stage 2 (measurement, only after stage 1 passes): on each frequency with
 %   detected (uncensored) rows at the measured heights 1-13 m, the measured
 %   contrast mean(h >= switch) - mean(h < switch) against each prediction's.
@@ -47,8 +49,12 @@ S = struct();
 for pid = paths
     R = T2(T2.path_id == pid, :);
     if isempty(R), error('itmexp:b16a', 'No rows for %s.', pid); end
-    htx = unique(R.htx_m); clim = R.climate(1); N0 = R.N_0(1); pol = R.pol(1);
-    if numel(htx) ~= 1, error('itmexp:b16a', 'Expected one transmitter height on %s.', pid); end
+    clim = R.climate(1); N0 = R.N_0(1); pol = R.pol(1);
+    htx_of = @(f) unique(R.htx_m(R.f_mhz == f));    % 6.6 m below 910 MHz, 7.3 m above (r2pars.txt)
+    for f = freqs
+        if numel(htx_of(f)) ~= 1, error('itmexp:b16a', 'Expected one transmitter height at %d MHz on %s.', f, pid); end
+    end
+    htx = htx_of(9190);
     pr = profiles(ids == pid);
     g = pr.h_m(:); np = numel(g) - 1; x = (0:np)' * pr.spacing_m; d = x(end);
     pfl = [np; pr.spacing_m; g];
@@ -68,7 +74,7 @@ for pid = paths
     if s1 == s2, error('itmexp:b16a', 'Largest L_ba step on %s is not a principal-edge switch.', pid); end
     k = sort([s1 s2]);
     h_sw = hr(j + 1);
-    out('\n== %s (d = %.2f km, a_e = %.0f km, h_tx = %.1f m)\n', pid, d / 1e3, a_e / 1e3, htx);
+    out('\n== %s (d = %.2f km, a_e = %.0f km, h_tx = %.1f m at 9190 MHz)\n', pid, d / 1e3, a_e / 1e3, htx);
     out('Frozen screens: profile points %d (x = %.0f m, ground %.1f m) and %d (x = %.0f m, ground %.1f m), separation %.0f m.\n', ...
         k(1), x(k(1)), g(k(1)), k(2), x(k(2)), g(k(2)), x(k(2)) - x(k(1)));
     out('Selected from 707 at 9190 MHz: principal edge %d -> %d between h_rx %.2f and %.2f m (L_ba step %.1f dB).\n', ...
@@ -77,13 +83,15 @@ for pid = paths
     rows = cell(numel(freqs), 1);
     for fi = 1:numel(freqs)
         f = freqs(fi);
+        htx = htx_of(f);
         n = numel(hr);
         Lc = zeros(n, 1); Lep = Lc; L1 = Lc; L2 = Lc; Lsp = Lc; nu1 = Lc; nu2 = Lc;
-        Lcr = Lc; Lba = Lc; Lbar = Lc; pe = Lc; A7 = Lc; As = Lc; Ltol = NaN(n, 1);
+        Lcr = Lc; Zt = Lc; Zr = Lc; Lba = Lc; Lbar = Lc; pe = Lc; A7 = Lc; As = Lc; Ltol = NaN(n, 1);
         for i = 1:n
             zt = g(1) + htx; zr = g(end) + hr(i);
             xs = [0; x(k(1)); x(k(2)); d];
             zs = [zt; g(k(1)) + bulge(k(1)); g(k(2)) + bulge(k(2)); zr];
+            Zt(i) = zt; Zr(i) = zr;
             [Lc(i), ~, Dv] = vogler_two_screen_rev1(xs, zs, f);
             Lep(i) = Dv.L_ep_db; Lsp(i) = Dv.L_c_db; nu1(i) = Dv.nu(1); nu2(i) = Dv.nu(2);
             L1(i) = vogler_two_screen_rev1(xs([1 2 4]), zs([1 2 4]), f);
@@ -99,8 +107,11 @@ for pid = paths
             As(i) = itm_p2p_core_exp(htx, hr(i), pfl, f, 50, St.confidence, St.location, clim, N0, pol, ...
                 St.epsilon, St.sigma, St.mdvar, false, [], setfield(c0, 'row', row)); %#ok<SFLD>
         end
-        rows{fi} = table(repmat(string(pid), n, 1), repmat(f, n, 1), hr, nu1, nu2, Lc, Lep, Lsp, L1, L2, Lcr, Ltol, ...
-            Lba, Lbar, pe, A7, As, 'VariableNames', ["path_id" "f_mhz" "h_rx_m" "nu1" "nu2" "L_coupled_db" ...
+        geo = repmat([d, x(k(1)), g(k(1)) + bulge(k(1)), x(k(2)), g(k(2)) + bulge(k(2))], n, 1);
+        rows{fi} = table(repmat(string(pid), n, 1), repmat(f, n, 1), hr, Zt, Zr, geo(:, 1), geo(:, 2), geo(:, 3), ...
+            geo(:, 4), geo(:, 5), nu1, nu2, Lc, Lep, Lsp, L1, L2, Lcr, Ltol, ...
+            Lba, Lbar, pe, A7, As, 'VariableNames', ["path_id" "f_mhz" "h_rx_m" "z_tx_m" "z_rx_m" "d_m" "x_s1_m" "z_s1_m" ...
+            "x_s2_m" "z_s2_m" "nu1" "nu2" "L_coupled_db" ...
             "L_independent_db" "L_c_db" "L_screen1_alone_db" "L_screen2_alone_db" "L_coupled_reversed_db" ...
             "L_coupled_tol1e12_db" "L_ba_707_db" "L_ba_707_reversed_db" "principal_707" "A_707_lb_50" "A_stock_lb_50"]);
     end

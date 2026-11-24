@@ -1,0 +1,75 @@
+B16a fixed-geometry coupled two-screen oracle. Generated 2026-11-23 19:01.
+
+== P2_R2_R2-020-T1_O (d = 19.60 km, a_e = 7808 km, h_tx = 7.3 m at 9190 MHz)
+Frozen screens: profile points 624 (x = 18700 m, ground 2756.1 m) and 650 (x = 19480 m, ground 2713.0 m), separation 780 m.
+Selected from 707 at 9190 MHz: principal edge 650 -> 624 between h_rx 8.85 and 8.90 m (L_ba step 30.0 dB).
+
+Stage 1 (numerical). Largest step between adjacent heights (0.05 m apart), dB:
+     f   coupled     indep   L_ba707     A_707   A_stock   tol_err rev_oracle    rev_707
+   230     0.049     0.046     14.67     14.67      2.39   1.4e-14    0.0e+00       0.00
+   410     0.064     0.061     16.83     16.83      4.19   2.5e-14    0.0e+00       0.00
+   751     0.085     0.083     19.27     19.27      5.39   2.1e-14    1.4e-14       0.00
+   910     0.094     0.091     20.00     20.00      6.29   1.4e-14    0.0e+00       0.00
+  1846     0.132     0.129     23.01     23.01      7.37   1.5e-13    0.0e+00       0.00
+  4595     0.207     0.204     26.98     26.98      8.28   7.1e-14    0.0e+00       0.00
+  9190     0.292     0.289     30.02     30.02      8.59   1.1e-13    1.4e-14       0.00
+
+Across 707's switch (h_rx 8.85 -> 8.90 m), change in dB:
+     f   coupled     indep   L_ba707     A_707   A_stock   coup-indep    coup-max1
+   230    -0.020    -0.020     14.67     14.67     -0.04         0.56        17.49
+   410    -0.020    -0.020     16.83     16.83     -0.03         0.58        19.94
+   751    -0.020    -0.020     19.27     19.27     -0.03         0.59        22.55
+   910    -0.020    -0.020     20.00     20.00     -0.03         0.59        23.37
+  1846    -0.020    -0.020     23.01     23.01     -0.03         0.59        26.44
+  4595    -0.020    -0.020     26.98     26.98     -0.03         0.59        30.40
+  9190    -0.020    -0.020     30.02     30.02     -0.03         0.59        33.41
+
+At the switch height (8.90 m): nu (edge-to-edge) 14.31 and 14.29 at 9190 MHz; coupled 72.7 dB, independent 72.1 dB, L_c 0.59 dB, 707 L_ba 85.9 -> 116.0 dB.
+Stage 1 numerical checks (tolerance error < 1e-3 dB, reversal < 1e-6 dB): true
+
+Stage 2 (measurement). Detected rows only; contrast = mean(h >= 8.90 m) - mean(h < 8.90 m), dB:
+     f n_lo n_hi  measured   coupled   L_ba707     A_707   A_stock
+   230    8    5     -5.11     -2.45     11.56     11.56     -5.20
+   410    8    5     -0.68     -2.48     13.69     13.70     -3.89
+   751    8    5      2.84     -2.50     16.13     16.14     -3.42
+   910    8    5      1.83     -2.50     16.85     16.87     -3.53
+  1846    8    5     -3.25     -2.50     19.88     19.90     -2.55
+  4595    8    5      0.10     -2.50     23.86     23.89     -2.38
+  9190    0    0   too few
+
+== P2_R2_R2-020-T2_O (d = 20.12 km, a_e = 7831 km, h_tx = 7.3 m at 9190 MHz)
+Frozen screens: profile points 289 (x = 8636 m, ground 2513.6 m) and 668 (x = 20000 m, ground 2713.0 m), separation 11364 m.
+Selected from 707 at 9190 MHz: principal edge 668 -> 289 between h_rx 20.35 and 20.40 m (L_ba step 30.6 dB).
+
+Stage 1 (numerical). Largest step between adjacent heights (0.05 m apart), dB:
+     f   coupled     indep   L_ba707     A_707   A_stock   tol_err rev_oracle    rev_707
+   230     0.049     0.049     14.84     14.84      2.45   1.4e-14    0.0e+00       0.00
+   410     0.066     0.065     17.14     17.14      3.41   8.5e-14    1.4e-14       0.00
+   751     0.089     0.088     19.69     19.69      4.49   7.8e-14    0.0e+00       0.00
+   910     0.098     0.097     20.46     20.46      4.74   7.1e-14    1.4e-14       0.00
+  1846     0.139     0.138     23.55     23.55      5.26   7.1e-14    0.0e+00       0.00
+  4595     0.219     0.218     27.58     27.58      5.60   5.7e-14    0.0e+00       0.00
+  9190     0.309     0.309     30.63     30.63      5.82   2.0e-13    1.4e-14       0.00
+
+Across 707's switch (h_rx 20.35 -> 20.40 m), change in dB:
+     f   coupled     indep   L_ba707     A_707   A_stock   coup-indep    coup-max1
+   230    -0.022    -0.022     -0.02     -0.02     -0.05         0.01        19.02
+   410    -0.023    -0.023     -0.02     -0.02     -0.05         0.02        21.46
+   751    -0.023    -0.023     -0.02     -0.02     -0.05         0.02        24.07
+   910    -0.023    -0.023     20.46     20.46     -0.04         0.02        24.89
+  1846    -0.023    -0.023     23.55     23.55     -0.05         0.02        27.95
+  4595    -0.023    -0.023     27.58     27.58     -0.05         0.02        31.91
+  9190    -0.023    -0.023     30.63     30.63     -0.05         0.02        34.92
+
+At the switch height (20.40 m): nu (edge-to-edge) 13.39 and 13.37 at 9190 MHz; coupled 71.0 dB, independent 71.0 dB, L_c 0.02 dB, 707 L_ba 82.3 -> 112.9 dB.
+Stage 1 numerical checks (tolerance error < 1e-3 dB, reversal < 1e-6 dB): true
+
+Stage 2 (measurement). Detected rows only; contrast = mean(h >= 20.40 m) - mean(h < 20.40 m), dB:
+     f n_lo n_hi  measured   coupled   L_ba707     A_707   A_stock
+   230   13    0   too few
+   410   13    0   too few
+   751    0    0   too few
+   910    0    0   too few
+  1846    0    0   too few
+  4595    0    0   too few
+  9190    0    0   too few

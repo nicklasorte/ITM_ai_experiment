@@ -1,0 +1,26 @@
+B16b terrain irregularity audit. 515 Phase 2 paths. Generated 2026-11-23 18:58.
+Legacy copy reproduces the core's delta h exactly on all 515 paths.
+Short-span rule (fewer than 2 intervals, delta h = 0): 0 paths.
+
+Invariance, |change in delta h| (m): max, 99th percentile, paths over 0.01 m
+  fix_refine2        11.7        4.5    81
+  fix_refine3        11.7       4.58    90
+  fix_reverse    7.39e-12   3.74e-12     0
+  fix_tilt       1.73e-10   6.39e-11     0
+  e2e_refine2        11.7        4.5    81
+  e2e_refine3        11.7       4.58    90
+  e2e_reverse    2.13e-10   2.03e-11     0
+  CC_refine2     2.43e-11   1.02e-11     0
+
+2 x 2 relative to legacy (LL), (X - LL)/LL in %, by set: median, 5th and 95th percentiles
+  all  n=515  LC  -0.30 [ -3.20   2.05]  CL  -0.00 [ -0.33   0.17]  CC  -0.31 [ -3.31   2.10]
+  R1   n= 59  LC  -0.22 [ -2.67   1.68]  CL  -0.00 [ -0.11   0.02]  CC  -0.23 [ -2.69   1.68]
+  R2   n= 45  LC  -0.06 [ -2.55   1.41]  CL   0.00 [ -0.10   0.05]  CC  -0.05 [ -2.52   1.41]
+  R3   n= 57  LC  -0.50 [ -2.86   0.74]  CL  -0.03 [ -0.36   0.09]  CC  -0.51 [ -2.94   0.68]
+  VA   n=354  LC  -0.32 [ -3.71   2.26]  CL  -0.01 [ -0.36   0.25]  CC  -0.35 [ -3.87   2.27]
+
+Analytic profiles (fixed trim = whole path):
+  cosine A = 40 m, period  1000 m: truth 135.635, legacy 135.301, continuous 135.249 m
+  cosine A = 40 m, period  3000 m: truth 135.635, legacy 135.840, continuous 135.635 m
+  cosine A = 40 m, period  7500 m: truth 135.635, legacy 134.644, continuous 135.624 m
+  terraces (flat 2 km steps of 20 m): LL 28.246, LC 28.002, CL 28.327, CC 27.976 m

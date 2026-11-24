@@ -28,8 +28,9 @@ function S = b16b_roughness_rev1(out_dir)
 %   collinear refinement (every interval split in 2 and in 3), reversal
 %   (profile and antennas swapped), affine tilt (z + 50 m + 0.01 x, fixed
 %   trim only, because a tilt moves the horizons). Analytic profiles: a
-%   sinusoid over whole periods (interdecile range 2 sin(0.4 pi) A, from
-%   the arcsine distribution) and a profile of flat terraces.
+%   cosine over whole periods (its least-squares line is flat, so the
+%   interdecile range is 2 sin(0.4 pi) A, from the arcsine distribution)
+%   and a profile of flat terraces.
 
 P = itm_exp_paths_rev1(); St = settings_rev1();
 if ~isfolder(out_dir), mkdir(out_dir); end
@@ -101,12 +102,12 @@ end
 out('\nAnalytic profiles (fixed trim = whole path):\n');
 xi = 30; L = 30000; x = (0:xi:L)'; A = 40;
 for Pm = [1000 3000 7500]
-    z = 1000 + A * sin(2 * pi * x / Pm);
+    z = 1000 + A * cos(2 * pi * x / Pm);
     p = [numel(x) - 1; xi; z];
     corr = 1 - 0.8 * exp(-L / 50e3);
     truth = 2 * sin(0.4 * pi) * A / corr;
     [~, ~, LLa, ~, ~, CCa] = two_by_two(p, 0, L);
-    out('  sinusoid A = %g m, period %5g m: truth %.3f, legacy %.3f, continuous %.3f m\n', A, Pm, truth, LLa, CCa);
+    out('  cosine A = %g m, period %5g m: truth %.3f, legacy %.3f, continuous %.3f m\n', A, Pm, truth, LLa, CCa);
 end
 z = 1000 + 20 * floor(x / 2000) + 0 * x;        % terraces: 2 km flat steps of 20 m, joined by one 30 m interval
 p = [numel(x) - 1; xi; z];

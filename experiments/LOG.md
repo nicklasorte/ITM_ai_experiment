@@ -264,6 +264,15 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### B16: oracle, roughness audit, crest eligibility (2026-11-23; no scored run)
+- Planner and worker: Claude Opus 5.5. Registered in `experiments/batches/B16.md` before the runs; results there.
+- New functions (not wired into the model): `itm_variant/vogler_two_screen_rev1.m` (Vogler N = 2, NTIA TR-83-124) and `faddeeva_w_rev1.m` (Weideman 1994). Reproduce NTIA TR-26-580 Table 17 cases 21-25 to 0.001 dB; SciPy recomputation of the sweeps agrees to 2e-11 dB. 44 tests pass.
+- B16a: on R2-020 T1 and T2 the coupled field over the two ridges 707 switches between changes by 0.02 dB across the switch, where 707 steps 15-31 dB. Coupled minus independent is the spacing term (under 0.6 dB). T1's detected rows show no step (measured contrast -5.1 to +2.8 dB; 707 predicts +11.6 to +23.9). The step is 707's edge selection. Next: register a repair with a continuous secondary-edge selector, gated on these sweeps.
+- B16b: legacy delta h depends on sample spacing on trims under 242 intervals (81 of 515 paths; up to 11.7 m, 5.1 %); reversal and tilt invariant. Continuous form invariant, a few percent from legacy. No model change (fixed 30 m spacing; legacy calibration).
+- B16c: 12 survey profiles at 5 sites pass the geometry rules, but no header documents vertical accuracy; under the most favorable map-accuracy reading only 2 profiles qualify. Diagnostic not run.
+- Infra: first B16a launch stopped on the transmitter height (6.6 m below 910 MHz, 7.3 m above); fixed and rerun. First oracle run failed its own reversal check (0.065 dB at nu = -5): the edge order was ill-conditioned; the function now integrates over the more obstructing edge first, with a regression test.
+- Lockbox trigger: B16 registered no keep candidate. Whether a diagnostic-only batch counts toward "two consecutive batches without a keep" is Nick's call; the planner's reading is that it doesn't.
+
 ### PRs #8, #9, #10 merged (Nick, 2026-11-23)
 - From now on: the screened composite decides keeps and the full composite
   must do no harm; the paired interval is at 1 − 0.05/k (next candidate

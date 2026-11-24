@@ -1,0 +1,15 @@
+B16c rounded-crest eligibility count (geometry only).
+Survey-vertex check: 30 m profiles in data/profiles match the survey vertices resampled linearly to 0.000 m at most.
+Cases (path, frequency, heights): 16805 on 515 paths.
+
+W = 250 m: geometry-eligible cases 150; distinct survey profiles 12 (eligible at every case: 0); distinct fixed sites 5 [('R2', 'R2'), ('R3', 'R3'), ('VA', 'T1'), ('VA', 'T2'), ('VA', 'T4')]
+  reasons: line of sight 7163; two horizons 6138; flank vertex beyond W 2556; arm not clear 798; geometry eligible 150
+  eligible profiles by set: R2 3, R3 5, VA 4
+
+W = 500 m: geometry-eligible cases 395; distinct survey profiles 24 (eligible at every case: 2); distinct fixed sites 8 [('R2', 'R2'), ('R3', 'R3'), ('VA', 'T1'), ('VA', 'T2'), ('VA', 'T3'), ('VA', 'T4'), ('VA', 'T5'), ('VA', 'T6')]
+  reasons: line of sight 7163; two horizons 6138; arm not clear 1595; flank vertex beyond W 1514; geometry eligible 395
+  eligible profiles by set: R2 7, R3 6, VA 11
+
+Vertical error: map scales by set {'R1': ['24000'], 'R2': ['24000'], 'R3': ['24000'], 'VA': ['62500']}; no contour interval or vertical accuracy in any header, so rule 4 leaves every case unresolved.
+Sensitivity (W = 250 m, both drops >= 3 x 3.05 m): 2 profiles [('R2', 'R2', 'P2_R2_R2-005-T3_O'), ('VA', 'T1', 'P2_VA_T1-020-R9_O')]
+Sensitivity (W = 250 m, both drops >= 3 x 6.10 m): 1 profiles [('R2', 'R2', 'P2_R2_R2-005-T3_O')]

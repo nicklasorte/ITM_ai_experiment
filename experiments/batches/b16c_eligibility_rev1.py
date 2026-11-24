@@ -217,6 +217,16 @@ def main(out_dir):
     lines.append("")
     lines.append("Vertical error: map scales by set " + str({k: sorted(v) for k, v in scales.items()}) +
                  "; no contour interval or vertical accuracy in any header, so rule 4 leaves every case unresolved.")
+    # Sensitivity, not part of the rule: if the maps met the US National Map
+    # Accuracy Standards (1947: 90 % of tested elevations within half the
+    # contour interval), the error would be 3.05 m (20 ft interval) or
+    # 6.10 m (40 ft). "Small" is read as both crest drops >= 3 times that.
+    for e in (3.048, 6.096):
+        el = {}
+        for r in out_rows:
+            if r["eligible_250"] and min(r["drop_t_m"], r["drop_r_m"]) >= 3 * e:
+                el[r["survey_file"]] = (r["set"], r["site"], r["path_id"])
+        lines.append("Sensitivity (W = 250 m, both drops >= 3 x %.2f m): %d profiles %s" % (e, len(el), sorted(el.values())))
     open(os.path.join(out_dir, "summary.txt"), "w").write("\n".join(lines) + "\n")
     print("\n".join(lines))
 
