@@ -1516,3 +1516,11 @@ appended row 1804 to results/results.tsv
 - Details: `experiments/batches/B21.md`.
 - **Next (needs Nick):** hold R1, and run one diagnostic on R4 (line-of-sight
   A_s) or register R2 before the next candidate.
+
+## B24: registered B23 sensitivities (diagnostic, 0 scored)
+
+- Clearance >= 0.6 cuts D23c R1 from +3.94 to +1.25 dB (11 bases, NULL); VA +4.61 to +2.79.
+- VA across 7 fixed terminals: +3.06 to +5.68; bootstrap over terminals [0.96, 9.95].
+- A 2 dB calibration error would remove the D23c R1 lower bound; the note is documented for R1 C/O only.
+- Censored pairs don't reverse the D23a direction. All dispositions unchanged or weaker.
+- Details: `experiments/batches/B24.md`, `experiments/D24-sensitivities/`.

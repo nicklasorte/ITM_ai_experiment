@@ -1,0 +1,53 @@
+study,site,variant,mean,lo,hi,n_bases,disposition
+D23a,R1,primary,5.643316397664951,3.8050216982512794,7.492005354098914,29,POS-imprecise
+D23a,R1,F1>=0.6 low end,,,,0,DESCRIPTIVE
+D23a,R1,F1>=0.6 both ends,,,,0,DESCRIPTIVE
+D23a,R1,leave-one-fixed-terminal-out (1 terminals),,,,1,range of means
+D23a,R1,bootstrap over fixed terminals,5.643316397664951,,,1,DESCRIPTIVE
+D23a,R2,primary,3.1417519510433642,0.5875161649892036,5.709305396082739,34,POS-imprecise
+D23a,R2,F1>=0.6 low end,,,,0,DESCRIPTIVE
+D23a,R2,F1>=0.6 both ends,,,,0,DESCRIPTIVE
+D23a,R2,leave-one-fixed-terminal-out (1 terminals),,,,1,range of means
+D23a,R2,bootstrap over fixed terminals,3.1417519510433642,,,1,DESCRIPTIVE
+D23a,R3,primary,1.648757938528604,0.24256860884947337,2.7698722117310504,13,POS-imprecise
+D23a,R3,F1>=0.6 low end,,,,0,DESCRIPTIVE
+D23a,R3,F1>=0.6 both ends,,,,0,DESCRIPTIVE
+D23a,R3,leave-one-fixed-terminal-out (1 terminals),,,,1,range of means
+D23a,R3,bootstrap over fixed terminals,1.648757938528604,,,1,DESCRIPTIVE
+D23a,VA,primary,6.98918667918749,,,1,DESCRIPTIVE
+D23a,VA,F1>=0.6 low end,,,,0,DESCRIPTIVE
+D23a,VA,F1>=0.6 both ends,,,,0,DESCRIPTIVE
+D23a,VA,leave-one-fixed-terminal-out (1 terminals),,,,1,range of means
+D23a,VA,bootstrap over fixed terminals,6.98918667918749,,,1,DESCRIPTIVE
+D23a,ALL,cross-site mean without R1,3.9265655229198195,,,3,mean of site means
+D23a,ALL,cross-site mean without R2,4.7604203384603485,,,3,mean of site means
+D23a,ALL,cross-site mean without R3,5.258085009298601,,,3,mean of site means
+D23a,ALL,cross-site mean without VA,3.4779420957456395,,,3,mean of site means
+D23c,R1,primary,3.943499179482306,0.7789259663900228,7.251204744613253,16,POS-imprecise
+D23c,R1,F1>=0.6 low end,1.2522385008459969,-1.6034178096029597,4.505084893193912,11,NULL
+D23c,R1,F1>=0.6 both ends,1.2522385008459969,-1.6034178096029597,4.505084893193912,11,NULL
+D23c,R1,leave-one-fixed-terminal-out (1 terminals),,,,1,range of means
+D23c,R1,bootstrap over fixed terminals,3.943499179482306,,,1,DESCRIPTIVE
+D23c,R2,primary,9.10132146297569,-2.3239374656264236,19.76799109222155,4,DESCRIPTIVE
+D23c,R2,F1>=0.6 low end,5.289831791052449,-7.553459069509567,17.06776026402603,3,DESCRIPTIVE
+D23c,R2,F1>=0.6 both ends,5.289831791052449,-7.553459069509567,17.06776026402603,3,DESCRIPTIVE
+D23c,R2,leave-one-fixed-terminal-out (1 terminals),,,,1,range of means
+D23c,R2,bootstrap over fixed terminals,9.10132146297569,,,1,DESCRIPTIVE
+D23c,R3,primary,1.3720479256235727,-0.11979800216605173,3.056500433758136,41,NULL
+D23c,R3,F1>=0.6 low end,-0.11629438048411149,-1.4611097552826888,1.396863616931185,30,NULL
+D23c,R3,F1>=0.6 both ends,-0.11629438048411149,-1.4611097552826888,1.396863616931185,30,NULL
+D23c,R3,leave-one-fixed-terminal-out (1 terminals),,,,1,range of means
+D23c,R3,bootstrap over fixed terminals,1.3720479256235727,,,1,DESCRIPTIVE
+D23c,VA,primary,4.6102366971992135,2.72761001797651,6.515779499978845,107,POS-imprecise
+D23c,VA,F1>=0.6 low end,2.788470880158184,0.8152675602398669,4.896160758789264,78,POS-imprecise
+D23c,VA,F1>=0.6 both ends,2.788470880158184,0.8152675602398669,4.896160758789264,78,POS-imprecise
+D23c,VA,leave-one-fixed-terminal-out (7 terminals),4.619098147670463,3.0586952233414055,5.6827013014975405,7,range of means
+D23c,VA,bootstrap over fixed terminals,5.038015921875733,0.9557184967625005,9.948748735965824,7,DESCRIPTIVE
+D23c,ALL,cross-site mean without R1,5.027868695266158,,,3,mean of site means
+D23c,ALL,cross-site mean without R2,3.3085946007683638,,,3,mean of site means
+D23c,ALL,cross-site mean without R3,5.8850191132190695,,,3,mean of site means
+D23c,ALL,cross-site mean without VA,4.805622856027189,,,3,mean of site means
+D23c,R1,T per decade,3.7471878072694773,0.45921450303152805,7.175645025809473,16,POS-imprecise
+D23c,R2,T per decade,9.062586887581102,-2.314046953425442,19.683859931216404,4,DESCRIPTIVE
+D23c,R3,T per decade,1.3992232610877733,-0.09605424485276695,3.056777989071728,41,NULL
+D23c,VA,T per decade,10.455721977211379,5.918629114057166,15.126991321409085,107,POS-imprecise
