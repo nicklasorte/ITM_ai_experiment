@@ -75,6 +75,14 @@ for s = unique(sb)'
     k = sb == s;
     R.p2.site_with_bounds.(s) = sqrt(sum(wb(k) .* eb(k) .^ 2) / sum(wb(k)));
 end
+% Report only (E3, 2026-11-24, phase plan rev 4 decision 3): the censored
+% share by site, so a rise at one site isn't hidden by the pooled share
+% (707: R2 6.8 % to 14.7 % while the pooled share fell). No gate uses it.
+for s = unique(P2.set(c))'
+    k = P2.set(c) == s;
+    R.p2.censored_by_site.(s) = struct('violation_pct', 100 * mean(pred(c & P2.set == s) < meas(c & P2.set == s)), ...
+        'n_violated', nnz(pred(c & P2.set == s) < meas(c & P2.set == s)), 'n_censored', nnz(k));
+end
 short = meas(c) - pred(c);
 R.p2.censored_violation_depth_db = mean(short(short > 0));
 if ~any(short > 0), R.p2.censored_violation_depth_db = 0; end
