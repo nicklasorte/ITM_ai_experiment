@@ -270,6 +270,7 @@ bottom.
 - B17, woodland along the path: `cfg.path_vegetation = "p833_eq1"` (P.833-10 §2.1 eq. (1), Table 1; NLCD along the profile from PR #10), default off. Tests 45/45, parity 6.8e-13 dB. Smoke: median +20 to +22 dB on R2 and VA open rows. History-matching screen: CERTAIN_HARM for 1701 (on 707) and 1702 (on 708); VA RMS rises at least 6.5 and 4.4 dB in the best case. Not run. Reason: eq. (1) is for a terminal inside woodland; open Phase 2 terminals need §3.1/§3.2 and canopy height, which NLCD classes don't give. Details in B17.md.
 - Bonferroni count unchanged (no candidate scored; next against 707 is k = 5).
 - Lockbox trigger: B16 and B17 both ended without a scored keep candidate. If they count as "two batches without a keep", the lockbox is due now. Nick's call.
+- Decision (Nick, 2026-11-24): no lockbox for now. Next: a Fable planning session on the principal-edge repair and the phase ahead.
 
 ### B16: oracle, roughness audit, crest eligibility (2026-11-23; no scored run)
 - Planner and worker: Claude Opus 5.5. Registered in `experiments/batches/B16.md` before the runs; results there.
