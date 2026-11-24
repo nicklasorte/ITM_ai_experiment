@@ -1524,3 +1524,16 @@ appended row 1804 to results/results.tsv
 - A 2 dB calibration error would remove the D23c R1 lower bound; the note is documented for R1 C/O only.
 - Censored pairs don't reverse the D23a direction. All dispositions unchanged or weaker.
 - Details: `experiments/batches/B24.md`, `experiments/D24-sensitivities/`.
+
+## Phase status after B24 (no run)
+
+- The phase plan rev 4 candidate queue is empty under its own registered rules:
+  R1 has no sourced construction (B21); R2 and R4 failed their B20 rule-out tests
+  (C is 6 to 22 % of A_ref; clear-row |A_s - L_bs| is about 0 dB); R3 is done (D20c,
+  D23b); R6 is merged as PR #12 (report only).
+- B22 (repairs) is the phase's closing batch. Its only live item, the 1801 re-score,
+  waits on decision 2 (censored gate), which waits on Nick scoring the lockbox.
+- No agent action can move the phase until the lockbox is scored. k stays 6.
+- Mac checkout: at f5bb3bf with 19 uncommitted local changes, including
+  `eval/run_eval_rev1.m` and `eval/score_rev1.m`, which PR #12 also changes. Not
+  pulled; Nick resolves those before the next scored run.
