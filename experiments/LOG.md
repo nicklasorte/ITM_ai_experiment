@@ -1456,3 +1456,18 @@ appended row 1804 to results/results.tsv
 - **B21:** one smooth-surface candidate (phase plan R1), to be registered
   after the planner checks its source.
 - PR #12 (per-site censored reporting) is open; merging it needs Nick.
+
+## 2026-11-24: correction to D20c's interpretation
+
+- ChatGPT's post-B20 review (N05, `proposals/post_b20_ten_experiments_rev1.md`)
+  found an error in D20c, confirmed in the code.
+- With `terminal_clutter_base = "clutter_height"`, a concealed terminal's
+  whole path runs with the antenna at max(h, R) before the P.2108-1 term
+  A_h is added. So 707's concealed-minus-open difference is a height change
+  plus A_h, not "the clutter term alone".
+- D20c's script said the other terms were checked as identical; that check
+  was never run, and the claim was wrong.
+- D20c's numbers stand. They support 707's full concealed-terminal treatment,
+  not A_h in isolation.
+- B20.md and the script docstring are corrected. D23b (B23, not yet
+  approved) separates the two parts.

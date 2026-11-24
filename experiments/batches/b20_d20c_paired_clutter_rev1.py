@@ -3,10 +3,16 @@
 Usage: python3 -I experiments/batches/b20_d20c_paired_clutter_rev1.py
 
 Matched pairs: Phase 2 rows with siting C and O on the same base path (path_id
-without its _C or _O suffix), frequency and antenna heights. Open and
-concealed twins share one terrain profile, so 707's predicted difference
-pred(C) - pred(O) is its terminal clutter term alone (checked: every other
-term is identical).
+without its _C or _O suffix), frequency and antenna heights.
+
+CORRECTION (2026-11-24, raised in ChatGPT's post-B20 review, confirmed in the
+code): 707's predicted difference pred(C) - pred(O) is NOT the clutter term
+alone. With terminal_clutter_base = "clutter_height" the core runs the whole
+concealed path with the mobile antenna at max(h, R) and then adds the
+P.2108-1 term A_h. The difference is that height change plus A_h. The earlier
+claim that the other terms were checked as identical was wrong: no such
+check was run. The numbers below test 707's full concealed-terminal
+treatment, not P.2108-1's A_h in isolation (B23 D23b separates them).
 
 Compares, on pairs with both rows uncensored:
 - P.2108-1 (707's predicted difference)
