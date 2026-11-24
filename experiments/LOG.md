@@ -264,6 +264,13 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### B16 stage 2 and B17 (2026-11-24; nothing scored)
+- Planner and worker: Claude Opus 5.5. Nick asked for both ("Do both").
+- B16 stage 2, principal-edge repair: three parameter-free selectors considered (most-loss decomposition, least-loss of two ridges, J-weighted blend). The first contradicts T1's detected rows (they sit on 707's lower branch); the second is degenerate (P.526-11's T shrinks secondaries under a weak principal); the third was prototyped on the B16a sweeps and still jumps 14-16 dB on T2. No candidate registered; prototype removed. Details in B16.md.
+- B17, woodland along the path: `cfg.path_vegetation = "p833_eq1"` (P.833-10 §2.1 eq. (1), Table 1; NLCD along the profile from PR #10), default off. Tests 45/45, parity 6.8e-13 dB. Smoke: median +20 to +22 dB on R2 and VA open rows. History-matching screen: CERTAIN_HARM for 1701 (on 707) and 1702 (on 708); VA RMS rises at least 6.5 and 4.4 dB in the best case. Not run. Reason: eq. (1) is for a terminal inside woodland; open Phase 2 terminals need §3.1/§3.2 and canopy height, which NLCD classes don't give. Details in B17.md.
+- Bonferroni count unchanged (no candidate scored; next against 707 is k = 5).
+- Lockbox trigger: B16 and B17 both ended without a scored keep candidate. If they count as "two batches without a keep", the lockbox is due now. Nick's call.
+
 ### B16: oracle, roughness audit, crest eligibility (2026-11-23; no scored run)
 - Planner and worker: Claude Opus 5.5. Registered in `experiments/batches/B16.md` before the runs; results there.
 - New functions (not wired into the model): `itm_variant/vogler_two_screen_rev1.m` (Vogler N = 2, NTIA TR-83-124) and `faddeeva_w_rev1.m` (Weideman 1994). Reproduce NTIA TR-26-580 Table 17 cases 21-25 to 0.001 dB; SciPy recomputation of the sweeps agrees to 2e-11 dB. 44 tests pass.

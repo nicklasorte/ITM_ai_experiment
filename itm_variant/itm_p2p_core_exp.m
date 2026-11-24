@@ -177,6 +177,20 @@ if mobile_end > 0
     end
 end
 
+% Woodland along the terminal rays (batch B17): ITU-R P.833-10 section 2.1
+% eq. (1) for each terminal's ray to its horizon (or the direct ray), with
+% the land cover sampled along the Phase 2 profile (PR #10). Added after
+% the bound and the terminal clutter term, as that term is, so it also
+% enters the variability soft limit. An end that carries terminal clutter
+% isn't counted twice. Long-term and synthetic rows get 0.
+%   "none"      no term (default)
+%   "p833_eq1"  path_vegetation_rev1
+A_veg_db = 0;
+if isfield(cfg, 'path_vegetation') && cfg.path_vegetation ~= "none"
+    A_veg_db = vegetation_term(cfg, area, pfl, h_m, f_mhz, gamma_e, mobile_end);
+    A_ref_db = A_ref_db + A_veg_db;
+end
+
 A_fs_db = free_space_loss(d_m, f_mhz);
 
 % ITM 1.2.2 mode code: horizons from int(d - d_L), C truncation toward zero
@@ -243,6 +257,7 @@ if want_info
         'warnings', reshape(w, out_size), ...
         'warning_messages', {itm_warning_text(wbits)}, ...
         'A_ref_undefined', lines.A_ref_undefined, ...
+        'A_veg_db', A_veg_db, ...
         'lines', lines);
 end
 end
@@ -1320,6 +1335,37 @@ function y = c_pow(x, p)
 % C pow(x, p) for non-integer p
 y = abs(x) .^ p;
 y(x < 0) = NaN;
+end
+
+
+function A_db = vegetation_term(cfg, area, pfl, h_m, f_mhz, gamma_e, mobile_end)
+%VEGETATION_TERM Woodland loss along the terminal rays of a Phase 2 row (B17; see the call site).
+if cfg.path_vegetation ~= "p833_eq1"
+    error('itmexp:cfg', 'Unknown cfg.path_vegetation "%s".', cfg.path_vegetation);
+end
+if area
+    error('itmexp:cfg', 'Path vegetation needs a terrain profile; area mode has none.');
+end
+if ~isfield(cfg, 'row')
+    error('itmexp:cfg', ['Path vegetation needs the row metadata cfg.row from the evaluator. ' ...
+        'Without it every row would silently get 0.']);
+end
+A_db = 0;
+if cfg.row.set == ""
+    return                                   % long-term rows and synthetic sweeps: no land cover
+end
+if ~isfield(cfg.row, 'path_id') || strlength(cfg.row.path_id) == 0
+    error('itmexp:cfg', 'Path vegetation needs cfg.row.path_id from the evaluator.');
+end
+cls = landcover_profile_rev1(cfg.row.path_id, fix(pfl(1)) + 1);
+if cfg.row.reversed
+    cls = flipud(cls);
+end
+use_end = [true true];
+if mobile_end > 0
+    use_end(mobile_end) = false;             % that end already has the P.2108 clutter term
+end
+A_db = path_vegetation_rev1(pfl, cls, h_m, f_mhz, 1 / gamma_e, use_end);
 end
 
 

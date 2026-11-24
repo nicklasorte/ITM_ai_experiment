@@ -935,3 +935,51 @@ tc.verifyEqual(Lc, 43.948516289226305, 'AbsTol', 1e-6);
 tc.verifyEqual(vogler_two_screen_rev1(x, z, 9190, 1e-12), vogler_two_screen_rev1(x, z, 9190), 'AbsTol', 1e-7);
 tc.verifyError(@() vogler_two_screen_rev1([0 1 2 3 4], [0 1 1 1 0], 1500), 'itmexp:vogler');
 end
+
+function test_path_vegetation(tc)
+% ITU-R P.833-10 eq. (1) and Table 1 along the terminal rays (B17)
+flat = 1e12;                                   % effectively flat Earth
+np = 100; xi = 30; pfl = [np; xi; zeros(np + 1, 1)];
+wood = 41 * ones(np + 1, 1);
+% Line of sight, both antennas 5 m under a 15 m canopy: every interior
+% sample is inside; the direct ray splits at mid-path.
+[A, V] = path_vegetation_rev1(pfl, wood, [5 5], 949.0, flat);
+tc.verifyTrue(V.los);
+tc.verifyEqual(V.d_m, [50 49] * xi);
+Aev = @(d) 26.5 * (1 - exp(-d * 0.17 / 26.5));   % Table 1 at 949.0 MHz
+tc.verifyEqual(A, Aev(1500) + Aev(1470), 'AbsTol', 1e-12);
+% An end with terminal clutter isn't counted
+[A1, V1] = path_vegetation_rev1(pfl, wood, [5 5], 949.0, flat, [false true]);
+tc.verifyEqual(A1, Aev(1470), 'AbsTol', 1e-12);
+tc.verifyEqual(V1.A_db(1), 0);
+% No woodland, or antennas above the canopy: no loss
+tc.verifyEqual(path_vegetation_rev1(pfl, 82 * ones(np + 1, 1), [5 5], 949.0, flat), 0);
+tc.verifyEqual(path_vegetation_rev1(pfl, wood, [20 20], 949.0, flat), 0);
+% Held above and below the table
+[g1, m1] = deal(0.34, 34.1);
+tc.verifyEqual(path_vegetation_rev1(pfl, wood, [5 5], 9190, flat), ...
+    2 * 0 + m1 * (1 - exp(-1500 * g1 / m1)) + m1 * (1 - exp(-1470 * g1 / m1)), 'AbsTol', 1e-12);
+tc.verifyEqual(path_vegetation_rev1(pfl, wood, [5 5], 2117.5, flat), ...
+    path_vegetation_rev1(pfl, wood, [5 5], 9190, flat), 'AbsTol', 1e-12);
+% Obstructed: a 100 m ridge at sample 51; each terminal's ray to the ridge
+% top leaves the 15 m canopy after a few samples, so only those count.
+g = zeros(np + 1, 1); g(51) = 100;
+[Ao, Vo] = path_vegetation_rev1([np; xi; g], wood, [5 5], 949.0, flat);
+tc.verifyFalse(Vo.los);
+tc.verifyEqual(Vo.i_hzn, [51 51]);
+% ray from 5 m at x = 0 to 100 m at x = 1500 m: height 5 + 95 x / 1500 < 15 for x < 157.9 m
+tc.verifyEqual(Vo.d_m, [5 5] * xi);
+tc.verifyEqual(Ao, 2 * Aev(150), 'AbsTol', 1e-12);
+% Reversal is symmetric
+tc.verifyEqual(path_vegetation_rev1([np; xi; flipud(g)], flipud(wood), [5 5], 949.0, flat), Ao, 'AbsTol', 1e-12);
+tc.verifyError(@() path_vegetation_rev1(pfl, wood(1:end - 1), [5 5], 949.0, flat), 'itmexp:vegetation');
+% Core: the switch gives 0 on long-term rows and errors on an unknown value
+c = params_exp(); c.path_vegetation = "p833_eq1";
+c.row = struct('set', "", 'siting', "", 'reversed', false, 'path_id', "x");
+pf = [np; xi; 100 * ones(np + 1, 1)];
+a1 = itm_p2p_core_exp(10, 10, pf, 900, 50, 50, 50, 5, 301, 1, 15, 0.005, 12, false, [], c);
+a0 = itm_p2p_core_exp(10, 10, pf, 900, 50, 50, 50, 5, 301, 1, 15, 0.005, 12, false, [], params_exp());
+tc.verifyEqual(a1, a0, 'AbsTol', 1e-12);
+c.path_vegetation = "bogus";
+tc.verifyError(@() itm_p2p_core_exp(10, 10, pf, 900, 50, 50, 50, 5, 301, 1, 15, 0.005, 12, false, [], c), 'itmexp:cfg');
+end

@@ -91,6 +91,11 @@ cfg.terminal_clutter_base = "actual";
 % 2026-11-22), or "nlcd_forest", forest and woody-wetland classes only (712).
 % Needs cfg.terminal_clutter = "p2108_height_gain" and cfg.row.path_id.
 cfg.terminal_clutter_open = "none";
+% Woodland along the terminal rays (B17): "none" or "p833_eq1", ITU-R
+% P.833-10 section 2.1 eq. (1) and Table 1 on each terminal's ray to its
+% horizon, with NLCD 2001 along the Phase 2 profile (PR #10;
+% path_vegetation_rev1). Phase 2 rows only; needs cfg.row.path_id.
+cfg.path_vegetation = "none";
 
 % Line-of-sight loss (line_of_sight_loss) and the line-of-sight region test
 %   "itm"               region from the smooth-earth horizons of the effective heights
