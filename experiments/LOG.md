@@ -1366,3 +1366,15 @@ appended row 1804 to results/results.tsv
   `ITM_lockbox_r02` (e76ca9d).
 - [LOCKBOX_RUN_rev1.md](lockbox/LOCKBOX_RUN_rev1.md) has the steps.
 - Next: Nick scores the panel and records the result.
+
+## 2026-11-24: B19 registered (P.452-18 troposcatter bound at the path)
+
+- One candidate, 1901. It replaces 707's unsourced troposcatter-line bound
+  with P.452-18 eq. (45) evaluated at each path's own d and θ, at 100 MHz
+  and above.
+- Code, test (48 of 48 pass), smoke test and screen are done.
+- Screen verdict: NOT_RULED_OUT. Composite −0.92 to +0.64 dB, emulator mean
+  −0.23; passing needs ρ 0.64.
+- Censored recount: 23.5 % (+0.7 points), within the limit.
+- Predictions are in [B19.md](batches/B19.md), pushed before any score.
+- `best` and the lockbox registration stay frozen.

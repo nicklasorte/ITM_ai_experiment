@@ -144,6 +144,33 @@ if delta
                 if propmode ~= 1 && lines.A_5_db < 1000.0
                     A_ref_db = min(A_ref_db, max(lines.A_5_db + lines.M_s * (d_m - lines.d_5_m), 0.0));
                 end
+            case "p452_troposcatter_at_d"
+                % Batch B19. On every transhorizon path, the loss can't
+                % exceed the troposcatter loss of this path itself: ITU-R
+                % P.452-18 section 4.3 eq. (45) at 50 % time, evaluated at
+                % the path's own distance d and angular distance
+                % theta = theta_t + theta_r + d / a_e (P.452-18 Table 4
+                % definition, with ITM's profile horizon angles and
+                % effective radius), minus free-space loss. Unlike
+                % "itm_troposcatter_line", nothing is extrapolated from
+                % d_ML + 200 km. Same deviations from P.452-18 as B13's
+                % "p452_45" (ITM's a_e, not the Delta-N map; G_t + G_r =
+                % 0 dBi, TODO in p452_troposcatter_rev1). Below 100 MHz,
+                % outside P.452-18's scope, 707's "itm_troposcatter_line"
+                % bound applies unchanged (a design choice that leaves VHF
+                % rows as in the parent).
+                if propmode ~= 1
+                    if f_mhz >= 100.0
+                        theta_mrad = 1e3 * (theta_hzn(1) + theta_hzn(2) + d_m * gamma_e);
+                        if ~(theta_mrad >= 0)
+                            error('itmexp:bound', 'Path angular distance %.3g mrad on a transhorizon path.', theta_mrad);
+                        end
+                        L_bs = p452_troposcatter_rev1(d_m / 1e3, theta_mrad, f_mhz / 1e3, N_0, 50, 0);
+                        A_ref_db = min(A_ref_db, max(L_bs - free_space_loss(d_m, f_mhz), 0.0));
+                    elseif lines.A_5_db < 1000.0
+                        A_ref_db = min(A_ref_db, max(lines.A_5_db + lines.M_s * (d_m - lines.d_5_m), 0.0));
+                    end
+                end
             otherwise
                 error('itmexp:cfg', 'Unknown cfg.diffraction_bound "%s".', cfg.diffraction_bound);
         end

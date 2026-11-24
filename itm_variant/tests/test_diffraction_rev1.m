@@ -632,6 +632,33 @@ x = (0:100:300e3)'; pfl = [numel(x) - 1; 100; 200 + 0 * x];
 tc.verifyError(@() itm_ref(pfl, 30, 10, 1000, c2), 'itmexp:cfg');
 end
 
+function test_b19_p452_bound_at_d(tc)
+% B19: "p452_troposcatter_at_d". On a transhorizon ridge path at UHF the
+% bounded A_ref is min(unbounded, P.452-18 eq. (45) L_bs - free space) with
+% theta from the variant's own horizon angles and effective curvature (hand
+% value); it never raises the loss; below 100 MHz it equals 707's line
+% bound; in line of sight it changes nothing.
+x = (0:30:60000)';
+g = 200 + 60 * sin(2 * pi * x / 7300) + 35 * sin(2 * pi * x / 2900 + 1) + 300 * exp(-((x - 21000) / 1500).^2);
+pfl = [numel(x) - 1; 30; g];
+cu = params_exp(); cu.diffraction = "delta_cascaded_isolated";
+cb = cu; cb.diffraction_bound = "p452_troposcatter_at_d";
+cl = cu; cl.diffraction_bound = "itm_troposcatter_line";
+for f = [450 1800 5000]
+    [~, iu] = itm_p2p_core_exp(12, 3, pfl, f, 50, 50, 50, 5, 301, 0, 25, 0.02, 13, true, [], cu);
+    [~, ib] = itm_p2p_core_exp(12, 3, pfl, f, 50, 50, 50, 5, 301, 0, 25, 0.02, 13, true, [], cb);
+    tc.verifyNotEqual(ib.mode, 1);
+    gamma_e = 157e-9 * (1 - 0.04665 * exp(ib.N_s / 179.3));       % ITM v1.4 effective curvature
+    theta = 1e3 * (sum(ib.theta_hzn_rad) + ib.d_km * 1e3 * gamma_e);
+    A_tro = max(p452_troposcatter_rev1(ib.d_km, theta, f / 1e3, 301, 50, 0) - ib.A_fs_db, 0);
+    tc.verifyEqual(ib.A_ref_db, min(iu.A_ref_db, A_tro), 'AbsTol', 1e-9, sprintf('hand value at %g MHz', f));
+    tc.verifyLessThanOrEqual(ib.A_ref_db, iu.A_ref_db + 1e-9);
+end
+tc.verifyEqual(itm_ref(pfl, 12, 3, 60, cb), itm_ref(pfl, 12, 3, 60, cl), 'AbsTol', 1e-12);   % below 100 MHz: 707's bound
+xs = (0:30:5000)'; ps = [numel(xs) - 1; 30; 100 + 0 * xs];                                   % short flat path: line of sight
+tc.verifyEqual(itm_ref(ps, 30, 10, 1000, cb), itm_ref(ps, 30, 10, 1000, cu), 'AbsTol', 1e-12);
+end
+
 function test_p617_troposcatter(tc)
 % B14: ITU-R P.617-6 section 4.1. Term-by-term hand values of eqs. (1)-(7),
 % Y_p = 0 at 50 % and its sign on each side, and the core switches: the

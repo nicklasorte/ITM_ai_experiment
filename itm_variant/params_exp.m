@@ -68,6 +68,11 @@ cfg.diffraction_region = "transhorizon";
 %                            ITM changes region)
 %   "itm_troposcatter_line"  on every transhorizon path, the loss can't
 %                            exceed ITM's troposcatter line at d (B06)
+%   "p452_troposcatter_at_d" on every transhorizon path at 100 MHz and
+%                            above, the loss can't exceed ITU-R P.452-18
+%                            eq. (45) troposcatter loss at the path's own
+%                            d and theta; "itm_troposcatter_line" below
+%                            100 MHz (B19)
 cfg.diffraction_bound = "none";
 
 % Terminal clutter at the Phase 2 mobile terminal, siting "C" only (B07)
