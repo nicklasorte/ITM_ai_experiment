@@ -70,6 +70,15 @@ comparison.
   prediction in section 5 and the path interval excludes zero in that
   direction. It **fails** if the interval excludes zero the other way.
   Otherwise the set is **inconclusive**.
+- **Amendment, 2026-11-24, before any lockbox number (Nick's decision).** A
+  dry run on 400 development rows showed that the rule above calls a
+  larger-than-predicted win inconclusive (gain 6.55 dB, interval −10.0 to
+  −3.3, against a predicted 1 to 6 dB). The rule now reads: 707
+  **confirms** if the path interval excludes zero in 707's favour and, for
+  the VHF set, 707's mean error is between −4 and +4 dB. It **fails** if the
+  interval excludes zero the other way. Otherwise it is **inconclusive**.
+  Whether the gain fell inside section 5's predicted range is reported
+  beside the verdict as a calibration check, not as part of it.
 - Everything else in section 6 is secondary and reported without a verdict.
   There are about 3 sets × 3 comparisons × several strata, with no
   multiplicity control; secondary differences aren't claims.
@@ -167,6 +176,8 @@ Single-reviewer findings, recorded:
 
 ## 9. Before Nick scores
 
-1. Nick confirms section 4 and section 5, or edits them.
+1. **Done.** Nick confirmed sections 4 and 5 as written on 2026-11-24
+   (13:40 ET), and confirmed that the 1801 ruling stands (707 stays the
+   frozen model; 1801 is a recorded near-miss). This file is now frozen.
 2. Nick scores the panel once, as in sections 2 and 3, and records the
    result and the scorer MD5 in the LOG, whatever it shows.

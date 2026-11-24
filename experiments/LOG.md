@@ -1346,3 +1346,23 @@ appended row 1804 to results/results.tsv
     (RMS 8.3 against 11.3).
   - Five known defects added; the whole `itm_variant/` tree is pinned.
 - Next: Nick confirms rev 2 sections 4 and 5, then scores once.
+
+## 2026-11-24: rev 2 confirmed; lockbox scorer ready
+
+- Nick confirmed registration rev 2 sections 4 and 5 as written, and that
+  the 1801 ruling stands.
+- [score_lockbox_rev1.m](lockbox/score_lockbox_rev1.m) runs one panel model per
+  call. It checks the commit and the overrides, and forces `cfg.row.set` to empty.
+- [summarize_lockbox_rev1.py](lockbox/summarize_lockbox_rev1.py) applies
+  section 4's rule.
+- Dry run on 400 development rows without clutter (`TestOnly`):
+  - 707 matched its stored predictions to 0.0 dB.
+  - R02 matched stock ITM to 1e-12 dB.
+- The dry run showed that section 4 would call a larger-than-predicted win
+  inconclusive. Nick amended the rule before any lockbox number: the
+  direction of the interval decides, and the predicted range is reported as
+  a calibration check.
+- Clean clones for scoring made on the Mac: `ITM_lockbox_best` (2baa02b) and
+  `ITM_lockbox_r02` (e76ca9d).
+- [LOCKBOX_RUN_rev1.md](lockbox/LOCKBOX_RUN_rev1.md) has the steps.
+- Next: Nick scores the panel and records the result.
