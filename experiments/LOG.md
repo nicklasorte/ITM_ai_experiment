@@ -1326,3 +1326,23 @@ appended row 1804 to results/results.tsv
   optimistically on dead paths, as P.2001 does. The time spread wants to be
   about 25 % narrower. Next: a constrained recalibration (censored and
   continuity gates inside the objective), rerun on the full long-term set.
+
+## 2026-11-24: pre-lockbox review; registration rev 2
+
+- PR #11 (E2, report-only) merged by Nick's approval (aff00bf). Guard flagged
+  only the expected protected-path changes.
+- Three independent reviewer sessions and one Fable read on `best` 2baa02b.
+  No blocker in the model code. Findings two or more reported all concern
+  the registration text, so the model stays frozen.
+- [Registration rev 2](lockbox/LOCKBOX_REGISTRATION_rev2.md) replaces rev 1:
+  - It states that the lockbox tests 707's diffraction and bound (the 604
+    configuration, verified identical on all non-C rows), not its clutter term.
+  - Run commits and settings per model (R02 from e76ca9d), and `cfg.row`
+    conditions.
+  - It adds a proposed primary endpoint and decision rule, for Nick to confirm.
+  - Low-antenna evidence recomputed on open rows: pooled 14.3 to 10.1 dB,
+    mostly from R2.
+  - The VHF prediction is replaced: long-term rows below 100 MHz favour 707
+    (RMS 8.3 against 11.3).
+  - Five known defects added; the whole `itm_variant/` tree is pinned.
+- Next: Nick confirms rev 2 sections 4 and 5, then scores once.
