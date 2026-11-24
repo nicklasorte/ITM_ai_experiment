@@ -264,6 +264,16 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### Phase plan rev 3 and B18 draft (planner note, 2026-11-24)
+- Planner: Claude Fable 5.2. Plan only: no code, no runs. `experiments/proposals/phase_plan_rev3.md`, `experiments/batches/B18_draft.md`, tool `experiments/batches/hm_frontier_rev1.py` (hybrids, frontier and strata of stored runs).
+- Repair of the principal-edge jump: no design meets all four terms. Published methods that are continuous by construction are Bullington (fails the censored gate, 55.0 %) or a coupled field over every ridge (counts ridge 172 on T1: an estimated +2 dB at 230 MHz to +16 dB at 9190 MHz over 707's lower branch; knife edges without an empirical correction are 17-22 dB optimistic on rows with 0-2 edges, runs 501 and 505). Two-edge cascades don't jump (identity checked numerically); the jump is the one-secondary-per-side rule on a third ridge.
+- Stored-run hybrids: on Phase 2, replacing 707 by 703 (Bullington) or 708 (Deygout, no C) changes the composite by +0.17 and -0.20 dB; stock ITM on terrain-clear rows is 0.24 dB worse. Under the 36-link screen 703 is 0.31 dB and 502 is 0.72 dB better than 707 on the screened composite; both fail the censored share. With censored rows scored as bounds, 703 still leads 707 by 0.21 dB but VA is 0.7 dB worse.
+- Lockbox-like strata: antennas at or under 3 m, 707 RMS 8-12 dB against stock 15-21 dB; at 76 MHz (VA, 452 rows) 707 +6.7 / 9.6 against stock -1.2 / 9.3.
+- B18 draft: screen-first, six model-only candidates (1801 two-edge cascade, 1802 three-edge cascade, 1803 P.452-18 section 5.1.6.4 heights, 1804 ITM effective heights, 1805 structural heights, 1806 P.1812-7 clutter heights on the profile). Nothing scored unless the screen leaves it open. Effective height no longer leads.
+- Recommended: lockbox right after B18, with the panel (707, stock, R02, plus a Bullington comparator R03), metrics and predictions registered first.
+- Citation check: the code cites P.452-18 eq. (161)-(167) for the smooth surface; the P.452-18 Word file read today numbers them (147)-(153d), and section 5.1.6.4 is (154a)-(157). To confirm against the PDF and correct in comments.
+- Rationale for B18, one sentence each: 1801/1802 bracket the count change that makes the jump; 1803 makes the smooth surface independent of the antennas; 1804/1805 test the two other height definitions; 1806 treats canopy as raised terrain.
+
 ### B16 stage 2 and B17 (2026-11-24; nothing scored)
 - Planner and worker: Claude Opus 5.5. Nick asked for both ("Do both").
 - B16 stage 2, principal-edge repair: three parameter-free selectors considered (most-loss decomposition, least-loss of two ridges, J-weighted blend). The first contradicts T1's detected rows (they sit on 707's lower branch); the second is degenerate (P.526-11's T shrinks secondaries under a weak principal); the third was prototyped on the B16a sweeps and still jumps 14-16 dB on T2. No candidate registered; prototype removed. Details in B16.md.
