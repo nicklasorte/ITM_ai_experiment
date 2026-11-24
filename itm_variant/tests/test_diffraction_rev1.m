@@ -659,6 +659,30 @@ xs = (0:30:5000)'; ps = [numel(xs) - 1; 30; 100 + 0 * xs];                      
 tc.verifyEqual(itm_ref(ps, 30, 10, 1000, cb), itm_ref(ps, 30, 10, 1000, cu), 'AbsTol', 1e-12);
 end
 
+function test_b20_delta_parts_report_only(tc)
+% B20 (D20a): info.delta_parts is report only. A_ref is the same with and
+% without want_info, the parts rebuild the delta, and bound_binds matches
+% the bounded value.
+x = (0:30:40000)';
+g = 150 * max(0, 1 - abs(x / x(end) - 0.5) / 0.05);
+pfl = [numel(x) - 1; 30; g];
+c = params_exp(); c.diffraction = "delta_cascaded_isolated"; c.diffraction_bound = "itm_troposcatter_line";
+for hrx = [1 10 30]
+    a0 = itm_p2p_core_exp(10, hrx, pfl, 3000, 50, 50, 50, 5, 301, 0, 25, 0.02, 13, false, [], c);
+    [a1, info] = itm_p2p_core_exp(10, hrx, pfl, 3000, 50, 50, 50, 5, 301, 0, 25, 0.02, 13, true, [], c);
+    tc.verifyEqual(a1, a0, 'AbsTol', 1e-12);
+    q = info.delta_parts;
+    tc.verifyEqual(q.A_delta_db, q.L_ba_db + max(q.A_s_db - q.L_bs_db, 0), 'AbsTol', 1e-12);
+    tc.verifyEqual(q.A_bounded_db, info.A_ref_db, 'AbsTol', 1e-12);
+    tc.verifyEqual(q.bound_binds, q.A_bounded_db < q.A_delta_db - 1e-12);
+    tc.verifyEqual(q.h_p_m, [q.h_ts_m - q.h_st_m, q.h_rs_m - q.h_sr_m], 'AbsTol', 1e-12);
+    for nm = ["ba" "bs"]
+        t = q.("terms_" + nm); L = q.("L_" + nm + "_db");
+        tc.verifyEqual(t.J_p + t.T * (t.L_t + t.L_r + t.C), L, 'AbsTol', 1e-9, "eq. (50a) terms rebuild L_" + nm);
+    end
+end
+end
+
 function test_p617_troposcatter(tc)
 % B14: ITU-R P.617-6 section 4.1. Term-by-term hand values of eqs. (1)-(7),
 % Y_p = 0 at 50 % and its sign on each side, and the core switches: the

@@ -121,6 +121,7 @@ if delta
     else
         A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m);
     end
+    A_before_bound_db = A_ref_db;
     if isfield(cfg, 'diffraction_bound') && cfg.diffraction_bound ~= "none"
         % Batch B06. Beyond the horizon the troposcatter field is present
         % whatever the terrain does to the diffracted field, so the scatter
@@ -177,6 +178,14 @@ if delta
     end
 end
 
+if delta && want_info && isfield(edge_switch, 'parts')
+    % Report only (B20, D20a)
+    delta_parts = edge_switch.parts;
+    delta_parts.A_bounded_db = A_ref_db;
+    delta_parts.bound_binds = A_ref_db < A_before_bound_db - 1e-12;
+    edge_switch = rmfield(edge_switch, 'parts');
+end
+
 % Terminal clutter at the Phase 2 mobile terminal (batch B07). An end
 % loss added to the reference attenuation, after any bound on the
 % diffraction loss, so it also enters the variability soft limit as the
@@ -218,6 +227,7 @@ end
 %   "p833_eq1"  path_vegetation_rev1
 A_veg_db = 0;
 if ~exist('edge_switch', 'var'), edge_switch = struct(); end
+if ~exist('delta_parts', 'var'), delta_parts = struct(); end
 if isfield(cfg, 'path_vegetation') && cfg.path_vegetation ~= "none"
     A_veg_db = vegetation_term(cfg, area, pfl, h_m, f_mhz, gamma_e, mobile_end);
     A_ref_db = A_ref_db + A_veg_db;
@@ -291,6 +301,7 @@ if want_info
         'A_ref_undefined', lines.A_ref_undefined, ...
         'A_veg_db', A_veg_db, ...
         'edge_switch', edge_switch, ...
+        'delta_parts', delta_parts, ...
         'lines', lines);
 end
 end
@@ -960,7 +971,7 @@ switch cfg.diffraction
     otherwise
         error('itmexp:cfg', 'Unknown delta form "%s".', cfg.diffraction);
 end
-L_ba = multi_edge_diffraction_rev1(method, x, z, f_mhz, a_e);
+[L_ba, D_ba] = multi_edge_diffraction_rev1(method, x, z, f_mhz, a_e);
 E = struct();
 if nargout > 1 && method == "p526_cascaded_isolated"
     % Report only (B18, Nick's decision 2026-11-24): how close the row is to
@@ -972,7 +983,7 @@ if nargout > 1 && method == "p526_cascaded_isolated"
     E.L_ba_rival_db = L_alt;
 end
 z0 = zeros(size(g)); z0(1) = hp(1); z0(end) = hp(2);
-L_bs = multi_edge_diffraction_rev1(method, x, z0, f_mhz, a_e);
+[L_bs, D_bs] = multi_edge_diffraction_rev1(method, x, z0, f_mhz, a_e);
 % ITM on the smooth-earth equivalent path, every switch at "itm"
 pfl_s = [pfl(1); pfl(2); hst + (hsr - hst) * x / d];
 c0 = cfg;
@@ -993,6 +1004,23 @@ if endsWith(cfg.diffraction, "_afo")
 end
 if ~isfinite(A_ref) || ~isreal(A_ref)
     error('itmexp:delta', 'Non-finite delta-Bullington reference attenuation.');
+end
+if nargout > 1
+    % Report only (B20, D20a): the delta's parts and the smooth surface, to
+    % find which term carries the height-gain flattening. No effect on A_ref.
+    E.parts = struct('L_ba_db', L_ba, 'L_bs_db', L_bs, 'A_s_db', A_s, 'A_delta_db', A_ref, ...
+        'h_st_m', hst, 'h_sr_m', hsr, 'h_p_m', hp, 'h_ts_m', hts, 'h_rs_m', hrs, ...
+        'terms_ba', cascade_terms(D_ba), 'terms_bs', cascade_terms(D_bs));
+end
+end
+
+function t = cascade_terms(D)
+% Report only (B20, D20b): the P.526-11 eq. (50a) terms when the cascade
+% reported them; zeros (no obstruction, or another method) otherwise.
+if isfield(D, 'terms')
+    t = D.terms;
+else
+    t = struct('J_p', 0, 'T', 0, 'L_t', 0, 'L_r', 0, 'C', 0);
 end
 end
 

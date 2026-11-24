@@ -228,6 +228,8 @@ switch method
                 C = 10.0 + 0.04 * (x_m(n) / 1000);           % P.526-11 eq. (51), D in km
                 T = 1.0 - exp(-Jp / 6.0);                    % P.526-11 eq. (52)
                 L_db = Jp + T * (L_t + L_r + C);             % eq. (50a) with weighted secondary edges
+                % Report only (B20, D20b): the eq. (50a) terms. No effect on L_db.
+                D.terms = struct('J_p', Jp, 'T', T, 'L_t', L_t, 'L_r', L_r, 'C', C);
             end
             D.edges = [t p r]; D.nu = [nu_t nu_p nu_r]; D.weight = [w_t 1 w_r];
         else

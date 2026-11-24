@@ -1,0 +1,25 @@
+D20a: which term flattens height gain (B20)
+
+ridge40 (3000 MHz, antenna 2 swept 1 to 30 m): net change, dB
+  707                loss   +0.17 | L_ba   -0.80  L_bs   +0.00  A_s   +0.00  delta   -0.80 | bound binds at   0 of 117 heights | h_p swept +21.75 m
+  707_no_bound       loss   +0.17 | L_ba   -0.80  L_bs   +0.00  A_s   +0.00  delta   -0.80 | bound binds at   0 of 117 heights | h_p swept +21.75 m
+  707_p452_ducting   loss  -18.07 | L_ba   -0.80  L_bs   -7.10  A_s  -35.46  delta  -29.17 | bound binds at  13 of 117 heights | h_p swept +29.00 m
+  707_itm_effective  loss  -18.07 | L_ba   -0.80  L_bs   -7.10  A_s  -35.46  delta  -29.16 | bound binds at  13 of 117 heights | h_p swept +29.00 m
+  707_structural     loss  -18.07 | L_ba   -0.80  L_bs   -7.10  A_s  -35.46  delta  -29.17 | bound binds at  13 of 117 heights | h_p swept +29.00 m
+  stock              loss  -23.30 | L_ba     NaN  L_bs     NaN  A_s     NaN  delta     NaN | bound binds at   0 of 117 heights | h_p swept    NaN m
+
+R2_R2-020-T2_O (9190 MHz, antenna 2 swept 1 to 30 m): net change, dB
+  707                loss  -11.21 | L_ba  -11.26  L_bs   +0.00  A_s   +0.00  delta  -11.26 | bound binds at   0 of 117 heights | h_p swept  -3.03 m
+  707_no_bound       loss  -11.21 | L_ba  -11.26  L_bs   +0.00  A_s   +0.00  delta  -11.26 | bound binds at   0 of 117 heights | h_p swept  -3.03 m
+  707_p452_ducting   loss  -11.21 | L_ba  -11.26  L_bs   +0.00  A_s   +0.00  delta  -11.26 | bound binds at   0 of 117 heights | h_p swept +29.00 m
+  707_itm_effective  loss  -11.21 | L_ba  -11.26  L_bs   +0.00  A_s   +0.00  delta  -11.26 | bound binds at   0 of 117 heights | h_p swept +29.00 m
+  707_structural     loss  -28.80 | L_ba  -11.26  L_bs  -17.26  A_s  -34.85  delta  -28.85 | bound binds at   0 of 117 heights | h_p swept +29.00 m
+  stock              loss  -18.46 | L_ba     NaN  L_bs     NaN  A_s     NaN  delta     NaN | bound binds at   0 of 117 heights | h_p swept    NaN m
+
+R1_R1-005-T5_O (230 MHz, antenna 1 swept 1 to 30 m): net change, dB
+  707                loss   -2.28 | L_ba   -5.60  L_bs   +0.36  A_s   +3.70  delta   -2.26 | bound binds at   0 of 117 heights | h_p swept +27.46 m
+  707_no_bound       loss   -2.28 | L_ba   -5.60  L_bs   +0.36  A_s   +3.70  delta   -2.26 | bound binds at   0 of 117 heights | h_p swept +27.46 m
+  707_p452_ducting   loss  -15.08 | L_ba   -5.60  L_bs   -1.74  A_s  -11.20  delta  -15.06 | bound binds at   0 of 117 heights | h_p swept +29.00 m
+  707_itm_effective  loss  -17.25 | L_ba   -5.60  L_bs   -2.02  A_s  -13.65  delta  -17.23 | bound binds at   0 of 117 heights | h_p swept +34.13 m
+  707_structural     loss  -36.93 | L_ba   -5.60  L_bs   -1.98  A_s  -33.30  delta  -36.92 | bound binds at   0 of 117 heights | h_p swept +29.00 m
+  stock              loss  -13.49 | L_ba     NaN  L_bs     NaN  A_s     NaN  delta     NaN | bound binds at   0 of 117 heights | h_p swept    NaN m

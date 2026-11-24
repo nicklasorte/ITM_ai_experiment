@@ -1434,3 +1434,25 @@ appended row 1804 to results/results.tsv
    height check (`height_gain_real`; 707: 27.0 dB over its 1 dB limit)
    counts as the battery check that shows best failing. Fixed before B21.
 5. **B20 approved** and promoted from draft.
+
+## 2026-11-24: B20 closed (three diagnostics, no scored runs)
+
+- **D20a:** the height-gain flattening comes from the P.452-18
+  obstruction-adjusted smooth surface. It puts low antennas tens of metres
+  above it (65 m on the ridge sweep), which clips the smooth-earth term to
+  zero and leaves the knife-edge loss alone. The bound never binds. Any
+  other surface restores 78 % of stock's height gain. The R1 inversion is a
+  separate mechanism: A_s two-ray lobing on the smooth path.
+- **D20b:** the error rises with the cascade correction C·T below 1 GHz, but
+  C·T is only 6 to 22 % of the loss, so the rule says C isn't the driver.
+  Clear rows get near free-space loss and are optimistic, more so with
+  frequency.
+- **D20c:** P.2108-1 is supported on 1,165 paired concealed-minus-open
+  differences: it beats a refitted constant at R1 and VA, and the frequency
+  slope matches (+9.4 against +10.1 dB per decade). It overpredicts by
+  2.7 dB on average and loses at R2.
+- Report-only code: `info.delta_parts` and the cascade terms. 707
+  reproduced to 1e-9 dB on every row.
+- **B21:** one smooth-surface candidate (phase plan R1), to be registered
+  after the planner checks its source.
+- PR #12 (per-site censored reporting) is open; merging it needs Nick.
