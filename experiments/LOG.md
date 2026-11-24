@@ -1543,9 +1543,9 @@ appended row 1804 to results/results.tsv
 - Replacing 707's smooth-path A_s with ITU-R P.452-18 §4.2.2 L_dsph (option
   `smooth_reference = "p452_spherical"`, off by default) moves 1.7 % of Phase 2 rows by
   more than 1 dB. The screen says CANNOT_PASS (screened gain at most +0.11 dB). Closed.
-- Finding: the R1-005-T5 height inversion is not ITM two-ray lobing, as B20 D20a said.
-  L_dsph rises the same way. Raising the transmitter lifts the obstruction-adjusted
-  surface under the receiver (P.452-18 eq. 151-153) until the receiver sits at its 1 m
-  floor. The inversion belongs to the surface, like the rest of the height-gain defect.
-- Kernel matches the oracle-tested P.452 port to 1.8e-14 dB; 707 parity holds; fresh
-  reviewer passed. Details: `experiments/batches/B25.md`, `experiments/D25-spherical-reference/`.
+- Finding, on one row (R1-005-T5_O, 230 MHz, transmitter 1 to 30 m): the inversion is not ITM
+  two-ray lobing, as B20 D20a said; L_dsph rises the same way. The receiver's height above the
+  obstruction-adjusted surface falls from 4.59 m to its 1 m floor as the transmitter rises, which
+  fits the trend but not each step. Other rows are untested.
+- Kernel transcription matches the oracle-tested P.452 port to 1.8e-14 dB; 707 parity holds;
+  two fresh reviewers, findings applied. Details: `experiments/batches/B25.md`, `experiments/D25-spherical-reference/`.

@@ -23,7 +23,7 @@ VA  1         2041   0.113 -1.227  1.978               0.298             0.383
  "bound_changes": 14
 }
 
-Receiver-swept sweep (sweep_rev1.csv; not the B20 inversion sweep, which is sweep_tx_rev1.csv):
+Receiver-swept sweep (sweep_rev1.csv, 30 heights; not the B20 inversion sweep, which is sweep_tx_rev1.csv). "rows" below is the D25a row count, not the sweep length:
 {
   "rows": 16805,
   "max_step_rise_707": 1.8776654707728255,
