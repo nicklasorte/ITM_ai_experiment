@@ -106,6 +106,21 @@ if ~isempty(P2)
     end
     lines(end + 1) = sprintf("  worst cell %.1f   censored violations %.1f%% (baseline %.1f%%)", ...
         round(A.p2.worst_cell, 1), A.p2.censored_violation_pct, B0.p2.censored_violation_pct);
+    if isfield(A.p2, 'censored_by_site')
+        parts = strings(0);
+        for s = string(fieldnames(A.p2.censored_by_site))'
+            a = A.p2.censored_by_site.(s); b = B0.p2.censored_by_site.(s);
+            parts(end + 1) = sprintf("%s %.1f%% (%d of %d; baseline %.1f%%)", s, a.violation_pct, a.n_violated, a.n_censored, b.violation_pct); %#ok<AGROW>
+        end
+        lines(end + 1) = "  report only: censored violations by site: " + strjoin(parts, ", ");
+    end
+    if isfield(A.p2, 'site_with_bounds')
+        parts = strings(0);
+        for s = string(fieldnames(A.p2.site_with_bounds))'
+            parts(end + 1) = sprintf("%s %.1f (baseline %.1f)", s, A.p2.site_with_bounds.(s), B0.p2.site_with_bounds.(s)); %#ok<AGROW>
+        end
+        lines(end + 1) = "  report only: site RMS with censored rows as bounds: " + strjoin(parts, ", ");
+    end
     if isfield(A.p2, 'cell_with_bounds')
         lines(end + 1) = sprintf("  report only: Phase 2 cell RMS with censored rows as bounds %.2f (baseline %.2f); mean depth of a violation %.1f dB (baseline %.1f)", ...
             A.p2.cell_with_bounds, B0.p2.cell_with_bounds, A.p2.censored_violation_depth_db, B0.p2.censored_violation_depth_db);
