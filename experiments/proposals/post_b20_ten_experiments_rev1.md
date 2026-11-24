@@ -1,6 +1,6 @@
-# Ten ITM experiments after B20
+# Ten ITM experiments after B20 — revised research plan
 
-Prepared: 2026-11-24. Status: **proposed research only**. Reviewed snapshot: [main tree 74d79ff](https://github.com/nicklasorte/ITM_ai_experiment/tree/74d79ffbb68214f30edb8470cb5ef126968ea802). Parent: `best`, 707-cascaded-isolated-clutter-at-r, unless the planner records a subsequent keep. This is a new proposal, not a batch authorization; it does not supersede phase plan rev 4 or the frozen lockbox registration.
+Prepared: 2026-11-24. Revision 2 — 2026-11-24: all ten cards rewritten following the red team in section 6 and public-source verification. The current cards and execution plan in sections 2–5 supersede the initial proposal; section 6 remains unchanged as the historical review. Status: **proposed research only**. Reviewed snapshot: [main tree 74d79ff](https://github.com/nicklasorte/ITM_ai_experiment/tree/74d79ffbb68214f30edb8470cb5ef126968ea802). Parent: `best`, 707-cascaded-isolated-clutter-at-r, unless the planner records a subsequent keep. This is a new proposal, not a batch authorization; it does not supersede phase plan rev 4 or the frozen lockbox registration.
 
 ## 1. What the evidence says
 
@@ -9,150 +9,235 @@ Prepared: 2026-11-24. Status: **proposed research only**. Reviewed snapshot: [ma
 - B19: 1901 and 1301 gave identical Phase 2 predictions; the P.452 scatter-line replacement is closed.
 - D20a: on ridge40, 707 and 707 without the bound both change by +0.17 dB across a 1–30 m receiver sweep; stock changes by −23.30 dB. Alternate smooth surfaces yield −18.07 dB. The obstruction-adjusted surface is implicated; the log identifies the R1 inversion as a distinct smooth-path two-ray lobing problem. B21 already plans a new smooth-surface candidate; do not duplicate it.
 - D20b: C·T accounts for 6%, 20%, 22% of mean reference attenuation across the three bands below 1 GHz. The preregistered one-third criterion failed. Clear-row mean error becomes −6.40 dB above 3 GHz; R2 clear rows above 3 GHz have −29.52 dB mean error (105 rows, not independent paths). Negative error means predicted loss is too low.
-- D20c: 1,165 uncensored matched pairs; measured mean concealed-minus-open loss 11.30 dB, predicted 14.00 dB. Measured frequency slope +10.14 dB/decade, predicted +9.41. P.2108 beats the training-site refitted constant at R1 and VA but not R2. The existing clutter term remains; the result does not establish causality for every site, nor validate extrapolation above 3 GHz.
+- D20c: 1,165 uncensored matched pairs; measured mean concealed-minus-open loss 11.30 dB, predicted 14.00 dB. Measured frequency slope +10.14 dB/decade, predicted +9.41. The full 707 concealed/open prediction beats the training-site refitted constant at R1 and VA but not R2. The existing configuration remains; the predicted difference includes both antenna-height substitution and the additive correction. The result does not validate either term in isolation or extrapolation above 3 GHz.
 - B12, B14–B19 close several attractive families on the present data. Do not re-run curved phase alone, independent two-leg time convolution, P.617 fading-side scaling, scatter swaps, blanket NLCD clutter, path vegetation, the resolved-crest proposal, or Vogler as a direct terrain replacement. B16 already established that the edge selector, not the fixed-screen field, causes the jump.
 
 Evidence: [LOG](../LOG.md), [results](../../results/results.tsv), [archive](../../results/archive_rev1.txt), [B18](../batches/B18.md), [B19](../batches/B19.md), [B20](../batches/B20.md), [D20a](../D20a-smooth-surface-terms/summary.txt), [D20b](../D20b-cascade-terms/summary.txt), [D20c](../D20c-paired-clutter/summary.txt), [phase plan rev 4](phase_plan_rev4.md).
 
-## 2. Ranked portfolio
+## 2. Ranked portfolio — revised
 
-Rank is a planner judgment of physical leverage, feasibility, novelty against the recorded history, and information gained per unit effort. It is not a prediction of measured score. IDs below are proposal IDs, not assigned run tags.
+Ranks indicate next-work order, not measured improvement or independent validation. N01–N10 retain their original IDs for traceability. All are proposals only; none authorizes a scored run. The current B21 workflow has precedence.
 
-| Rank | ID | Experiment | Type | Priority |
-| --- | --- | --- | --- | --- |
-| 1 | N01 | Reflection-amplitude repair of the smooth reference | Conditional model repair | High |
-| 2 | N02 | Matched spherical diffraction reference instead of hybrid ITM reference | Conditional model repair | High |
-| 3 | N03 | Within-path measured antenna-height response | Diagnostic | High |
-| 4 | N04 | Frequency-difference decomposition on matched clear and obstructed links | Diagnostic | High |
-| 5 | N05 | Censoring-aware paired clutter validation and applicability test | Diagnostic | High |
-| 6 | N06 | Physical edge-selector stability under profile-grid phase | Synthetic diagnostic | Medium |
-| 7 | N07 | Ground-reflection polarization and impedance sensitivity | Synthetic diagnostic | Medium |
-| 8 | N08 | Joint-mechanism long-term quantile competition | Diagnostic / conditional candidate | Medium |
-| 9 | N09 | Off-profile terrain bypass and transverse obstruction | New-data research | Conditional |
-| 10 | N10 | Independent modern measurement campaign with height and frequency controls | New-data validation | Conditional |
+| Rank | ID | Revised experiment | Stage / disposition |
+| --- | --- | --- | --- |
+| 1 | N03 | Matched-height loss contrast and metadata audit | Development diagnostic |
+| 2 | N05 | Factorial clutter/geometry decomposition with censored contrasts | Development diagnostic; critical correction |
+| 3 | N04 | Fixed-cohort frequency residual contrast | Development diagnostic |
+| 4 | N02 | Published delta-Bullington reference identity benchmark | Source and numerical audit; conditional candidate |
+| 5 | N01 | Coherent smooth-reference field ablation | Hold pending N07 and B21 |
+| 6 | N06 | Uniform-grid and sub-grid crest stability | Synthetic numerical diagnostic |
+| 7 | N07 | Ground-impedance reference conformance | Prerequisite of N01, not separate scored candidate |
+| 8 | N08 | Mechanism-margin conditional shape diagnostic | Parked; B15 closure stands |
+| 9 | N09 | Finite-width-screen benchmark and 3-D terrain research | Synthetic research; external-data stage conditional |
+| 10 | N10 | Prospective independent validation protocol | Separate research track; plan only |
 
-## 3. Experiment cards
+## 3. Revised experiment cards
 
-### N01 — Reflection-amplitude repair of the smooth reference
+### Common registration and reporting contract
 
-**Mechanism:** D20a separates the flat ridge height response from the R1 inversion. The latter may be an artifact of coherent two-ray lobes in ITM's artificial smooth path, not in the measured path. Curved reflection phase alone (1201) was screened out; reflection amplitude/divergence is a different intervention.
+Before running any work package, record the exact parent code hash and configuration, source editions, frozen input/evaluator hashes, affected cohorts, estimands, null and positive controls, units, source-derived numerical tolerance, minimum meaningful effect and precision target, and stopping rules. Where a tolerance or threshold requires measurement uncertainty or solver benchmarks not yet available, record it as a registration blocker rather than inventing it. Reproduce stored parent predictions within 1e-9 dB before deriving model deltas; stock parity must satisfy the existing harness. No diagnostic may alter scored inputs or the evaluator. Report counts of rows, unique paths, fixed terminals and receiver groups; stratify screen membership and censoring. Keep diagnostic and scored records separate. The paths named below are proposed outputs under experiments/, not created files.
 
-**Design:** Keep 707's L_ba, L_bs, surface, terminal correction and scatter bound fixed. Instrument the smooth-reference call in `delta_bullington_reference` and the reflection coefficient in `line_of_sight_loss`. Compare 707 with a published spherical-earth specular divergence factor applied to the reflected field amplitude, not to dB loss. Retain the original phase and reflection coefficient for the primary isolation test; a separate non-scoring comparison with the source-consistent phase checks whether the hybrid is defensible. Reference P.530-19 Annex 1 §6.1.2.3 (verify formula, geometry and applicability from the source before registration). A physically derived amplitude D must be in [0,1]; do not fit a taper to the R1 path.
+### N01 — Coherent smooth-reference field ablation
 
-**Tests:** flat-earth limit D→1, reciprocal terminals, no reflected field, passive reflection coefficient, smooth-earth grazing cases, dense height sweeps R1-005-T5 O/A, R2-020, R2-080-T4, and ridge40. Distinguish genuine physical lobing from a reference-construction artifact; do not assert that every LOS path must be monotonic in height. Prediction: the artificial inversion shrinks on R1; clear paths with zero delta stay unchanged; R2 and R3 should not incur new inversions. Report per-site and censored deltas; the sign of aggregate gain is unknown.
+**Disposition:** hold model changes until N07 passes and B21's outcome is known. Target the R1 smooth-reference inversion, not the ridge40 missing height gain. D20a showed the ridge40 smooth increment is zero and the scatter bound does not bind; an amplitude change alone cannot be presumed to restore that gain.
 
-**Stop:** if the source cannot justify the amplitude change in this artificial geometry, the inversion does not shrink, or the non-inferiority/physics gates fail. Run model-only smoke and history-matching first; no scored run solely because the existing defect is interesting. Distinct from B21's surface change; evaluate on the same parent before considering interaction with B21.
+**Hypothesis:** inappropriate coherent reflection in ITM's artificial smooth reference contributes to the R1-005-T5 inversion, distinct from the obstruction-adjusted surface defect. The ITM coefficient is roughness-weighted and empirically rescaled; the phase is compressed and the loss blended in dB. A literal divergence multiplier is an ablation, not automatically an electromagnetic correction.
 
-### N02 — Matched spherical diffraction reference
+**Design:** add report-only instrumentation to isolate the smooth-reference invocation of line_of_sight_loss in delta_bullington_reference. Freeze 707's geometry, actual-path calculations, cascade, bound, clutter and variability. Log raw complex reflection, roughness, rescaling, raw and compressed phase, field power, blend weight, A_s, L_bs, positive-part activation and bound status. Compare parent; divergence-only applied at an explicitly declared position relative to rescaling; and independent source-consistent specular-field reference for valid smooth LOS geometry. Do not use the source's reflection magnitude as a complex phase coefficient; derive the complex Fresnel phase with consistent time convention and path lengths. P.530-19 §6.1.2.4.1 eq. (132) gives the divergence factor, and eq. (138) combines reflection factors; §§6.1.2.3–6.1.2.5 define the reflection geometry and limitations [S1]. This is a LOS reference, not permission to apply it to transhorizon links or unknown specular surfaces.
 
-**Mechanism:** 707's delta combines a profile cascade with ITM's full smooth-path reference attenuation (including a LOS/troposcatter construction). A diffraction-only reference may avoid comparing unlike mechanisms, especially on obstructed paths with a synthetic smooth profile that is LOS.
+**Tests:** flat-earth limit, zero reflection (unit direct-ray field before blending), reciprocal terminals, valid passive raw interface, grazing cases and synthetic independent height sweeps. Reproduce R1-005-T5 O/A, R2-020, R2-080-T4 and ridge40. D=1 ablation must reproduce 707. Compare actual-path scatter intermediates bitwise or at existing parity tolerance to verify no switch leakage. Treat legitimate multipath lobing and negative excess separately from an artificial-reference defect.
 
-**Design:** Hold the actual/smooth geometry fixed to 707 initially. In the delta construction replace only A_s with the spherical-earth diffraction term from P.526-16 §3, using the same effective radius, terminal heights above the reference surface, frequency and compatible ground impedance. Retain L_ba + max(A_s − L_bs, 0) and the same cascade for both L_ba and L_bs. Convert all terms to excess loss relative to the same free-space reference. This is not a full P.452/P.1812 model and not 402, which changed the placement of the max operation. Source-check the surface assumptions, ground-admittance conventions, and frequency coverage before any implementation; unsupported rows retain the parent only through a registered, continuous applicability rule or the candidate stops.
+**Prediction/falsifier:** R1 artificial lobing may shrink; it may also grow depending on phase. Clear/clipped paths may be unchanged. Close if B21 resolves the target, the correction is clipped out, the source geometry is incompatible, new R2 defects appear, or N07 reveals no credible physical formulation. Do not treat smoothing as evidence of measured accuracy.
 
-**Tests:** P.526 smooth-sphere examples; flat/linear profiles where L_ba=L_bs (verify the actual identity and clipping behavior); smooth horizon crossing; reversal; ridge40 and the three real height-defect paths. Predict reduced artificial smooth-reference lobing on obstructed R1, while clear rows remain close to 707; R2 high-frequency and LT effects uncertain. D20b rules out a blanket LOS A_s intervention, so assess obstructed rows only as the target, while testing all rows for regressions.
+**Deliverable:** proposed N01 field-term sweep, source audit and support/delta table. Only a separately registered source-consistent candidate with applicable repair or gain gates may be scored. No fitted taper or phase threshold.
 
-**Stop:** incompatible source assumptions, discontinuous transition, censored harm, or no identifiable headroom. Do not combine with N01 or B21 until single-change results are recorded. If the planner finds B21 already implements this kernel rather than just a surface, mark N02 redundant and do not run it.
+### N02 — Published delta-Bullington reference identity benchmark
 
-### N03 — Measured antenna-height response rather than absolute loss
+**Disposition:** advance source and identity audit; no scored run yet.
 
-**Mechanism:** Height derivatives of loss can isolate geometry defects from a path-specific calibration offset. B18's battery measured model height behavior; it did not establish a cross-site comparison against matched measured height contrasts in the B20 record.
+**Hypothesis:** mixing a profile cascade with ITM's full smooth-path attenuation, which contains LOS and scatter behavior, creates a reference mismatch on obstructed paths. A spherical diffraction-only kernel is worth testing for consistency.
 
-**Design:** Build a development-only table of pairs with identical physical path, frequency, opposite-terminal height, polarization, siting and measurement configuration; only one antenna height changes. Audit the legacy records for metadata and native height precision. Compute ΔL_meas=L(h2)−L(h1) and ΔL_pred for 000, R02, 707, and any registered B21 candidate. Report difference-of-differences, sign agreement, and robust path-cluster intervals; retain censored contrast intervals where available. Separate open, concealed, and A categories; do not infer physical obstruction from labels. Do not assume monotonicity for measured LOS multipath.
+**Source correction:** direct inspection of P.526-16 Annex 1 §4.5.2 eq. (66) shows the standard itself uses L_ba + max(L_sph − L_bs, 0) [S2]. This is the positive-part placement in 707; it is not inherently erroneous. The original card's distinction from experiment 402 remains a description of its code, but the repository comment attributing outer clipping to P.526-16 eq. (66) should not be relied on. When L_ba=L_bs=x, this expression equals max(x,L_sph), so it returns L_sph only when L_sph≥x. Test whether any deviation matches the published full method before calling it a defect. P.526-16 §3.2 specifies the spherical calculation including subhorizon distances (10 MHz and above); do not use the beyond-horizon kernel alone on LOS geometry. P.1812-8 is scoped to 30 MHz–6 GHz [S4], not all Phase 2 frequencies.
 
-**Prediction:** 707 underestimates height benefit in obstructed geometry; a good B21 repair restores measured contrast without adding new R2 errors. R1 inversion cases should be analyzed separately from the smooth-surface defect.
+**Design:** compare three distinct implementations on identical input geometry: (A) 707; (B) hybrid retaining the isolation-weighted actual and smooth cascade but replacing only A_s with P.526 spherical loss; (C) independent full P.526 §§3.2, 4.5.1 and 4.5.2 reference, diagnostic only, including its own prescribed Bullington terms. Check free-space reference, curvature, ground admittance conventions, frequency units, heights and branch rules. Avoid double subtraction of FSPL: spherical excess already refers to free space. Keep outer bound and other model components unchanged in B. Expose the exact circumstances of x>L_sph for both B and C; quantify residual attributable to cascade versus spherical kernel. Do not force identity using an offset.
 
-**Stop:** no sufficient paired metadata, no independent replication, or measured contrast uncertainty dominates model differences. Diagnostic only; no new keep gate or fitted height curve. Source: NTIA legacy measurement documentation and NTIA measurement best practices.
+**Tests:** benchmark §3.2 clearance/horizon behavior and §4.5.2 full-method calculations with independent source implementation or hand/reference cases; smooth constant/linear terrain, terminal reversal, steep profiles, grazing transition, low antenna cases, the three logged height failures, and R2/VA site regression. For zero spherical diffraction loss and positive x, expected output is x, not zero. Compare model-only deltas against archive and B21 to prevent redundant trials.
 
-### N04 — Matched-frequency excess-loss slope
+**Prediction/falsifier:** may remove some artificial smooth-reference lobing, but D20b shows little direct leverage on clear-path underprediction. Close if the benchmark cannot be reproduced, applicability requires an ad hoc switch, the hybrid departs from the justified reference behavior, the target is already addressed by B21, or the support screen and repair route both fail. No claim that a hybrid conforms to P.526.
 
-**Mechanism:** D20b's site-band averages mix paths, heights, and censoring. Frequency differences on the same geometry distinguish diffraction scaling from missing high-frequency attenuation.
+**Deliverable:** source mapping, independent reference vectors, identity/clipping report, model-only smoke and affected-path headroom if warranted. Source equations inspected; implementation and benchmark remain outstanding.
 
-**Design:** Match same physical path and terminal heights, siting, polarization and measurement setup across frequencies. For each pair form S=[(L2−FSPL2)−(L1−FSPL1)]/log10(f2/f1), dB/decade, for measured and predicted values. Decompose parent predictions into edge terms, C·T, smooth-reference increment, terminal correction and bound activation. Separate geometric clearance classes using continuous Fresnel clearance and predeclared bands; report paired intervals by path and leave-one-site-out. Explicitly account for documented instrument changes and censoring; do not regress site mean error against frequency and call it a physical law.
+### N03 — Matched-height loss contrast and eligibility audit
 
-**Prediction:** positive measured-minus-predicted excess-loss slopes on clear R2 and VA paths at higher frequencies; lower-frequency obstructed overshoot may have a distinct signature in edge losses rather than C alone. R3 is a negative control for blanket missing-loss corrections.
+**Disposition:** first development diagnostic. No model modification.
 
-**Stop:** contrasts disappear under height/polarization matching or occur at only one site, or measurement configuration changes explain them. No frequency multiplier may be proposed from this diagnostic alone. Different from D20b's pooled band regressions and D20c's C/O contrast. Source: P.526 and NTIA Phase 2 records.
+**Hypothesis:** 707's obstructed-path height response differs from measured finite height contrasts, and a physically valid repair should reduce contrast error on independent physical paths. Contrasts cancel common additive calibration offsets only; they do not identify a unique mechanism or establish a universal height derivative.
 
-### N05 — Censoring-aware paired clutter and validity-domain test
+**Design:** construct a shared outcome-blind metadata manifest for N03–N05 using existing development inputs and historical documentation. Fields: base physical path/site/fixed terminal; f_MHz; structural TX/RX heights; changed end; siting; polarization; antenna/equipment configuration; session or documented stability; terrain ID; measurement type/calibration/detection bound availability; exclusion reason. Do not infer missing hardware equivalence or obstruction from the siting label. Lock eligibility before computing residuals. Within each path/frequency/configuration choose the lowest and highest eligible heights at one end as the primary pair, holding the other end fixed; tie-break by stable recorded ID; overlapping secondary pairs are descriptive. Preserve actual height increments.
 
-**Mechanism:** D20c supports the P.2108 term overall but excludes 235 pairs with a censored member from its main comparison. It also mixes the in-range and hold-at-3-GHz cases; R2 disagrees with the other sites.
+**Estimand:** ΔL = L_high − L_low (dB). For model M, e_M = ΔL_M − ΔL_meas. Primary comparison is paired path-level absolute contrast error difference |e_M|−|e_707|, with stock and R02 and B21 if registered. Aggregate repeated frequencies within path before equal-path reporting, and cluster by fixed terminal/site where support permits. Show dB/m only for declared comparable spans; it is not a local derivative. For censored observations use interval subtraction (N05), report lower-bound error and consistency apart from detected-pair errors. Report actual support, sign agreement, height increment distribution, uncertainty and site results. A measured contrast may increase with height due to coherent multipath; do not enforce monotonicity on observations.
 
-**Design:** Retain the fixed 1,400 matched C/O pairs. Represent each detected loss by its observed value and each censored loss by its known lower bound (plus infinity). Form an interval for the difference: [C_lo−O_hi, C_hi−O_lo]; both-censored pairs with no informative bound remain uninformative. Compare 707, zero and training-only refitted constant by distance to the feasible interval, detected-pair RMS, and direction of violations. Split ≤3 GHz and >3 GHz before looking at candidate outcomes; within the valid range stratify by documented terminal height and clutter type where the records identify it. No new fitting or change to the scoring gate.
+**Prediction/falsifier:** obstructed 707 contrasts may underestimate the measured benefit; compare clear controls and keep the distinct R1 inversion separate. Stop on inadequate matching, insufficient precision for a preregistered meaningful contrast, or lack of replication. Single-site results are local. If B21 improves synthetic behavior but not paired measurements, report both.
 
-**Prediction:** the positive frequency trend persists in the supported domain and the excess R2 error is not explained by the exclusion of censored pairs; the >3 GHz extension may have different behavior. Report separately if the evidence is inconclusive.
+**Deliverable:** proposed shared eligibility/exclusion manifest, matched-height contrast CSV and report, uncertainty calculation; no new keep criterion. Measurement documentation: NTIA historical archive and TM-19-535 [S5,S6].
 
-**Stop:** interval information is too weak or metadata cannot distinguish building and tree siting. Do not invent a category assignment or change the hold3 behavior based on the same data. This extends D20c rather than repeating its acceptance test. Sources: P.2108-1 §3.1, NTIA/ITS reference implementation, Phase 2 measurement documentation.
+### N04 — Fixed-cohort frequency residual contrast
 
-### N06 — Edge-selector stability under profile-grid phase
+**Disposition:** advance after N03's shared metadata audit.
 
-**Mechanism:** B16 established a principal-edge selection jump, but terrain sampling can also change crest ordering or the apparent isolation of adjacent ridges. A geometry-based repair should survive a change of numerical sampling origin.
+**Hypothesis:** within identical geometry, clear-path measured-minus-predicted loss rises with frequency on R2/VA; the pattern may distinguish missing attenuation from obstructed-path diffraction scaling.
 
-**Design:** Generate analytic single triangular ridges, two equal ridges, unequal ridges and broad plateaus with known continuous geometry; vary receiver height, frequency, profile sample spacing and interior grid phase while keeping physical endpoints fixed. Compare crest coordinates, selected edge identities, J and isolation weights, and loss across 707, 1801 as a diagnostic-only comparator, and stock. For existing development profiles, use only isolated interpolation/decimation sensitivity outside scoring; do not pretend interpolation creates independent terrain data. Compare forward/reverse orientation using identical physical coordinates.
+**Design:** use eligible matched physical paths with identical endpoint heights, siting, polarization and compatible calibrated basic-loss measurements at different frequencies. Predeclare pair spans using metadata availability only; use an eligible lowest/highest pair per configuration as primary, with a nontrivial minimum log-span derived from the measurement uncertainty and declared precision target. Exclude R2 pairs crossing a documented height change unless heights match; publish exclusions. Use the same paired cohort at both frequencies. Define clear-at-both and obstructed-at-both from frozen geometry and effective radius; retain changing-class paths separately. Distinguish geometric direct-ray clearance and normalized Fresnel clearance.
 
-**Prediction:** unstable edge count or identity explains excess discretization sensitivity near equal ridges; single isolated crests converge. This is not a new Vogler calculation or a revisit of B16b's short-trim roughness estimator. It diagnoses the terrain-to-edge map, not the field solver.
+**Estimand:** primary paired residual difference T=(L_meas,2−L_pred,2)−(L_meas,1−L_pred,1) in dB. Secondary slope T/log10(f2/f1), dB/decade. Cross-check using excess-loss slopes: FSPL cancels in their difference. For censored endpoints use interval arithmetic; do not substitute detection bounds as point measurements. Report equal-path clustered contrasts, uncertainty due to calibration/configuration, and sensitivity by band/site. R3 is a comparison, not proof of no mechanism.
 
-**Stop:** no material instability beyond the expected coarse-profile error, or synthetic findings do not transfer to any development geometry. Keep 1801 rejected; do not choose a selector by measurement residuals. Source: P.526 multi-obstacle methods; B16 fixed-screen result.
+**Attribution:** log J terms, C·T cascade correction, smooth increment, bound activation, and terminal-height/clutter effects (N05) at both frequencies. Inspect changes before and after clipping. If a source-grounded ablation is needed, register it as a separate model-only diagnostic with one intervention; do not infer causal contribution from a large component.
 
-### N07 — Ground-reflection polarization and impedance sensitivity
+**Prediction/falsifier:** positive T on high-frequency clear matched R2/VA; obstructed low-frequency contrast may differ. Stop if effect disappears after height/configuration matching, uncertainty dominates, or no replicated paths/sites support it. No generic frequency multiplier or new fit from this diagnostic.
 
-**Mechanism:** The two-ray term and smooth-sphere loss depend on complex ground impedance, incidence angle and polarization. A numerical cancellation or implausible sensitivity in the artificial reference could amplify the height defect. This tests ground-response physics rather than phase-only B12 or N01 divergence.
+**Deliverable:** fixed-cohort contrasts, support/exclusion tables and conditional component report. Measurement controls: [S5,S6]; diffraction geometry: [S2].
 
-**Design:** Synthetic tests only. Sweep the documented valid ITM ranges of relative permittivity, conductivity and both polarizations, using the same settings for all model components. Compare complex ground coefficient and loss to Fresnel boundary conditions at identical angles, with limiting dielectric and conducting cases. Record changes in the actual and smooth branches, the delta increment and final attenuation near the ridge40 and smooth-horizon geometries. If a concrete formula discrepancy is identified, register a separate one-change repair. For real data use only existing documented input values, no recalibration or soil-class substitution.
+### N05 — Factorial clutter/geometry decomposition and censored contrast
 
-**Prediction:** smooth-reference changes are most visible on grazing geometries; a code mismatch will have a reproducible polarization/impedance signature, whereas a height-construction problem remains even if boundary-condition checks pass. Direction of site-score change is unknown.
+**Disposition:** advance immediately after common metadata audit. Critical correction to D20c attribution, not to its recorded RMS arithmetic.
 
-**Stop:** agreement within a predeclared numerical tolerance and no meaningful discrepancy; close the implementation hypothesis. Sources: NTIA ITM reference, P.527 ground electrical characteristics and P.530 reflection section.
+**Hypothesis:** the net concealed/open effect includes geometric height substitution, additive P.2108 correction and any nonlinear interaction. Their predictive usefulness may vary by site and frequency. P.2108-1 Annex 1 §3.1 and Table 1 require the base propagation calculation to reference the representative clutter height for terminals below it; the correction covers 0.03–3 GHz [S3]. The 707 implementation follows this height construction; holding the correction at 3 GHz above that range is a repository design choice.
 
-### N08 — Long-term quantile competition between mechanisms
+**Design:** reproduce the 1,400 recorded C/O pair matches and their stored predictions before applying stricter N03 metadata eligibility; preserve both populations and account for every exclusion. Inspect the core's height substitution before quick_pfl and final correction before variability. At each concealed row hold metadata and structural height fixed and make diagnostic-only independent interventions on the modeled path height and additive A_h evaluated at the original structural height h. Define H=max(h,R) and G(h_model,A) as final loss through the same bound and variability chain. Four cells:
+- G(h,0): actual modeled height, no correction.
+- G(H,0): raised modeled height, no correction.
+- G(h,A_h): actual modeled height plus correction (known double-counting control, not a candidate).
+- G(H,A_h): raised modeled height plus correction (parent reproduction).
 
-**Mechanism:** A median minimum or cap followed by one variability curve is not generally equivalent to competition between stochastic diffraction and scatter mechanisms. This can change distribution shape without changing the median. The previous P.617 swaps and independent two-leg convolution do not test the mechanism-competition hypothesis.
+Geometry effect = G(H,0)−G(h,0); conditional additive effect = G(H,A_h)−G(H,0); interaction = [G(H,A_h)−G(H,0)]−[G(h,A_h)−G(h,0)]. Geometry plus conditional additive equals total G(H,A_h)−G(h,0). Verify this numerically and compare G(h,0) with matched open prediction. Report A_h before nonlinear processing, mode, horizon, bound, and final loss terms. Keep the parent settings otherwise unchanged. Explicitly distinguish the model decomposition from a causal decomposition of measurements.
 
-**Design:** First use frozen LT development distributions, existing modeled branch geometry and recorded median margin between branches to stratify shape residuals by mechanism dominance and near ties. Compare the measured median-centered 10%, 50%, 90% loss contrasts, plus other available percentiles; cluster by receiver group. Use synthetic marginal distributions to bracket a minimum-loss idealization: for independent branches, F_min(l)=1−(1−F_D(l))(1−F_S(l)); use Fréchet bounds as sensitivity, not an assertion of independence. P.2001 provides a precedent for combining mechanisms; read its actual mechanism-combination rule before proposing any model, and do not conflate minimum loss with incoherent power summation. A candidate must preserve the parent median by construction if justified and keep the Phase 2 median unchanged; otherwise stop.
+**Censoring:** for C and O intervals [lo,hi], measured contrast belongs to [C_lo−O_hi,C_hi−O_lo]. Exact/exact is a point; censored C with detected O gives a lower bound, and detected C with censored O an upper bound. Both right-censored losses generally yield an uninformative contrast. For each prediction report exact-pair RMS, informative-bound violation count/share and magnitude, and uninformative count separately. Distance to an interval is a lower bound on absolute error, not exact error or a likelihood. Do not merge metrics. Fit the training-site constant only on the declared detected training pairs, keep 704's fixed 16.75 dB control distinct, and include zero. Reproduce the original 1,165 exact/235 other pair totals before eligibility exclusions. Split supported 30 MHz–3 GHz and above-3-GHz hold3 strata; estimate within-base/within-height frequency contrasts, not pooled slope alone. Report path-cluster intervals and site-specific results.
 
-**Prediction:** shape error concentrates in near-tie paths, rather than merely in distance bins; strong-dominance controls remain unchanged. The prior B15 headroom ceiling for its narrower family remains valid; demonstrate a different attainable ceiling before a score.
+**Prediction/falsifier:** parent net difference may remain supported, while additive-only attribution is not. If height/soft-limit effects are negligible on the declared cohort, quantify them instead of assuming they matter. If eligibility or bound information is too weak, report inconclusive. Do not change the term or gates; no claim of independent causal validation.
 
-**Stop:** insufficient independent near-tie receiver groups, no conditional shape signal, no defensible dependence model, or headroom below the current acceptance requirement. Do not reopen B12/B14/B15 or substitute a P.452 scatter median.
+**Deliverable:** proposed factorial component CSV, interval-consistency report, source-grounded correction note for planner disposition; original D20c records remain intact. See [core](../../itm_variant/itm_p2p_core_exp.m), [D20c script](../batches/b20_d20c_paired_clutter_rev1.py), [S3].
 
-### N09 — Transverse terrain bypass (new data required)
+### N06 — Uniform-grid and sub-grid crest stability
 
-**Mechanism:** A 1-D profile cannot represent a lower saddle beside the great-circle path, transverse ridge width, or lateral diffraction. Apparent excessive diffraction in mountainous paths could be related to these omitted dimensions.
+**Disposition:** bounded synthetic audit, not a new edge selector.
 
-**Design:** Stage A, independent synthetic 2-D terrain surfaces: compare a narrow transverse ridge and a laterally extensive ridge with identical centerline profiles, frequency, heights and material. Use a validated 3-D scalar wave or suitable paraxial solver with a convergence study, boundary controls and published diffraction benchmarks; a 2-D vertical-plane solver cannot answer a transverse question. Stage B, only after separate human approval and documented public terrain provenance: use a corridor DEM for development paths, without changing frozen profiles or evaluator. Predefine corridor width by Fresnel scale and solver domain, not by seeking a low-loss saddle. Test lateral sensitivity without claiming that the historical terrain or vegetation is known. Report uncertainty and differences in model output.
+**Hypothesis:** crest sampling and near-tied ridge selection can produce excess numerical sensitivity beyond physical geometry changes. Do not conflate this with B16's documented height-driven selection jump.
 
-**Prediction:** narrow finite-width obstructions can exhibit different received fields from wide ridges with identical centerlines; conditional reduction of excess predicted loss is plausible in obstructed R2, but a bypass may also introduce interference. Flat, laterally invariant terrain is the negative control.
+**Design:** two distinct valid PFL families: (A) fixed analytic terrain and endpoints, integer interval count n and uniform spacing d/n; (B) fixed uniform grid with analytic crest translated by a sub-grid offset, labeled geometry sensitivity, not identical terrain. Never construct invalid shifted grids with short endpoint cells. Optional nonuniform or high-resolution reference is external to ITM and not measured truth. Use symmetric and asymmetric near-ties, single sharp crests, broad plateaus, and isolated ridges, with fixed physical heights/frequencies. Sample resolution/crest-position sweep, then terminal reversal. Compare 707, 1801 diagnostic only, and stock; keep 1801 rejected.
 
-**Stop:** solver fails benchmark/convergence, transverse information cannot be resolved, or no meaningful contrast. No scored model without approved data interface and independent validation. Distinct from B16's 1-D coupled screens. Source: P.526 diffraction reference cases; solver source and exact benchmark to be selected and verified before registration.
+**Measures:** edge count/coordinates, ν separation and isolation weights, actual and smooth cascade, positive-part and bound, maximum finite change, convergence rate and reversal error. Define a geometric discretization uncertainty envelope from analytic profiles and independent fine-grid reference before running; derive tolerances from numerical error, not the observed worst jump. For real profiles only non-scoring interpolation/decimation sensitivity, not independent terrain observations or new scored spacing.
 
-### N10 — Independent campaign with controlled height/frequency pairs (new data required)
+**Prediction/falsifier:** near-ties may show excess sensitivity while isolated sharp controls converge. Stop if changes fall within expected geometry error, are explained by known B16 switches, or depend on invalid grids. No empirical smoothing or fitted tie threshold. Source: P.526 geometry and isolated-obstacle concepts [S2], B16.
 
-**Mechanism:** Historical measurement and DEM mismatch, uncertain crest accuracy, and open-path clutter labels limit what can be identified from the current development data. More iterations on the same measurements risk adapting to the archive.
+**Deliverable:** synthetic test matrix, convergence plots, regression cases and disposition; no production code authorization.
 
-**Design:** Prepare a prospective validation design, not a data acquisition action. Select independent public or authorized measurements with contemporaneous terrain and surveyed crest geometry; include R2-like obstructed ridges, clear open paths, and matched terminal clutter pairs. Require documented antenna height, antenna patterns/polarization, calibration, dynamic range, frequency, timestamps and detection bounds. Predeclare model configurations and strata before measurement access; use independent site-level sampling and a power/precision calculation based on independent path variance, not repeated frequencies as independent trials. Where possible compare one-height-at-a-time and fixed-height frequency contrasts. An independent custodian should hold outcomes until registration. Keep the existing lockbox untouched; this is a new validation study, not a second blind use of the original lockbox.
+### N07 — Ground-impedance reference conformance (N01 prerequisite)
 
-**Prediction:** the measured height contrasts and open-path slopes replicate across independent sites if N01–N05 target transferable physics; failure to replicate falsifies generalization, even if historical composite improves.
+**Disposition:** retain separate ID but execute as part of N01's prerequisite audit; no separate score.
 
-**Stop:** inadequate calibration, insufficient independent paths, overlap with development/lockbox paths, or lack of authorization. A possible source to assess for suitability (not assumed to meet requirements) is public NTIA/ITS measurement publications; do not download or inspect a candidate lockbox as part of planning. Sources: NTIA measurement best practices and ITU-R P.311.
+**Hypothesis:** a unit, convention or implementation mismatch in the raw interface coefficient could affect the smooth-reference reflection. Empirical ITM roughness and rescaling are intentional approximations, not bugs merely because they depart from exact Fresnel theory.
 
-## 4. Execution order and acceptance
+**Design:** four layers: raw complex interface; ITM roughness/rescaling; field phase and dB blending; final delta/scatter bound. Compare raw horizontal/vertical coefficients to an independent Fresnel boundary-condition calculation under identical grazing angle, complex sign convention and material parameters. Compare the magnitude to P.530-19 eqs. (127)–(131) in its applicable domain, using consistent S/m, GHz/MHz, relative permittivity and polarization [S1]. The standard supplies magnitude, not complex phase. Compare empirical layers to pinned NTIA ITM [S7], not to raw Fresnel values. Sweep one parameter at a time, then a small factorial within documented ITM-valid conditions; include low conductivity, conducting limit as an analytical reference where appropriate, grazing, near-zero coefficient/denominator handling and finite outputs. Use independent oracle tolerances fixed before testing.
 
-1. Finish the existing registered B21 workflow. N03–N05 are the next cheap development diagnostics, proposed as a single diagnostic batch only after approval; no model changes and no Bonferroni count. N06–N07 are synthetic-only until their checks warrant further action.
-2. Choose between N01 and N02 after checking B21's implementation and source applicability. Register each separately. Establish exact stock parity and reproduction of parent stored predictions to 1e-9 dB, unit/reference checks, reciprocity, continuity, height-defect tests and model-only deltas. Run the existing history-matching screen; reject equivalent deltas before scoring (B19 lesson).
-3. N08 proceeds only if its diagnostic distinguishes the hypothesis from closed atmospheric families and supports attainable headroom. N09–N10 require separate authorization, data governance and validation design. They cannot modify the frozen evaluation inputs.
-4. For any scored run, follow FRAMEWORK.md, program.md and latest approved batch rules; compare against 707/current best, stock, R02 and report R01 for context. At the recorded snapshot the next scored candidate against 707 is k=7; recompute from current history at registration. Do not reset multiplicity because a phase changes. Gain route: screened gain ≥0.3 dB with multiplicity-adjusted interval above zero, full composite degradation ≤0.3 dB, site RMS degradation ≤0.5 dB, current registered censored requirements and physics checks. The phase plan's per-parent censored increase requirement and any fixed ceiling must both be applied where applicable; do not reinterpret them. Repair route only for a registered defect under the approved repair rule, with non-inferiority and three reviewer sessions. The height check approval is specific to that defect. No changing gates after outcomes.
-5. Track paired error and path/group bootstrap intervals, level/shape, site×band, censored count/share and violation magnitude separately. Use the existing frozen folds and screening membership. New report-only diagnostics live in experiments/ and never feed site labels or measured outcomes into a production model. No data leakage, lockbox inspection, or tuning on held-out folds. Any fit requires existing cross-validation and registered complexity accounting.
-6. Close a family when its mechanism is falsified, source validity fails, or attainable headroom cannot meet the gate. Record the outcome even if negative. No new empirical constants are authorized here.
+**Prediction/falsifier:** a genuine port discrepancy reproduces on synthetic inputs and stock reference comparison; agreement means close the implementation-error hypothesis. Apply passivity to the raw passive interface under the correct convention, not the final effective reflected/direct field. Do not fit historical soil properties or use new ground constants on scored data. If a distinct approximation improvement is justified, register separately only after N01 source/geometry and headroom checks.
 
-## 5. Public source starting points and verification
+**Deliverable:** coefficient/reference conformance table and numerical edge cases feeding N01; no double-counted candidates.
 
-- [ITU-R P.526-16, Propagation by diffraction](https://www.itu.int/rec/R-REC-P.526-16-202511-I) (smooth sphere, multiple obstacles, benchmark geometry).
-- [ITU-R P.530-19 contents](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.530-19-202509-I%21%21TOC-HTM-E.htm) (surface reflection, divergence and multipath).
-- [ITU-R P.527](https://www.itu.int/rec/R-REC-P.527) (electrical characteristics of the Earth).
-- [ITU-R P.2001](https://www.itu.int/rec/R-REC-P.2001) (wide-range terrestrial propagation and combination of mechanisms).
-- [ITU-R P.2108](https://www.itu.int/rec/R-REC-P.2108), [NTIA implementation](https://github.com/NTIA/p2108) (terminal correction).
-- [NTIA reference ITM](https://github.com/NTIA/itm), [NTIA legacy propagation data](https://its.ntia.gov/data/legacy-radio-propagation-data), [NTIA measurement best practices](https://its.ntia.gov/publications/details?pub=3211), [ITU-R P.311](https://www.itu.int/rec/R-REC-P.311).
-- Prior studies within this repo: [B12](../batches/B12.md), [B14](../batches/B14.md), [B15](../batches/B15.md), [B16](../batches/B16.md), [B17](../batches/B17.md), [research review](research_review_2026-11-23.md), [prior future plan](../../docs/research/FUTURE_RESEARCH_PLAN_rev1.md).
+### N08 — Mechanism-margin conditional shape diagnostic (parked)
 
-These are proposal-level source leads, not a claim that all equations have been independently verified against rendered primary-source pages. The planner must record edition, equation, units, applicability and reference cases before coding. The ten ideas were checked against the repo history through B20, not executed, and have not undergone three independent reviewer sessions. No model, data, evaluator, existing plan, experiment records or lockbox files were changed by this proposal.
+**Disposition:** B15 already considered per-percentile diffraction/scatter minimum and soft-minimum. Keep B15 closed. No new atmospheric model authorized here.
+
+**Hypothesis:** independently supported near-tie diffraction/scatter paths have conditional long-term shape error beyond distance/frequency trends, which might indicate a missing joint-mechanism distribution. Aggregate historical loss CDFs do not identify branch marginals or dependence.
+
+**Reopening prerequisites:** new evidence for physically valid component eligibility and a distinct estimand; otherwise park. If approved for diagnostic only, predeclare signed median margin and near-tie strata based on branch validity and uncertainty, not residuals. Match dominant controls by frequency, distance and terrain; count independent receiver groups. Use median-centered losses at nonmedian available percentiles on both sides, with 50% as a parity anchor (not an endpoint). Compare parent and B15's registered per-quantile alternatives as analytical controls without new scores. Estimate a support-specific optimistic ceiling separately from B15's restricted shape correction ceiling.
+
+**Synthetic counterexample:** for a stochastic minimum of independent loss components with CDFs F_D,F_S, F_min=F_D+F_S−F_D F_S; without dependence assumptions the bounds are max(F_D,F_S) and min(1,F_D+F_S). At a shared continuous median, independent minimum CDF is 0.75, so median preservation is not automatic. A physical incoherent-power sum has different loss algebra (−10 log10 of summed linear power factors); B15's soft-minimum is yet another prescription. P.2001-6 [S8] is a source lead for its own model combination, not proof of independence or license to combine incompatible processes.
+
+**Go/no-go:** remain parked unless independent branch statistics or a justified dependence model become available, the conditional shape signal replicates, and a physically derived candidate has sufficient headroom. Do not recenter an arbitrary curve to force median parity. No reopening P.617 or changing the existing gate.
+
+**Deliverable:** if prerequisites are met, conditional diagnostic with uncertainty and explicit identifiability limits; otherwise document parked status.
+
+### N09 — Finite-width-screen and 3-D transverse terrain benchmark
+
+**Disposition:** separate longer-horizon research. Stage A synthetic only; stage B requires new data approval. No scored ITM correction.
+
+**Hypothesis:** centerline-identical geometries with different transverse obstacles can yield different received fields. The sign is not predetermined; side-edge contributions may interfere constructively or destructively.
+
+**Stage A:** start with the published finite-width screen, not a corridor DEM. P.526-16 §5.1 eqs. (71)–(72), printed p. 34, provides distinct minimum-loss and average-loss predictions from the top and side edges; §5.2 provides a further thin-screen/aperture reference [S2]. For edge attenuation factors j_i=10^(J_i/20), reproduce the stated limiting amplitude sum and power sum in their proper statistics. As side-edge contributions tend to zero, both approach the top-edge-only loss. Do not compare a single coherent field sample to the average-loss expression. Record physical units, polarization, screen assumptions and phase/spatial averaging protocol. Use normalized transverse widths relative to first Fresnel radius, with fixed centerline and endpoints. Synthetic screen verification is a prerequisite, not proof that thin screens represent actual terrain.
+
+Next benchmark a validated 3-D solver against free space, a transverse-invariant 2-D limit, and the finite-width screen/statistic above within its applicable geometry; require independent reference or converged solution for phase-resolved comparisons. Document marching-angle validity, absorbing boundaries, grid/step/domain-width convergence and numerical error budget before terrain runs. Vary only transverse ridge width or saddle geometry while keeping longitudinal terrain, terminals, material and frequency fixed. Compare complex field/power using consistent averaging, include negative controls and constructive/destructive cases. Zelley & Constantinou (1999) [S9] provides a peer-reviewed radio-propagation precedent with scaled and field measurements; its accessible abstract is not a reproduced solver benchmark.
+
+**Stage B:** conditional on successful benchmarks and separate approval, propose public contemporaneous corridor terrain with documented resolution/uncertainty, historical mismatch and antenna information. Freeze corridor and solver extent from physics, not the path of least measured residual. Use independent sites. Do not alter centerline profiles or evaluator. No assumption a lateral saddle yields lower loss.
+
+**Prediction/falsifier:** measurable transverse-width effect relative to converged uncertainty; invariant ridge recovers the 2-D limit. Close if benchmark or convergence fails, effect is not resolvable, or data are insufficient. Evidence of missing dimensions is not evidence of a transferable ITM improvement.
+
+**Deliverable:** analytical benchmark vectors, solver selection and convergence plan; later conditional research protocol. No solver execution or corridor acquisition authorized.
+
+### N10 — Prospective independent validation protocol
+
+**Disposition:** separate validation workstream; begin design only. No fieldwork, data acquisition, or model evaluation approved by this document.
+
+**Hypothesis:** physically justified model changes improve prediction on independent paths within a declared population rather than exploiting repeated reuse of historical development sites. A failed replication within that population weakens transfer claims; failure outside the population may reflect domain shift.
+
+**Design:** declare target populations, frequencies, geometries, measurement statistic and eligibility before acquiring outcomes. Freeze one candidate, current parent and stock comparator with hashes. Use independent site/physical-path selection, stratified by clear, obstructed, terminal-clutter and negative-control scenarios. Require calibration and repeatability records, endpoint positions/height and terrain survey uncertainty, polarization, antenna patterns, frequency/session/weather, detection dynamic range and thresholds, basic transmission loss definition and time statistic. Ensure calibration and record provenance are comparable; short spot data do not validate annual time distributions. Use NTIA TM-19-535 [S6] and ITU-R P.311 [S10] as protocol references. Audit potential source overlap by campaign/path metadata without examining existing lockbox outcomes. Keep pilots separate from confirmatory sites.
+
+**Primary endpoint:** paired difference in absolute basic-transmission-loss prediction error (candidate minus parent) on detected observations, aggregated at the physical-path level and with site-clustered uncertainty; require a separately registered non-inferiority criterion for censoring violations, counts and bound magnitudes on all relevant observations. Stock is a fixed secondary comparator. Secondary endpoints: matched height/frequency contrast errors, site-band and tail errors, long-term shape only with compatible long-term records. Specify the meaningful paired effect, precision/confidence target, weighting, multiplicity and missingness before outcomes. Compute sample size using pilot or conservative variance, independent site/path clusters and expected censoring; no unsupported numerical sample-size claim.
+
+**Blinding:** independent custodian holds outcomes, freezes manifests and releases after the analysis plan is signed; evaluate frozen models once. Reuse is development. Preserve the existing lockbox and registration as separate assets. Any new data/evaluator interface requires approval.
+
+**Go/no-go:** no acquisition until sampling frame, resources, calibration plan, independence/overlap check, custodian and precision requirements are approved. Inadequate replication or comparability is a limitation, not a model failure.
+
+**Deliverable:** prospective protocol, feasibility inventory, risk/uncertainty budget and approval decision; no new dataset or experiment result.
+
+## 4. Revised execution and acceptance plan
+
+| Package | Cards | Release criteria |
+| --- | --- | --- |
+| A | N03 → N05 → N04 | Shared locked metadata manifest; reproduce parent; paired contrasts, censored interval and factorial reports; independent-unit counts; no scored runs |
+| B | N02; N07 → N01 | Source references and independent benchmark; B21 disposition; valid geometry, reference identity and context isolation; support/headroom screen |
+| C | N06 | Valid uniform PFL; analytic controls, convergence and known-defect differentiation |
+| D | N08 | Park until new evidence and distinct estimand; B15 remains closed |
+| E | N09, N10 | Separate synthetic research and prospective validation plans; independent approval before solver implementation or data acquisition |
+
+Continue approved B21 without alteration. Package A has the best immediate information value and should not depend on B21 completion. Packages B/C may prepare source or synthetic test plans, but a scored candidate must be registered after comparing against B21/current best. N07 is a prerequisite, not an additional scored trial. Do not run N08 on the current evidence. For N09 and N10 distinguish planning from execution.
+
+**Registration:** use FRAMEWORK.md, program.md, latest approved phase/batch and the actual current parent. Record model-only exact support and deltas; reject duplicates before scoring. A perfect correction confined to exact support gives an optimistic ceiling, not an expected gain. A 0.3 dB improvement in a three-component mean requires 0.9 dB improvement in one component if others are unchanged. Evaluate full and screened objectives separately; the approved phase plan defines the applicable gain/non-inferiority rules, not this arithmetic observation. At the prior reviewed snapshot k=7 was next against 707; re-read results and multiplicity before registering. Preserve all approved site, censoring, physical, screening and parameter-complexity constraints. Do not alter 1801's rejection or make the approved height-defect repair exception general. Use the repository's three independent reviewers for applicable keeps.
+
+**Development versus validation:** repeated inspection of frozen site folds is development, even with training-only coefficient fitting. Cluster comparisons by physical path and shared terminal/site or receiver group as appropriate; report effective support and uncertainty. No tuning on held-out folds or lockbox inspection. No new input, evaluator, implementation or batch approval is granted. Diagnostics never change scoring membership, input hashes or existing results.
+
+**Decision record:** each card produces a pass / fail / inconclusive / redundant / parked disposition with evidence and remaining blockers. Close unidentifiable or duplicate families. Report numerical consistency, physical consistency and prediction accuracy separately. Preserve negative findings.
+
+## 5. Public sources and red-team disposition checks
+
+Public sources retrieved on 2026-11-24. Selected primary-source PDF pages were inspected for the key formulas; no external reference implementation or MATLAB benchmark was executed. Direct references:
+
+- [S1 — ITU-R P.530-19 (09/2025), Annex §§6.1.2.3–6.1.2.5](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.530-19-202509-I%21%21PDF-E.pdf). Rendered printed pp. 44–45 checked: eqs. (127)–(132) and (135)–(138). LOS reflection geometry, divergence, coefficient magnitude and limits. N01/N07.
+- [S2 — ITU-R P.526-16 (11/2025)](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.526-16-202511-I%21%21PDF-E.pdf). Rendered printed pp. 15–16, 28, 30 and 34 checked: §3.2, §4.5.1–4.5.2, eq. (66), §5.1 eqs. (71)–(72). N02/N04/N06/N09. Verify remaining numerical branches and reference values at registration.
+- [S3 — ITU-R P.2108-1 (09/2021)](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.2108-1-202109-I%21%21PDF-E.pdf). Rendered printed pp. 2–3 checked: clutter definition, Table 1 and §3.1 model domain/base-height construction. N05.
+- [S4 — ITU-R P.1812-8 (09/2025) scope](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.1812-8-202509-I%21%21SUM-HTM-E.htm). 30 MHz–6 GHz path-specific point-to-area scope; no extrapolation implied. N02.
+- [S5 — NTIA ITS legacy propagation archive](https://its.ntia.gov/data/legacy-radio-propagation-data). Historical measurement source; eligibility still requires the underlying metadata. N03/N04/N05.
+- [S6 — Hammerschmidt et al., NTIA TM-19-535, Best Practices for Radio Propagation Measurements (2018)](https://its.ntia.gov/publications/details?pub=3211). Official publication abstract and metadata checked, covering system verification and uncertainty. N03/N04/N10.
+- [S7 — NTIA reference ITM](https://github.com/NTIA/itm), and [ITU-R P.527](https://www.itu.int/rec/R-REC-P.527). Reference-port/ground-material leads; use the pinned repo baseline rather than assuming current upstream parity. N07.
+- [S8 — ITU-R P.2001-6 (09/2025) contents](https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.2001-6-202509-I%21%21TOC-HTM-E.htm). Source lead for mechanism combination; exact combination equations and validity not verified here. N08 stays parked.
+- [S9 — Zelley & Constantinou, IEEE Transactions on Antennas and Propagation 47(10), 1586–1596 (1999)](https://doi.org/10.1109/8.805904), [university research record](https://research.birmingham.ac.uk/en/publications/a-three-dimensional-parabolic-equation-applied-to-vhfuhf-propagat/). Abstract reports 3-D PE, lateral terrain effects and measurement comparisons; full article/benchmarks not reproduced. N09.
+- [S10 — ITU-R P.311 index](https://www.itu.int/rec/R-REC-P.311/en). P.311-20 (09/2026) surfaced in the official catalog search; direct edition page was blocked during retrieval, so verify edition text before protocol registration. N10.
+
+### Red-team closure matrix
+
+| Review finding | Revised response | Status |
+| --- | --- | --- |
+| N01 field inconsistency | Separate empirical ablation and coherent reference, correct P.530 citation, context isolation | Design addressed; benchmark pending |
+| N02 smooth-limit identity | Source verified positive-part formula; full-reference comparison and conditional identity | Design addressed; numerical verification pending |
+| N03 height-pair confounding | Outcome-blind manifest, one primary contrast, clustered uncertainty | Design addressed; data support unknown |
+| N04 frequency confounding | Identical heights/geometry, fixed cohort, FSPL cancellation cross-check | Design addressed; data support unknown |
+| N05 clutter misattribution | Height/term factorial, censor intervals, domain split; P.2108 source checked | Design addressed; diagnostic pending |
+| N06 invalid grid | Fixed-endpoint uniform grids and explicit geometry-shift experiment | Design addressed; tests pending |
+| N07 empirical versus raw reflection | Separate layers and NTIA parity, merge with N01 | Design addressed; audit pending |
+| N08 overlap and dependence | Park; conditional diagnostic only, explicit nonidentifiability | Closed to scored work on current evidence |
+| N09 solver validity | P.526 finite-width reference and 3-D convergence plan | Design addressed; benchmark pending |
+| N10 independence | Frozen prospective endpoint, cluster precision and custodian | Design addressed; approvals/data pending |
+
+Revision checks: ten IDs retained, ten red-team objections mapped to changed protocols, original review preserved below. The design revisions do not constitute experimental validation or independent reviewer approval. No new MATLAB runs, source-code edits, data joins, eligibility counts, independent reviews or lockbox access were performed. The earlier plan is recoverable at commit [a4ae675](https://github.com/nicklasorte/ITM_ai_experiment/blob/a4ae675fc956a96a7092c9568a83a34f0f185fd4/experiments/proposals/post_b20_ten_experiments_rev1.md); the red-team record at commit [559683c](https://github.com/nicklasorte/ITM_ai_experiment/blob/559683ccdb6fafd1ded47ecfb8248f58f8e845e9/experiments/proposals/post_b20_ten_experiments_rev1.md). Section 6 is historical; where primary-source verification corrected an earlier review interpretation (notably N02), the revised section 3 governs.
 
 ---
 
