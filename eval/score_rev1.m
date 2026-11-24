@@ -64,7 +64,7 @@ R.p2.censored_violation_pct = 100 * mean(pred(c) < meas(c));
 % as above; and the mean depth of a violation.
 ub = isfinite(pred) & (use | c);
 eb = pred(ub) - meas(ub);
-cb = P2.censored(ub);
+cb = P2.censored(ub) ~= 0;
 eb(cb) = min(eb(cb), 0);
 wb = path_weights(P2.path_id(ub));
 bb = discretize(P2.f_mhz(ub), S.band_edges_mhz);
