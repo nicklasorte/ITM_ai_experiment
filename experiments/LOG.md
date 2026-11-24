@@ -264,6 +264,50 @@ bottom.
 - Records written with `record_run_rev1.py` (rows appended by the script; the worker added the prediction checks). The script now also accepts "Change (...)" lines.
 
 
+### B18 worker summary (2026-11-24)
+- One scored run (1804), rejected; six candidates out before scoring (B18.md). No keep. No infra retries.
+- B18 ends without a keep. Per decision 4 (Nick, 2026-11-24), the lockbox comes next: freeze `best` (707), register the panel (707, stock ITM, R02, and a delta-Bullington comparator R03), metrics and predictions, then Nick scores it once.
+- The one open finding for Nick: 1801 removes the principal-edge jump and is within 2 censored rows of the repair rule. The rule stands; it isn't kept.
+
+### 1804-itm-effective-heights
+- Date: 2026-11-24. Batch B18. Parent: 707-cascaded-isolated-clutter-at-r. Tier 2.
+- Change: `{"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3","smooth_heights":"itm_effective"}`
+- Run settings (metrics.json cfg): diffraction=delta_cascaded_isolated, diffraction_bound=itm_troposcatter_line, terminal_clutter=p2108_height_gain, terminal_clutter_base=clutter_height, terminal_clutter_frange=hold3; overrides {"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3","smooth_heights":"itm_effective"}
+- Predicted (from B18.md, before the run): composite gain −0.4 dB (screened interval −1.50 to +1.18, emulator mean −0.44); censored violations 21.7 %; site RMS intervals R1 8.3 to 13.9, R2 11.0 to 26.1, R3 5.6 to 8.0, VA 9.9 to 15.4. Most likely rejected on gain.
+- Result: composite 13.4 dB (707-cascaded-isolated-clutter-at-r 12.5); screened 10.5; Phase 2 cell 14.5; long-term level 20.4; shape 5.2. Site RMS R1 11.6 (mean +5.2), R2 22.7 (mean +3.4), R3 7.0 (mean +0.4), VA 13.1 (mean -1.6). Worst cell 29.1. Censored 21.7 %. Paired gain vs 707-cascaded-isolated-clutter-at-r -0.88 (95 % -1.23 to -0.45); screened -0.59 (-0.94 to -0.30).
+- Physics battery: PASS.
+- Censored by site:
+  - R1    5.7 %  (16 of 280)   C 2/6, O 14/274
+  - R2   14.6 %  (173 of 1184)   C 14/106, O 159/1078
+  - VA   43.7 %  (254 of 581)   C 129/386, O 125/195
+- By edge count:
+  - edges 0-1: dead rows violated 100.0 % of   41; measured-row mean error  -12.7 dB
+  - edges   2: dead rows violated  29.9 % of  204; measured-row mean error   -3.5 dB
+  - edges   3: dead rows violated   4.3 % of  376; measured-row mean error  +22.6 dB
+  - edges  4+: dead rows violated   9.8 % of  563; measured-row mean error  +11.3 dB
+- Siting split (mean error, dB):
+  - R1 A clear n 112 mean +0.1 rms 5.0
+  - R1 A obstructed n 304 mean -1.3 rms 6.0
+  - R1 C clear n 156 mean -2.0 rms 13.1
+  - R1 C obstructed n 436 mean +8.7 rms 12.6 censored violated 2 of 6
+  - R1 O clear n 1445 mean -0.6 rms 5.8
+  - R1 O obstructed n 2036 mean +8.1 rms 13.4 censored violated 14 of 274
+  - R2 C clear n 46 mean -26.8 rms 33.4
+  - R2 C obstructed n 186 mean -14.4 rms 27.5 censored violated 14 of 106
+  - R2 O clear n 355 mean -17.0 rms 26.1
+  - R2 O obstructed n 1973 mean +4.4 rms 21.7 censored violated 159 of 1078
+  - R3 O clear n 4005 mean -1.4 rms 5.7
+  - R3 O obstructed n 1144 mean +6.9 rms 9.8
+  - VA C clear n 241 mean -4.7 rms 12.5 censored violated 27 of 27
+  - VA C obstructed n 709 mean +5.7 rms 13.8 censored violated 102 of 359
+  - VA O clear n 810 mean -8.9 rms 15.6 censored violated 10 of 10
+  - VA O obstructed n 802 mean +1.6 rms 10.9 censored violated 115 of 185
+- Decision: reject (screened gain -0.59 dB, 95 % -0.94 to -0.30; R2 RMS +4.5 dB fails the site gate).
+- Predictions: Held: composite gain negative (-0.88; screened -0.59, inside the screen's interval -1.50 to +1.18, near its mean -0.44); censored 21.7 % (21.7, exact recount); site RMS inside every interval (R1 11.6 in 8.3-13.9, R2 22.7 in 11.0-26.1, R3 7.0 in 5.6-8.0, VA 13.1 in 9.9-15.4); rejected on gain. Bonferroni k = 5 (99 % lower bound on the screened gain -1.02).
+- Reading: ITM's effective heights in the delta construction help nowhere: R2 +4.5 dB RMS (open clear rows -17.0 dB mean), R1 +1.1. Effective height (M13) is closed in its parameter-free forms (1804 here, 1805 screened out).
+
+appended row 1804 to results/results.tsv
+
 ### B18 model-only stage (2026-11-24; registered before any scored run)
 - Planner and worker: Claude Opus 5.5, from Fable's draft (approved by Nick). Details: `experiments/batches/B18.md`.
 - Code (default off; 47 tests; parity 6.8e-13 dB): `"p526_cascaded_isolated_one"`, `"_tree3"`, `"_rival"` (multi_edge), `cfg.smooth_heights`, `cfg.profile_clutter` (ITU-R P.1812-8 section 3.2.1 eq. (1d), Table 2, read from the ITU Word file), and report-only `info.edge_switch` (gap between the two largest nu, loss with the runner-up as principal). P.452-18 equation numbers in comments corrected to (147)-(153d), checked against the PDF.

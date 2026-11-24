@@ -1,0 +1,5 @@
+paired bootstrap: 1804-itm-effective-heights vs 707-cascaded-isolated-clutter-at-r (500 draws, paths resampled within site and fold)
+  composite gain   -0.88 dB  (SD 0.20; 95% interval -1.23 to -0.45)  not distinguishable from zero
+  screened gain    -0.59 dB  (SD 0.15; 95% interval -0.94 to -0.30)  not distinguishable from zero
+  lower bounds at 99% / 99.5% (report only, for a Bonferroni level): composite -1.33 / -1.35, screened -1.02 / -1.03
+  gain = best minus new; positive means the new run is better

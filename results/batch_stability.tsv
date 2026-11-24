@@ -10,3 +10,6 @@ B08	2026-11-21	3	0	0	0	1	0	12.5 (707, held for the reviewers)	-3.5	P.2108-1 3.1 
 B11	2026-11-22	2	0	0	0	2	0	12.5 (707, unchanged)	-3.5	NLCD terminal clutter at open sites rejected in both forms (711 all classes: R3, R1 worse; 712 forest only: R1, R2 worse); VA unmoved
 B12	2026-11-23	2	0	0	0	0	1	12.5 (707, unchanged)	-3.5	1201 and 1202 screened out by the history-matching bound (max gain 0.128 and 0.008 dB), not run; batch queue stuck 2026-11-22 (infra)
 B13	2026-11-23	1	0	0	0	0	0	12.5 (707, unchanged)	-3.5	1301 P.452-18 eq. (45) troposcatter rejected: composite -0.30 dB, screened +0.04; harm in the 36 screened-out links; screen interval held
+B16	2026-11-23	0	0	0	0	0	1	12.5 (707, unchanged)	-3.5	Diagnostics only: Vogler oracle continuous where 707 steps 30 dB; roughness estimator spacing-dependent on short trims (no change); crest diagnostic not supported; stage 2 found no parameter-free continuous selector
+B17	2026-11-24	0	0	0	0	0	0	12.5 (707, unchanged)	-3.5	P.833-10 eq. (1) woodland along the ray screened out (CERTAIN_HARM on 707 and 708)
+B18	2026-11-24	1	0	0	0	0	0	12.5 (707, unchanged)	-3.5	1804 rejected (screened -0.59, R2 +4.5); 1801 removes the jump but +1.08 censored points (limit 1); 1802 battery fail; 1803/1807 new height failures; 1805/1806 CERTAIN_HARM
