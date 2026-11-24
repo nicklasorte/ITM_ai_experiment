@@ -1,0 +1,5 @@
+paired bootstrap: 1901-p452-troposcatter-bound-at-d vs 707-cascaded-isolated-clutter-at-r (2000 draws, paths resampled within site and fold)
+  composite gain   -0.29 dB  (SD 0.12; 95% interval -0.46 to -0.01)  not distinguishable from zero
+  screened gain    +0.04 dB  (SD 0.06; 95% interval -0.08 to +0.15)  not distinguishable from zero
+  lower bounds at 99% / 99.5% (report only, for a Bonferroni level): composite -0.53 / -0.56, screened -0.11 / -0.13
+  gain = best minus new; positive means the new run is better

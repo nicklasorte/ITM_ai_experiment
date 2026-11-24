@@ -1378,3 +1378,16 @@ appended row 1804 to results/results.tsv
 - Censored recount: 23.5 % (+0.7 points), within the limit.
 - Predictions are in [B19.md](batches/B19.md), pushed before any score.
 - `best` and the lockbox registration stay frozen.
+
+## 2026-11-24: B19 closed without a keep (1901 rejected)
+
+- Screened gain +0.04 dB (95 % −0.08 to +0.15), composite −0.29 dB.
+  Censored violations 23.5 %; battery PASS. 8 of 9 predictions held.
+- Found after the run: 1901 is identical to 1301 on every Phase 2 row.
+  P.452-18 eq. (45) attenuation is linear in d, so the extrapolated line was
+  exact. The extrapolation was never the issue.
+- Defect 3's height-gain flattening remains in 707, 1301 and 1901 (ridge
+  sweep +0.17 dB against stock's −23.3). It's a property of any scatter cap
+  at short transhorizon distances; recorded for the next phase.
+- `best` (707) and the lockbox registration are unchanged. Bonferroni count
+  against 707 is now k = 6.

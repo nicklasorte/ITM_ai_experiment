@@ -13,3 +13,4 @@ B13	2026-11-23	1	0	0	0	0	0	12.5 (707, unchanged)	-3.5	1301 P.452-18 eq. (45) tro
 B16	2026-11-23	0	0	0	0	0	1	12.5 (707, unchanged)	-3.5	Diagnostics only: Vogler oracle continuous where 707 steps 30 dB; roughness estimator spacing-dependent on short trims (no change); crest diagnostic not supported; stage 2 found no parameter-free continuous selector
 B17	2026-11-24	0	0	0	0	0	0	12.5 (707, unchanged)	-3.5	P.833-10 eq. (1) woodland along the ray screened out (CERTAIN_HARM on 707 and 708)
 B18	2026-11-24	1	0	0	0	0	0	12.5 (707, unchanged)	-3.5	1804 rejected (screened -0.59, R2 +4.5); 1801 removes the jump but +1.08 censored points (limit 1); 1802 battery fail; 1803/1807 new height failures; 1805/1806 CERTAIN_HARM
+B19	2026-11-24	1	0	0	0	0	0	12.5 (707, unchanged)	-3.5	1901 rejected (screened +0.04, composite -0.29); identical to 1301 on every Phase 2 row: P.452 eq. (45) minus free space is linear in d, so the line extrapolation was exact
