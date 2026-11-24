@@ -1391,3 +1391,25 @@ appended row 1804 to results/results.tsv
   at short transhorizon distances; recorded for the next phase.
 - `best` (707) and the lockbox registration are unchanged. Bonferroni count
   against 707 is now k = 6.
+
+## 2026-11-24: next phase planned (phase plan rev 4, B20 draft)
+
+- Planned by Opus 5.5 (the prompt asked for Fable). Plan only.
+- [Phase plan rev 4](proposals/phase_plan_rev4.md) aims to make every part
+  of 707 defensible without losing score.
+- **Proposed correction to registration rev 2, defect 3** (pending Nick,
+  decision 1): the height-gain flattening isn't caused by the troposcatter
+  bound.
+  - The ridge sweep is +0.17 to +0.19 dB in all 15 runs that report it,
+    across three diffraction methods and two bounds.
+  - Only 1804 (different smooth-surface heights) restores it (−18.1 dB).
+  - 1901's bound doesn't bind on that sweep.
+  - The P.452-18 obstruction-adjusted smooth surface is the leading suspect.
+    The registration stays frozen.
+- [B20 draft](batches/B20_draft.md): three diagnostics, no scored runs:
+  - D20a: which term flattens height gain.
+  - D20b: whether the cascade correction C drives the obstructed-row
+    overshoot.
+  - D20c: whether P.2108-1 beats a constant on 1,400 matched open and
+    concealed pairs.
+- Bonferroni k doesn't reset; the next scored candidate against 707 is k = 7.
