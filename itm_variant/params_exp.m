@@ -110,6 +110,10 @@ cfg.path_vegetation = "none";
 % (section 5.1.6.4 eq. (154a)-(156): no obstruction adjustment),
 % "itm_effective" (ITM's h_e), "structural" (antenna above local ground).
 cfg.smooth_heights = "p452_diffraction";
+% Smooth-path reference A_s in the delta construction (B25): "itm" (ITM on the
+% smooth path, default) or "p452_spherical" (ITU-R P.452-18 section 4.2.2
+% eq. (23)-(37) spherical-earth diffraction, as section 4.2.3 eq. (40) uses).
+cfg.smooth_reference = "itm";
 % Representative clutter heights on the actual profile for L_ba (B18):
 % "none" or "p1812_representative" (ITU-R P.1812-8 section 3.2.1 eq. (1d),
 % Table 2: 15 m on woodland samples, not at the terminals; Phase 2 rows only).

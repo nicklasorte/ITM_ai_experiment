@@ -1,0 +1,38 @@
+B25 D25a: hybrid (L_dsph) minus 707, Phase 2, 50 %
+
+              rows  mean_d  min_d  max_d  share_term_changed  mean_kernel_diff
+set mode_707                                                                  
+R1  1         3963   0.050 -1.694  1.821               0.229             0.176
+    2          642   0.154 -0.595  2.393               0.782             1.285
+    3          164   0.000  0.000  0.000               0.409            12.956
+R2  1         3107   0.007  0.000  3.181               0.010             0.012
+    2          384   0.000  0.000  0.000               0.000             0.277
+    3          253   0.000  0.000  0.000               0.000             0.505
+R3  1         5082   0.016 -0.217  1.023               0.035             0.155
+    2           67   0.000  0.000  0.000               0.000             1.260
+VA  1         2041   0.113 -1.227  1.978               0.298             0.383
+    2          937  -0.067 -1.103  2.925               0.873             0.297
+    3          165   0.060 -0.687  1.753               0.976            11.919
+
+{
+ "rows": 16805,
+ "share_term_changed": 0.194882475453734,
+ "share_abs_d_gt_1dB": 0.017137756620053554,
+ "max_abs_d": 3.1810759798409833,
+ "mode_changes": 0,
+ "bound_changes": 14
+}
+
+Receiver-swept sweep (sweep_rev1.csv; not the B20 inversion sweep, which is sweep_tx_rev1.csv):
+{
+  "rows": 16805,
+  "max_step_rise_707": 1.8776654707728255,
+  "max_step_rise_hyb": 2.1301993596243705,
+  "total_707": -19.264729743064379,
+  "total_hyb": -19.004843857991531,
+  "max_step_rise_A_s": 2.7107871895527751,
+  "max_step_rise_L_dsph": 2.9633210784043236,
+  "reversal_max_db": 5.6843418860808015E-14
+}
+
+Transmitter-swept sweep (sweep_tx_rev1.csv, B20's R1-005-T5_O inversion): loss_707 -2.28, A_s_itm +3.70 (max step +1.50), loss_hyb -0.75, L_dsph +5.23 (max step +1.68). Receiver height above the smooth surface falls from 4.59 m to its 1.0 m floor by h_tx = 15 m.

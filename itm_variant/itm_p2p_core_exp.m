@@ -117,9 +117,9 @@ if delta
     end
     A_itm_db = A_ref_db;
     if want_info
-        [A_ref_db, edge_switch] = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m);
+        [A_ref_db, edge_switch] = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m, polarization);
     else
-        A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m);
+        A_ref_db = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m, polarization);
     end
     A_before_bound_db = A_ref_db;
     if isfield(cfg, 'diffraction_bound') && cfg.diffraction_bound ~= "none"
@@ -831,7 +831,7 @@ q = (term1 + (-theta_los * a_e + d_ML) / d_m) * c_min(delta_h_d * f_mhz / 47.7, 
 w = cfg.cal.w_const / (cfg.cal.w_const + c_sqrt(q));
 end
 
-function [A_ref, E] = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m)
+function [A_ref, E] = delta_bullington_reference(pfl, h_m, gamma_e, f_mhz, Z_g, N_s, cfg, delta_h_m, h_e_m, pol)
 % Reference attenuation by the delta-Bullington construction (batch B04).
 %   L_ba  Bullington loss of the actual profile with the actual antennas
 %   L_bs  Bullington loss of a zero-height profile with the antennas at
@@ -991,6 +991,21 @@ c0.diffraction = "itm"; c0.line_of_sight = "itm";
 if isfield(c0, 'ctx'), c0 = rmfield(c0, 'ctx'); end
 [th_s, dh_s, he_s, delta_h_s, d_s] = quick_pfl(pfl_s, gamma_e, hp);
 A_s = longley_rice(th_s, f_mhz, Z_g, dh_s, he_s, gamma_e, N_s, delta_h_s, hp, d_s, uint32(0), false, c0);
+% Smooth-path reference (batch B25, cfg.smooth_reference):
+%   "itm"             A_s, ITM on the smooth path (default)
+%   "p452_spherical"  ITU-R P.452-18 section 4.2.2 eq. (23)-(37), the
+%                     spherical-earth diffraction loss that section 4.2.3
+%                     eq. (40) places here; no two-ray term
+%                     (spherical_earth_diffraction_rev1)
+sref = "itm";
+if isfield(cfg, 'smooth_reference'), sref = cfg.smooth_reference; end
+switch sref
+    case "itm"
+    case "p452_spherical"
+        A_s = spherical_earth_diffraction_rev1(d / 1000, hp(1), hp(2), a_e / 1000, f_mhz / 1000, pol);
+    otherwise
+        error('itmexp:cfg', 'Unknown cfg.smooth_reference "%s".', sref);
+end
 if cfg.diffraction == "delta_bullington_p526"
     A_ref = max(L_ba + A_s - L_bs, 0);
 else
