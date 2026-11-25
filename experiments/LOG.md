@@ -1557,3 +1557,17 @@ appended row 1804 to results/results.tsv
   rows are parked, untested. N07 is parked with it.
 - Post-B20 plan Packages A and B are finished; C can't yield a candidate; D is parked; E needs
   approval. Next: phase plan rev 5. Details: `experiments/batches/B26.md`.
+
+## Phase plan rev 5 and B27 registered (planner note; no run)
+
+- Planner: Claude Fable 5.2. [Phase plan rev 5](proposals/phase_plan_rev5.md): stop the scored
+  gain search on the frozen inputs. Basis: five rejected candidates against 707 in
+  `results.tsv` (all scored rows); no keep or repair in B18 and B19; an empty rev 4 queue;
+  a cell-mean ceiling of 1.13 dB screened (all scored rows).
+- One mechanism meets the bars, with a low prior: the height-gain terms of NBS TN 101 vol. 1
+  section 7.2, eq. (7.5) to (7.6b). Its closed form for G isn't read yet (TODO).
+- [B27](batches/B27.md) registered, not run: D27a tests whether 707 and stock ITM bracket the
+  measured height contrast (population: R1 open blocked-blocked detected height pairs). The
+  script ran on synthetic pairs only. k stays 6.
+- One fresh reviewer checked claims, the citation and the rule; ten findings applied.
+- For Nick: accept the stop; decide on Tier 1 calibration of 707's constants after the lockbox.
