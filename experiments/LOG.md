@@ -1549,3 +1549,11 @@ appended row 1804 to results/results.tsv
   fits the trend but not each step. Other rows are untested.
 - Kernel transcription matches the oracle-tested P.452 port to 1.8e-14 dB; 707 parity holds;
   two fresh reviewers, findings applied. Details: `experiments/batches/B25.md`, `experiments/D25-spherical-reference/`.
+
+## B26: N07 and N01 disposition (planner note, 0 scored)
+
+- N01 closed for its primary target (one row, R1-005-T5_O 230 MHz): B25's no-reflection
+  kernel rises the same way, so a reflection ablation can't remove that rise. Other named
+  rows are parked, untested. N07 is parked with it.
+- Post-B20 plan Packages A and B are finished; C can't yield a candidate; D is parked; E needs
+  approval. Next: phase plan rev 5. Details: `experiments/batches/B26.md`.
