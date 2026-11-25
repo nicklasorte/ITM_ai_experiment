@@ -248,11 +248,23 @@ end
 function L = predict(T, profiles, ids, p, cfg, S)
 L = NaN(height(T), numel(p));
 [~, ip] = ismember(T.path_id, ids);
+% Row metadata for the variant (cfg.row), set exactly as run_eval_rev1's
+% run_rows does, so variants with terminal clutter or path inputs keyed by
+% path_id run here too. Rows without set and siting (long-term) get empty
+% strings.
+meta = all(ismember({'set', 'siting'}, T.Properties.VariableNames));
 for i = 1:height(T)
     pr = profiles(ip(i));
     pfl = [numel(pr.h_m) - 1; pr.spacing_m; pr.h_m(:)];
+    c = cfg;
+    if meta
+        c.row = struct('set', string(T.set(i)), 'siting', string(T.siting(i)), 'reversed', false, ...
+            'path_id', string(T.path_id(i)));
+    else
+        c.row = struct('set', "", 'siting', "", 'reversed', false, 'path_id', string(T.path_id(i)));
+    end
     a = itm_p2p_core_exp(T.htx_m(i), T.hrx_m(i), pfl, T.f_mhz(i), p, S.confidence, S.location, ...
-        T.climate(i), T.N_0(i), T.pol(i), S.epsilon, S.sigma, S.mdvar, false, [], cfg);
+        T.climate(i), T.N_0(i), T.pol(i), S.epsilon, S.sigma, S.mdvar, false, [], c);
     if ~all(isfinite(a)) || ~isreal(a)
         error('itmexp:nonfinite', 'Non-finite loss on %s with the trial constants.', T.link_id(i));
     end
