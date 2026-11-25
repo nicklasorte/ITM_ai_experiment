@@ -1593,3 +1593,4 @@ appended row 1804 to results/results.tsv
 - Mac evaluator files synced to `main` (they were older committed versions; no local edits). Parity run `2800-707-parity`: +0.00 dB paired gain against 707r-rescore-screen36 on both composites.
 - 2801 to 2803 stopped in fold 1 with `itmexp:infeasible`. Cause: `continuity_pointwise` (report-only, added in 2f0692b on 2026-11-23) matches the constraint loop's `continuity_` prefix but has no `variant_max_step_db`, so every trial throws. Not a model result; k stays 6.
 - Fix proposed by PR (skip `report_only` checks in the constraint); waits for Nick, since `eval/` is frozen.
+- PR #14 merged (afe4b23); reruns 2801 to 2803 (jobs 263 to 265) still stopped in fold 1. Second cause: `cv_calibrate_rev1`'s `predict` never passed `cfg.row`, which 707's terminal clutter requires, so every trial threw. Fix proposed in PR #15; a scratch copy with it gave feasible fold-1 trials (training composite 12.41 dB). Still no score; k stays 6.
