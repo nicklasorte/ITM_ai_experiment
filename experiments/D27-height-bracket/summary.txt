@@ -1,0 +1,30 @@
+B27 D27a: height-contrast bracket (development data only; not a scored run)
+
+e = predicted minus measured contrast (dB); positive: too little loss reduction with height.
+The blend weight is a diagnostic ceiling, in sample and optimistic; it is not a model constant.
+By construction: at w = 0 the blend is 707, so the cut is never negative in sample.
+
+O blocked-blocked (primary) | R1 open blocked-blocked detected height pairs, 149 pairs, 29 bases | tier strict
+  e_707 +5.64 [+3.81, +7.49] POS-imprecise; e_stock +10.43 [+8.96, +12.12] POS-imprecise
+  bracket share 0.10; ceiling cut 0.00 dB at w = 0.00 [0.00, 0.00]; with w from other sites (0.00): 0.00 dB
+O blocked-blocked (primary) | R2 open blocked-blocked detected height pairs, 142 pairs, 34 bases | tier limited
+  e_707 +3.14 [+0.59, +5.71] POS-imprecise; e_stock +6.00 [+1.98, +9.86] POS-imprecise
+  bracket share 0.21; ceiling cut 0.00 dB at w = 0.00 [0.00, 0.00]; with w from other sites (0.00): 0.00 dB
+O blocked-blocked (primary) | R3 open blocked-blocked detected height pairs, 70 pairs, 13 bases | tier limited
+  e_707 +1.65 [+0.24, +2.77] POS-imprecise; e_stock +6.77 [+5.64, +7.85] POS-imprecise
+  bracket share 0.15; ceiling cut 0.00 dB at w = 0.00 [0.00, 0.00]; with w from other sites (0.00): 0.00 dB
+O blocked-blocked (primary) | VA open blocked-blocked detected height pairs, 4 pairs, 1 bases | tier limited
+  e_707 +6.99 [+nan, +nan] DESCRIPTIVE; e_stock +7.59 [+nan, +nan] DESCRIPTIVE
+  bracket share 0.00; ceiling cut 0.00 dB at w = 0.00 [nan, nan]; with w from other sites (0.00): 0.00 dB
+O clear-clear | R1 open clear-clear detected height pairs, 108 pairs, 17 bases | tier strict
+  e_707 +3.24 [+1.64, +4.82] POS-imprecise; e_stock +6.89 [+4.13, +9.72] POS-imprecise
+  bracket share 0.00; ceiling cut 0.00 dB at w = 0.00 [0.00, 0.00]; with w from other sites (0.00): 0.00 dB
+O clear-clear | R2 open clear-clear detected height pairs, 23 pairs, 4 bases | tier limited
+  e_707 +8.82 [+4.91, +12.73] DESCRIPTIVE; e_stock +10.27 [+4.91, +15.63] DESCRIPTIVE
+  bracket share 0.00; ceiling cut 0.00 dB at w = 0.00 [0.00, 0.00]; with w from other sites (0.00): 0.00 dB
+O clear-clear | R3 open clear-clear detected height pairs, 243 pairs, 40 bases | tier limited
+  e_707 +4.18 [+2.96, +5.51] POS-imprecise; e_stock +4.91 [+3.66, +6.29] POS-imprecise
+  bracket share 0.00; ceiling cut 0.00 dB at w = 0.00 [0.00, 0.00]; with w from other sites (0.00): 0.00 dB
+
+OUTCOME C: the two models' signed errors don't have opposite signs with intervals that exclude zero: hand back
+Decided on: R1 open blocked-blocked detected height pairs, 149 pairs, 29 bases

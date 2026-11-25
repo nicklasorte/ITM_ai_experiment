@@ -1571,3 +1571,11 @@ appended row 1804 to results/results.tsv
   script ran on synthetic pairs only. k stays 6.
 - One fresh reviewer checked claims, the citation and the rule; ten findings applied.
 - For Nick: accept the stop; decide on Tier 1 calibration of 707's constants after the lockbox.
+
+## B27: height-contrast bracket (D27a; 0 scored)
+
+- Population: R1 open blocked-blocked detected height pairs, 149 pairs, 29 bases, one fixed receiver.
+- e_707 +5.64 [+3.81, +7.49]; e_stock +10.43 [+8.96, +12.12]; bracket share 0.10.
+- Blend ceiling 0.00 dB at w = 0.00 (in sample, optimistic; not a model).
+- Outcome C: both signed errors are positive and stock ITM is further from the measured contrast than 707, so the two don't bracket it; hand back to the planner (section 4). k stays 6.
+- Details: `experiments/batches/B27.md`, `experiments/D27-height-bracket/`.

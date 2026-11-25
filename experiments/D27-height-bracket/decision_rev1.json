@@ -1,0 +1,6 @@
+{
+ "outcome": "C",
+ "reason": "the two models' signed errors don't have opposite signs with intervals that exclude zero: hand back",
+ "decided_on": "R1 open blocked-blocked detected height pairs, 149 pairs, 29 bases",
+ "pairs_sha256": "665bcd47d34ce789df98e4486a4088d961bd12a98efc747548a918300c8687ab"
+}
