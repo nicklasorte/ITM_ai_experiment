@@ -1,0 +1,5 @@
+paired bootstrap: 2800-707-parity vs 707r-rescore-screen36 (500 draws, paths resampled within site and fold)
+  composite gain   +0.00 dB  (SD 0.00; 95% interval +0.00 to +0.00)  not distinguishable from zero
+  screened gain    +0.00 dB  (SD 0.00; 95% interval +0.00 to +0.00)  not distinguishable from zero
+  lower bounds at 99% / 99.5% (report only, for a Bonferroni level): composite +0.00 / +0.00, screened +0.00 / +0.00
+  gain = best minus new; positive means the new run is better

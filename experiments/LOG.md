@@ -1587,3 +1587,9 @@ appended row 1804 to results/results.tsv
 - Three constrained cross-validated calibrations of 707 (eval/cv_calibrate_rev1, as R02), one constant group each: 2801 diffraction weighting (w_const, knife_scale, afo_scale; k = 7), 2802 line-of-sight blend (los_w_scale; k = 8), 2803 time spread (time_minus_scale, time_plus_scale; k = 9). Decided on screened `lo995` against 707r-rescore-screen36, plus the complexity cost of 0.5 dB per new parameter.
 - Rationale, one sentence each: 707 replaced the knife-edge term the diffraction weights were fitted for; 707 changed what the line-of-sight blend joins; 707 changed the median the time spreads sit on.
 - Predictions: no keep (2801 75 %, 2802 90 %, 2803 90 %). Details: `experiments/batches/B28.md`.
+
+## B28 blocked: cv_calibrate constraint loop breaks on a report-only battery field (no score)
+
+- Mac evaluator files synced to `main` (they were older committed versions; no local edits). Parity run `2800-707-parity`: +0.00 dB paired gain against 707r-rescore-screen36 on both composites.
+- 2801 to 2803 stopped in fold 1 with `itmexp:infeasible`. Cause: `continuity_pointwise` (report-only, added in 2f0692b on 2026-11-23) matches the constraint loop's `continuity_` prefix but has no `variant_max_step_db`, so every trial throws. Not a model result; k stays 6.
+- Fix proposed by PR (skip `report_only` checks in the constraint); waits for Nick, since `eval/` is frozen.
