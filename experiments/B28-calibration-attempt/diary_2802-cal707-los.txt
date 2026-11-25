@@ -1,0 +1,6 @@
+job 270 2802-cal707-los
+fold 1 of 5: train composite 12.41 dB, 40 feasible trials  (los_w_scale=1)
+fold 2 of 5: train composite 11.05 dB, 40 feasible trials  (los_w_scale=10.2)
+fold 3 of 5: train composite 13.15 dB, 40 feasible trials  (los_w_scale=10.2)
+
+ERROR itmexp:infeasible: Fold 4: no feasible trial, not even ITM's own constants.

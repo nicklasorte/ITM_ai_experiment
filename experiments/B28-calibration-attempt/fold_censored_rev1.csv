@@ -1,0 +1,6 @@
+fold,held_out,train_censored_rows,pct_707,pct_stock,limit_stock_plus_1,707_meets_censored_constraint_at_itm_constants
+all,none,2045,22.79,28.02,29.02,True
+1,R1,1765,25.5,30.31,31.31,True
+2,R2,861,33.91,57.26,58.26,True
+3,R3,2045,22.79,28.02,29.02,True
+4,VA,1464,12.98,8.06,9.06,False

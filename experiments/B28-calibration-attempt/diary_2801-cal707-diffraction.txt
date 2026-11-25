@@ -1,0 +1,6 @@
+job 269 2801-cal707-diffraction
+fold 1 of 5: train composite 12.41 dB, 40 feasible trials  (w_const=2.51, knife_scale=0.301, afo_scale=0.223)
+fold 2 of 5: train composite 11.05 dB, 40 feasible trials  (w_const=2.6, knife_scale=0.306, afo_scale=0.998)
+fold 3 of 5: train composite 13.15 dB, 40 feasible trials  (w_const=2.51, knife_scale=0.301, afo_scale=0.223)
+
+ERROR itmexp:infeasible: Fold 4: no feasible trial, not even ITM's own constants.

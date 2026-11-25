@@ -1594,3 +1594,10 @@ appended row 1804 to results/results.tsv
 - 2801 to 2803 stopped in fold 1 with `itmexp:infeasible`. Cause: `continuity_pointwise` (report-only, added in 2f0692b on 2026-11-23) matches the constraint loop's `continuity_` prefix but has no `variant_max_step_db`, so every trial throws. Not a model result; k stays 6.
 - Fix proposed by PR (skip `report_only` checks in the constraint); waits for Nick, since `eval/` is frozen.
 - PR #14 merged (afe4b23); reruns 2801 to 2803 (jobs 263 to 265) still stopped in fold 1. Second cause: `cv_calibrate_rev1`'s `predict` never passed `cfg.row`, which 707's terminal clutter requires, so every trial threw. Fix proposed in PR #15; a scratch copy with it gave feasible fold-1 trials (training composite 12.41 dB). Still no score; k stays 6.
+
+## B28 closed: constrained calibration can't fit 707 (0 scored)
+
+- After PR #15 (fb78249), jobs 269 to 271 fitted folds 1 to 3, then stopped in fold 4 with `itmexp:infeasible`. Cause: the harness constraint holds training-fold censored violations to stock ITM + 1 point. With VA held out, the training censored rows are R1 and R2, where 707 is 12.98 % against stock's 8.06 % (limit 9.06 %), even at ITM's constants. The excess is at R2. Population: training-fold censored Phase 2 rows (`experiments/B28-calibration-attempt/fold_censored_rev1.csv`).
+- Folds 1 to 3, training rows only (not held out): 2801 and 2802 match each other in every fold (12.41, 11.05, 13.15 dB), inferred equal to ITM's constants; 2803 is 0.09 to 0.20 dB lower. No held-out predictions were written; k stays 6.
+- A rerun would need the constraint to reference the parent's own training rate + 1 point (FRAMEWORK.md acceptance rule) instead of stock ITM, a frozen `eval/` change for Nick. The planner expects no keep even then.
+- Fresh reviewer: all numbers reproduced; nine wording, scope and "Not done" findings applied.

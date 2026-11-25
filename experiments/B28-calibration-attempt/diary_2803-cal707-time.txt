@@ -1,0 +1,6 @@
+job 271 2803-cal707-time
+fold 1 of 5: train composite 12.21 dB, 40 feasible trials  (time_minus_scale=0.741, time_plus_scale=0.866)
+fold 2 of 5: train composite 10.91 dB, 40 feasible trials  (time_minus_scale=0.829, time_plus_scale=0.844)
+fold 3 of 5: train composite 13.06 dB, 40 feasible trials  (time_minus_scale=0.846, time_plus_scale=0.876)
+
+ERROR itmexp:infeasible: Fold 4: no feasible trial, not even ITM's own constants.
