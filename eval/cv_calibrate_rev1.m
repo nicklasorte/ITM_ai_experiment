@@ -38,6 +38,11 @@ function R = cv_calibrate_rev1(options)
 %     Seed       1
 %     Params     all six; a subset of the field names of params_exp().cal
 %     Constrained false
+%     CensoredRef "stock" reference for the censored constraint: "stock"
+%                        (stock ITM on the training rows, as R02) or "base"
+%                        (the base configuration at its own constants, so a
+%                        kept variant is held to its own rate + 1 point, as
+%                        the acceptance rule gates a child against its parent)
 %     Smoke      false   true: evaluate the constrained objective once per
 %                        fold at the base constants, print and return the
 %                        margins in R.smoke, write nothing, no search
@@ -49,6 +54,7 @@ arguments
     options.Params (1,:) string = ["w_const" "afo_scale" "knife_scale" "los_w_scale" "time_minus_scale" "time_plus_scale"]
     options.Constrained (1,1) logical = false
     options.Smoke (1,1) logical = false
+    options.CensoredRef (1,1) string {mustBeMember(options.CensoredRef, ["stock" "base"])} = "stock"
 end
 t0 = tic;
 P = itm_exp_paths_rev1();
@@ -100,7 +106,7 @@ if options.Smoke
     sm = table();
     for k = 1:K
         tr2 = P2.cvfold ~= k; trl = LT.cvfold ~= k;
-        cens0 = score_rev1(P2(tr2, :), LT(trl, :), "itm").p2.censored_violation_pct;
+        cens0 = censored_reference(options.CensoredRef, P2(tr2, :), LT(trl, :), profiles, ids, base_cfg, S);
         x0 = start_points(base_cfg, options.Params, spec);
         [f, c, msg] = objective_constrained(x0(1, :), base_cfg, P2(tr2, :), LT(trl, :), P2, profiles, ids, S, cens0);
         sm = [sm; table(k, f, c(1), c(2), all(c <= 0) && msg == "", msg, ...
@@ -110,14 +116,14 @@ if options.Smoke
         fprintf('smoke fold %d of %d: train composite %.2f dB, censored margin %+.2f, physics margin %+.2f, %s\n', ...
             k, K, f, c(1), c(2), verdict);
     end
-    R = struct('tag', options.Tag, 'smoke', sm, 'runtime_s', toc(t0));
+    R = struct('tag', options.Tag, 'smoke', sm, 'censored_ref', options.CensoredRef, 'runtime_s', toc(t0));
     return
 end
 for k = 1:K
     tr2 = P2.cvfold ~= k; trl = LT.cvfold ~= k;
     rng(options.Seed + k, 'twister');
     if options.Constrained
-        cens0 = score_rev1(P2(tr2, :), LT(trl, :), "itm").p2.censored_violation_pct;
+        cens0 = censored_reference(options.CensoredRef, P2(tr2, :), LT(trl, :), profiles, ids, base_cfg, S);
         obj = @(x) objective_constrained(x, base_cfg, P2(tr2, :), LT(trl, :), P2, profiles, ids, S, cens0);
         x0 = start_points(base_cfg, options.Params, spec);   % ITM's constants, then one-at-a-time nudges
         res = bayesopt(obj, vars, 'MaxObjectiveEvaluations', options.MaxEvals, 'IsObjectiveDeterministic', true, ...
@@ -162,11 +168,12 @@ R = struct('tag', options.Tag, 'recalibrated', Rc, 'baseline', Rb, 'physics', B,
     'median_params', table2struct(med), 'runtime_s', toc(t0));
 R.cfg = apply(base_cfg, med);
 R.constrained = options.Constrained;
+R.censored_ref = options.CensoredRef;
 R.data_version = struct('split_sha', strtrim(string(fileread(fullfile(root, 'data', 'splits', 'folds_rev1.sha256')))), ...
     'datasets', ["phase2" "longterm"]);
 lines = [
     sprintf("%s: recalibrated ITM, constants fitted in %d-fold cross-validation (bayesopt, %d evals per fold%s)", options.Tag, K, options.MaxEvals, ...
-        string(repmat(', constrained: censored +1 point and physics battery', 1, options.Constrained)))
+        string(repmat(', constrained: censored +1 point vs ' + options.CensoredRef + ' and physics battery', 1, options.Constrained)))
     sprintf("composite  %.2f dB   (baseline ITM %.2f)", Rc.composite, Rb.composite)
     sprintf("  phase2 cell-balanced RMS   %.2f   (baseline %.2f)", Rc.p2.cell, Rb.p2.cell)
     sprintf("  long-term level RMS        %.2f   (baseline %.2f)", Rc.lt.level, Rb.lt.level)
@@ -199,9 +206,24 @@ writetable(LT(:, cellstr(keep)), fullfile(out, 'predictions_longterm.csv'));
 pareto_rev1();     % refresh results/archive_rev1.*
 end
 
+function cens0 = censored_reference(ref, P2, LT, profiles, ids, base_cfg, S)
+% Training-row censored-violation rate the constraint is measured against.
+if ref == "stock"
+    cens0 = score_rev1(P2, LT, "itm").p2.censored_violation_pct;
+else
+    P2.cal_lb_50 = predict(P2, profiles, ids, 50, base_cfg, S);
+    V = predict(LT, profiles, ids, S.p_all, base_cfg, S);
+    for j = 1:numel(S.p_tags), LT.("cal_lb_" + S.p_tags(j)) = V(:, j); end
+    cens0 = score_rev1(P2, LT, "cal").p2.censored_violation_pct;
+end
+if ~isfinite(cens0)
+    error('itmexp:censref', 'Censored reference (%s) is not finite.', ref);
+end
+end
+
 function [f, c, msg] = objective_constrained(x, base_cfg, P2, LT, P2all, profiles, ids, S, cens0)
 % Training composite, with coupled constraints c <= 0:
-%   c(1) training censored violations minus (stock ITM + 1 point)
+%   c(1) training censored violations minus (reference + 1 point; see CensoredRef)
 %   c(2) largest physics-battery margin (variant minus its allowed limit)
 cfg = apply(base_cfg, x);
 f = 1e3; c = [1e3 1e3]; msg = "";   % msg (bayesopt UserData): error text of a trial that threw
