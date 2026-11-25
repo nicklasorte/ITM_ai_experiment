@@ -26,7 +26,8 @@ function R = cv_calibrate_rev1(options)
 %               (the acceptance rule's censored gate)
 %     physics   every check in physics_battery_rev1 within its margin
 %               (largest margin over continuity, reciprocity, two-ray)
-%   The search starts from ITM's own constants, which satisfy both, plus
+%   The search starts from ITM's own constants, which satisfy both for stock
+%   ITM (not necessarily for a variant: run Smoke=true first), plus
 %   each constant nudged down and up one at a time (so the surrogate learns
 %   which directions stay feasible), and the fold's fit is the best feasible
 %   trial observed.
@@ -37,6 +38,9 @@ function R = cv_calibrate_rev1(options)
 %     Seed       1
 %     Params     all six; a subset of the field names of params_exp().cal
 %     Constrained false
+%     Smoke      false   true: evaluate the constrained objective once per
+%                        fold at the base constants, print and return the
+%                        margins in R.smoke, write nothing, no search
 
 arguments
     options.Tag (1,1) string = "R01-recalibrated-itm"
@@ -44,6 +48,7 @@ arguments
     options.Seed (1,1) double = 1
     options.Params (1,:) string = ["w_const" "afo_scale" "knife_scale" "los_w_scale" "time_minus_scale" "time_plus_scale"]
     options.Constrained (1,1) logical = false
+    options.Smoke (1,1) logical = false
 end
 t0 = tic;
 P = itm_exp_paths_rev1();
@@ -85,6 +90,29 @@ K = max([P2.cvfold; LT.cvfold]);
 P2.cal_lb_50 = NaN(height(P2), 1);
 for t = S.p_tags, LT.("cal_lb_" + t) = NaN(height(LT), 1); end
 fits = table();
+if options.Smoke
+    % Smoke check (program.md, Experiment loop): evaluate the constrained
+    % objective once per fold at the base configuration's constants (ITM's,
+    % the first start point), with no search and no files written. Reports
+    % each fold's training composite and constraint margins, and the error
+    % text if the trial threw. Use it before registering or launching a
+    % constrained calibration.
+    sm = table();
+    for k = 1:K
+        tr2 = P2.cvfold ~= k; trl = LT.cvfold ~= k;
+        cens0 = score_rev1(P2(tr2, :), LT(trl, :), "itm").p2.censored_violation_pct;
+        x0 = start_points(base_cfg, options.Params, spec);
+        [f, c, msg] = objective_constrained(x0(1, :), base_cfg, P2(tr2, :), LT(trl, :), P2, profiles, ids, S, cens0);
+        sm = [sm; table(k, f, c(1), c(2), all(c <= 0) && msg == "", msg, ...
+            'VariableNames', {'fold', 'train_composite', 'censored_margin', 'physics_margin', 'feasible', 'error'})]; %#ok<AGROW>
+        if sm.feasible(end), verdict = "feasible"; else, verdict = "INFEASIBLE"; end
+        if msg ~= "", verdict = verdict + " (error: " + msg + ")"; end
+        fprintf('smoke fold %d of %d: train composite %.2f dB, censored margin %+.2f, physics margin %+.2f, %s\n', ...
+            k, K, f, c(1), c(2), verdict);
+    end
+    R = struct('tag', options.Tag, 'smoke', sm, 'runtime_s', toc(t0));
+    return
+end
 for k = 1:K
     tr2 = P2.cvfold ~= k; trl = LT.cvfold ~= k;
     rng(options.Seed + k, 'twister');
@@ -171,19 +199,20 @@ writetable(LT(:, cellstr(keep)), fullfile(out, 'predictions_longterm.csv'));
 pareto_rev1();     % refresh results/archive_rev1.*
 end
 
-function [f, c] = objective_constrained(x, base_cfg, P2, LT, P2all, profiles, ids, S, cens0)
+function [f, c, msg] = objective_constrained(x, base_cfg, P2, LT, P2all, profiles, ids, S, cens0)
 % Training composite, with coupled constraints c <= 0:
 %   c(1) training censored violations minus (stock ITM + 1 point)
 %   c(2) largest physics-battery margin (variant minus its allowed limit)
 cfg = apply(base_cfg, x);
-f = 1e3; c = [1e3 1e3];
+f = 1e3; c = [1e3 1e3]; msg = "";   % msg (bayesopt UserData): error text of a trial that threw
 try
     P2.cal_lb_50 = predict(P2, profiles, ids, 50, cfg, S);
     V = predict(LT, profiles, ids, S.p_all, cfg, S);
     for j = 1:numel(S.p_tags), LT.("cal_lb_" + S.p_tags(j)) = V(:, j); end
     r = score_rev1(P2, LT, "cal");
     B = physics_battery_rev1(cfg, P2all, profiles);
-catch
+catch err
+    msg = string(err.identifier) + ": " + string(err.message);
     return                       % a trial that breaks the model is infeasible
 end
 if ~isfinite(r.composite), return, end

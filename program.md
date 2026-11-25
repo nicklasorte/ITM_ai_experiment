@@ -66,6 +66,19 @@ the ranked submodel swaps in `docs/LITERATURE_REVIEW.md` Part 3.
   log it as `infra`, and hand back to the planner if it fails again.
 - Run one evaluation at a time per branch, and wait for it to finish before
   branching from that branch.
+- Before registering a constrained calibration (Tier 1), run
+  `cv_calibrate_rev1(Tag=..., Constrained=true, Smoke=true)` with the
+  parent's switches. It evaluates every constraint at the parent's settings
+  on every fold, with no search. Record the per-fold margins in the batch
+  plan. If any fold is infeasible or a trial throws, don't launch the
+  search; hand back to the planner.
+- Before any long `batch` job (a full evaluation, a calibration, a data
+  build), run one short trial of the exact configuration it will use (one
+  fold, one row set, or `Smoke=true`) and confirm it finishes without an
+  error. An error found at that point is logged as `infra`, not a result.
+- After any change to `eval/`, run
+  `runtests('eval/tests/test_cv_calibrate_smoke_rev1.m')` on the Mac, with
+  `ITMEXP_BEST_TAG` set to the current best tag.
 - Report every kept change against the recalibrated baseline as well as
   the current best.
 - A change must improve both the composite and the screened composite
