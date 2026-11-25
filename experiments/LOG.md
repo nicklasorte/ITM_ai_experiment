@@ -1601,3 +1601,8 @@ appended row 1804 to results/results.tsv
 - Folds 1 to 3, training rows only (not held out): 2801 and 2802 match each other in every fold (12.41, 11.05, 13.15 dB), inferred equal to ITM's constants; 2803 is 0.09 to 0.20 dB lower. No held-out predictions were written; k stays 6.
 - A rerun would need the constraint to reference the parent's own training rate + 1 point (FRAMEWORK.md acceptance rule) instead of stock ITM, a frozen `eval/` change for Nick. The planner expects no keep even then.
 - Fresh reviewer: all numbers reproduced; nine wording, scope and "Not done" findings applied.
+
+## Pre-launch checks (PR #16, open)
+
+- Nick approved three changes from the B28 lessons. PR #16 adds `Smoke=true` to `eval/cv_calibrate_rev1.m` (one constrained trial per fold at the base constants, no search, no files), `eval/tests/test_cv_calibrate_smoke_rev1.m`, and three `program.md` rules (smoke check before a constrained calibration, one short trial before any long batch job, smoke test after any `eval/` change). The loop-graph-workflow skill edit was shown on a review card.
+- Test on 707r-rescore-screen36 passed (148 s, no files written): folds 1 to 3 and 5 feasible, fold 4 censored margin +3.92. This confirms B28's inferred fold 2 and 3 values at ITM's constants.
