@@ -1576,6 +1576,7 @@ appended row 1804 to results/results.tsv
 
 - Population: R1 open blocked-blocked detected height pairs, 149 pairs, 29 bases, one fixed receiver.
 - e_707 +5.64 [+3.81, +7.49]; e_stock +10.43 [+8.96, +12.12]; bracket share 0.10.
-- Blend ceiling 0.00 dB at w = 0.00 (in sample, optimistic; not a model).
-- Outcome C: both signed errors are positive and stock ITM is further from the measured contrast than 707, so the two don't bracket it; hand back to the planner (section 4). k stays 6.
+- Blend ceiling 0.00 dB at w = 0.00 (in sample, optimistic; not a model; can't go below zero by construction).
+- Outcome C: the equal-base signed errors have the same sign; hand back to the planner (section 4). k stays 6.
+- Check 6 (fresh reviewer) reproduced the deciding cell and outcome C from the pair table; reporting fixes applied. M1 stays closed.
 - Details: `experiments/batches/B27.md`, `experiments/D27-height-bracket/`.
