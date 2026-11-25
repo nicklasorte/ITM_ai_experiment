@@ -1,0 +1,23 @@
+B29 decision against 707r-rescore-screen36 (composite 12.51, censored 22.8 %)
+
+2901-cal707-diffraction (k = 7; 3 new parameters)
+  paired vs 707r-rescore-screen36: full +0.00, screened +0.00, screened lo995 +0.00
+  composite 12.51; censored 22.8 %; site RMS delta R1 -0.00, R2 +0.00, R3 -0.00, VA -0.00
+  fitted by fold: {'w_const': [2.514, 2.5953], 'knife_scale': [0.3013, 0.3056], 'afo_scale': [0.2232, 0.9983]}; range-bound hits {'w_const': 0, 'knife_scale': 0, 'afo_scale': 0}
+  checks: 1_screened_lo995_gt0_and_gain_ge_0.3 FAIL, 2_complexity_gain_ge_1.5 FAIL, 3_full_composite_not_worse_by_0.3 PASS, 4_no_site_worse_by_0.5 PASS, 5_censored_le_ref_plus_1 PASS, 6_physics_pass PASS, 7_bounds_not_majority PASS
+  decision: REJECT
+
+2902-cal707-los (k = 8; 1 new parameters)
+  paired vs 707r-rescore-screen36: full +0.00, screened +0.00, screened lo995 -0.00
+  composite 12.51; censored 22.8 %; site RMS delta R1 +0.00, R2 +0.00, R3 -0.00, VA +0.00
+  fitted by fold: {'los_w_scale': [1.0, 10.2394]}; range-bound hits {'los_w_scale': 0}
+  checks: 1_screened_lo995_gt0_and_gain_ge_0.3 FAIL, 2_complexity_gain_ge_0.5 FAIL, 3_full_composite_not_worse_by_0.3 PASS, 4_no_site_worse_by_0.5 PASS, 5_censored_le_ref_plus_1 PASS, 6_physics_pass PASS, 7_bounds_not_majority PASS
+  decision: REJECT
+
+2903-cal707-time (k = 9; 2 new parameters)
+  paired vs 707r-rescore-screen36: full +0.10, screened +0.11, screened lo995 -0.06
+  composite 12.40; censored 22.8 %; site RMS delta R1 +0.00, R2 +0.00, R3 +0.00, VA -0.00
+  fitted by fold: {'time_minus_scale': [0.741, 0.7906, 0.803, 0.8293, 0.8462], 'time_plus_scale': [0.8092, 0.8439, 0.866, 0.8704, 0.876]}; range-bound hits {'time_minus_scale': 0, 'time_plus_scale': 0}
+  checks: 1_screened_lo995_gt0_and_gain_ge_0.3 FAIL, 2_complexity_gain_ge_1.0 FAIL, 3_full_composite_not_worse_by_0.3 PASS, 4_no_site_worse_by_0.5 PASS, 5_censored_le_ref_plus_1 PASS, 6_physics_pass PASS, 7_bounds_not_majority PASS
+  decision: REJECT
+

@@ -1,0 +1,14 @@
+2901-cal707-diffraction: recalibrated ITM, constants fitted in 5-fold cross-validation (bayesopt, 40 evals per fold, constrained: censored +1 point vs base and physics battery)
+composite  12.51 dB   (baseline ITM 16.02)
+  phase2 cell-balanced RMS   13.25   (baseline 18.32)
+  long-term level RMS        19.09   (baseline 24.60)
+  long-term shape RMS        5.17   (baseline 5.16)
+  site R1 RMS 10.5  mean +4.1   (baseline 13.3, mean +2.6)
+  site R2 RMS 18.2  mean -0.2   (baseline 28.6, mean +10.6)
+  site R3 RMS 6.8  mean +0.4   (baseline 9.0, mean +0.2)
+  site VA RMS 12.9  mean -2.9   (baseline 15.4, mean -8.1)
+  censored violations 22.8%   (baseline 28.0%)
+composite, screened set  9.91 dB   (baseline 11.94; 36 rows left out)
+physics battery at median fitted constants: true
+median fitted constants: w_const=2.51, knife_scale=0.301, afo_scale=0.223
+runtime 6710 s

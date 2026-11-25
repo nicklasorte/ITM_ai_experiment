@@ -58,7 +58,7 @@ def main():
     ref = json.load(open(os.path.join(ROOT, "experiments", REF, "metrics.json")))["variant"]
     ref_site = {k: v["rms"] for k, v in ref["p2"]["site"].items()}
     ref_cens = ref["p2"]["censored_violation_pct"]
-    out, lines = [], ["B28 decision against %s (composite %.2f, censored %.1f %%)" % (REF, ref["composite"], ref_cens), ""]
+    out, lines = [], [batch + " decision against %s (composite %.2f, censored %.1f %%)" % (REF, ref["composite"], ref_cens), ""]
     for tag, params, npar, k in RUNS:
         d = os.path.join(ROOT, "experiments", tag)
         if not os.path.isdir(d):

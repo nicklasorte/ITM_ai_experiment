@@ -1606,3 +1606,15 @@ appended row 1804 to results/results.tsv
 
 - Nick approved three changes from the B28 lessons. PR #16 adds `Smoke=true` to `eval/cv_calibrate_rev1.m` (one constrained trial per fold at the base constants, no search, no files), `eval/tests/test_cv_calibrate_smoke_rev1.m`, and three `program.md` rules (smoke check before a constrained calibration, one short trial before any long batch job, smoke test after any `eval/` change). The loop-graph-workflow skill edit was shown on a review card.
 - Test on 707r-rescore-screen36 passed (148 s, no files written): folds 1 to 3 and 5 feasible, fold 4 censored margin +3.92. This confirms B28's inferred fold 2 and 3 values at ITM's constants.
+
+## B29 closed: calibration of 707 against its own censored rate (3 scored, 0 kept; k = 9)
+
+- PR #17 merged (79f861c): `cv_calibrate_rev1` option `CensoredRef="base"`. Smoke check (job 274) feasible on all five folds. Jobs 275 to 277 fitted five folds each.
+- Held-out predictions (five-fold CV), paired against 707r-rescore-screen36, 2,000 draws:
+  - 2901 diffraction (k = 7): screened +0.00, lo995 +0.00. Reject.
+  - 2902 line of sight (k = 8): screened +0.00, lo995 −0.00. Reject.
+  - 2903 time spread (k = 9): screened +0.11 (95 % −0.02 to +0.21), lo995 −0.06; full +0.10. Long-term shape RMS 5.17 to 4.97 dB, level 19.09 to 18.98 dB (325 paths, 548 rows); Phase 2 unchanged by construction. Reject (under 0.3 dB and the 1.0 dB complexity cost).
+- All three registered predictions matched. Inferred: 707's predictions on these rows depend negligibly on the diffraction and line-of-sight constants.
+- Smoke test after the `eval/` change (job 278, run after the B29 runs): passed, 152 s.
+- Fresh reviewer: numbers, held-out claim, decision and k count verified; four wording and record findings applied.
+- Results: `experiments/batches/B29.md`, `experiments/B29-decision/`.

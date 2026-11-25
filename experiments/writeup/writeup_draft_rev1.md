@@ -1,8 +1,8 @@
-# Agent-driven changes to the Irregular Terrain Model: results through B28
+# Agent-driven changes to the Irregular Terrain Model: results through B29
 
 DRAFT for Nick's read. Not for release outside the repo until Nick reviews
-it (CLAUDE.md). Planner: Claude Opus 5.5, 2026-11-25. B29 is registered and
-not run; this draft covers work through B28.
+it (CLAUDE.md). Planner: Claude Opus 5.5, 2026-11-25. This draft covers
+work through B29.
 
 ## Summary
 
@@ -13,11 +13,12 @@ pass. One change was kept: 707. It lowers the composite error from 16.0 dB
 (stock ITM) to 12.5 dB and the censored-bound violations from 28.0 % to
 22.8 %, on the development data. Of 35 scored candidates
 (`results/results.tsv`, excluding the baseline and the R01, R02 and R03
-references), only 707 was kept; several had lower composites but failed
-the censored gate. Work after 707 (through B28) found no further keep.
-Structural candidates were rejected or closed. Calibrating 707's constants
-(B28) found no training gain for two constant groups and 0.09 to 0.20 dB
-for the time spread, far below the 1.0 dB complexity cost. Phase plan rev 5
+references; 38 with B29's three), only 707 was kept; several had lower
+composites but failed the censored gate. Work after 707 (through B29) found
+no further keep. Structural candidates were rejected or closed. Calibrating
+707's constants in cross-validation (B29) gave no held-out gain for the
+diffraction and line-of-sight constants and +0.11 dB screened for the time
+spread, under the 0.3 dB threshold and the 1.0 dB complexity cost. Phase plan rev 5
 recommends stopping the search on the frozen inputs. No Tier B (lockbox)
 score exists, and all numbers below come from data the search was run on.
 
@@ -99,7 +100,7 @@ What this shows, scoped to the development set:
 | B25 | Spherical-earth reference (P.452-18 §4.2.2) | Closed by the screen: cannot pass (screened gain at most +0.11 dB) | Development set (screen); the height-inversion finding is one row, R1-005-T5_O at 230 MHz |
 | B27 | Whether 707 and stock ITM bracket the measured height contrast (precondition for the NBS TN 101 height-gain terms) | Outcome C (no bracket), so the height-gain terms weren't tested | R1 open blocked-blocked height pairs (149 pairs, 29 bases, one fixed receiver) |
 | B28 | Calibrating 707's constants (diffraction weights, line-of-sight blend, time spread) | No score; fold 4 infeasible under the calibrator's stock-referenced censored rule; no training gain in folds 1 to 3 for two groups, 0.09 to 0.20 dB for the time spread | Training rows, folds 1 to 3 |
-| B29 | B28 with the censored rule referenced to 707 | Registered, not run | n/a |
+| B29 | B28 with the censored rule referenced to 707 (2901 to 2903) | Rejected: 2901 and 2902 gain 0.00 dB; 2903 screened +0.11 dB (99.5 % bound −0.06), long-term shape RMS 5.17 to 4.97 dB | Held-out rows, five-fold cross-validation, development set |
 
 The cell-mean ceiling (`hm_ceiling_rev1.py`) bounds what fixing every cell
 mean could do: 1.13 dB on 707's screened composite (9.91 to 8.78), on the
@@ -116,8 +117,8 @@ long job failed:
    (fixed in PR #15).
 3. Rule mismatch, not a defect: the calibrator's censored rule references
    stock ITM, while the acceptance rule references the parent. 707 fails the
-   stock reference on fold 4 at its own constants. An option to reference
-   the parent (`CensoredRef`) is in an open PR, for B29.
+   stock reference on fold 4 at its own constants. PR #17 added the option
+   `CensoredRef="base"`, which B29 used.
 
 PR #16 added a smoke check (`Smoke=true`), a smoke test on the best
 variant, and `program.md` rules to run a one-trial check before any long
@@ -128,18 +129,17 @@ job.
 - No Tier B score. The Tier B sets are validation sets, not a blind test,
   because humans have already compared models on them (FRAMEWORK.md,
   lockbox caveat).
-- Selection: 35 candidates were scored against these sites.
+- Selection: 38 candidates were scored against these sites (35 through B28, plus B29's three).
 - 707's terminal clutter rests on the Phase 2 siting code and an assumed
   15 m clutter height; vegetation height along the paths isn't an input.
 - Height contrasts rest on one fixed receiver at R1.
 
 ## 6. Next steps
 
-1. B29, after its PR merges.
-2. Data proposal rev 1 (`experiments/proposals/data_proposal_rev1.md`): a
+1. Data proposal rev 1 (`experiments/proposals/data_proposal_rev1.md`): a
    LANDFIRE vegetation-height diagnostic first, Ofcom frequency contrasts
    second. Both need Nick's approval.
-3. A validation score on the Tier B sets, if Nick chooses to run it.
+2. A validation score on the Tier B sets, if Nick chooses to run it.
 
 ## Sources
 

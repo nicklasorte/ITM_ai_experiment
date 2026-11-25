@@ -1,0 +1,5 @@
+paired bootstrap: 2903-cal707-time vs 707r-rescore-screen36 (2000 draws, paths resampled within site and fold)
+  composite gain   +0.10 dB  (SD 0.05; 95% interval +0.01 to +0.23)  PASS
+  screened gain    +0.11 dB  (SD 0.06; 95% interval -0.02 to +0.21)  not distinguishable from zero
+  lower bounds at 99% / 99.5% (report only, for a Bonferroni level): composite -0.01 / -0.02, screened -0.06 / -0.06
+  gain = best minus new; positive means the new run is better
