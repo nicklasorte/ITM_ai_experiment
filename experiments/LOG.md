@@ -1580,3 +1580,10 @@ appended row 1804 to results/results.tsv
 - Outcome C: the equal-base signed errors have the same sign; hand back to the planner (section 4). k stays 6.
 - Check 6 (fresh reviewer) reproduced the deciding cell and outcome C from the pair table; reporting fixes applied. M1 stays closed.
 - Details: `experiments/batches/B27.md`, `experiments/D27-height-bracket/`.
+
+## B28 registered: Tier 1 calibration of 707's constants (planner note; not run)
+
+- Nick, 2026-11-25: "Ignore the lockbox all together. Just keep going." The lockbox gate on roadmap phase 3 is removed; the censored gate is unchanged.
+- Three constrained cross-validated calibrations of 707 (eval/cv_calibrate_rev1, as R02), one constant group each: 2801 diffraction weighting (w_const, knife_scale, afo_scale; k = 7), 2802 line-of-sight blend (los_w_scale; k = 8), 2803 time spread (time_minus_scale, time_plus_scale; k = 9). Decided on screened `lo995` against 707r-rescore-screen36, plus the complexity cost of 0.5 dB per new parameter.
+- Rationale, one sentence each: 707 replaced the knife-edge term the diffraction weights were fitted for; 707 changed what the line-of-sight blend joins; 707 changed the median the time spreads sit on.
+- Predictions: no keep (2801 75 %, 2802 90 %, 2803 90 %). Details: `experiments/batches/B28.md`.
