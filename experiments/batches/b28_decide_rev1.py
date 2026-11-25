@@ -3,7 +3,7 @@
 Applies B28.md section 3 checks 1 to 7 to each run in experiments/<tag>/ and
 writes experiments/B28-decision/decision_rev1.json and summary.txt.
 
-Usage: python3 -I experiments/batches/b28_decide_rev1.py
+Usage: python3 -I experiments/batches/b28_decide_rev1.py [--batch B29]
 """
 import csv
 import json
@@ -45,6 +45,16 @@ def paired(tag):
 
 
 def main():
+    batch = "B28"
+    if len(sys.argv) == 3 and sys.argv[1] == "--batch":
+        batch = sys.argv[2]
+    elif len(sys.argv) != 1:
+        fail("usage: b28_decide_rev1.py [--batch B29]")
+    if batch not in ("B28", "B29"):
+        fail("unknown batch " + batch)
+    global RUNS
+    if batch == "B29":
+        RUNS = [(t.replace("28", "29", 1), p, n, k) for t, p, n, k in RUNS]
     ref = json.load(open(os.path.join(ROOT, "experiments", REF, "metrics.json")))["variant"]
     ref_site = {k: v["rms"] for k, v in ref["p2"]["site"].items()}
     ref_cens = ref["p2"]["censored_violation_pct"]
@@ -57,6 +67,9 @@ def main():
         r = m["recalibrated"]
         if not m.get("constrained"):
             fail(tag + " was not a constrained run")
+        want_ref = "base" if batch == "B29" else "stock"
+        if m.get("censored_ref", "stock") != want_ref:
+            fail("%s: censored_ref is %s, expected %s" % (tag, m.get("censored_ref"), want_ref))
         G = paired(tag)
         site = {s: r["p2"]["site"][s]["rms"] for s in ref_site}
         cens = r["p2"]["censored_violation_pct"]
@@ -92,7 +105,7 @@ def main():
             "  decision: " + ("KEEP" if keep else "REJECT"),
             "",
         ]
-    od = os.path.join(ROOT, "experiments", "B28-decision")
+    od = os.path.join(ROOT, "experiments", batch + "-decision")
     os.makedirs(od, exist_ok=True)
     json.dump(out, open(os.path.join(od, "decision_rev1.json"), "w"), indent=1)
     open(os.path.join(od, "summary.txt"), "w").write("\n".join(lines) + "\n")

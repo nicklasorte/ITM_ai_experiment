@@ -16,6 +16,7 @@ function out = b28_calibrate_rev1(tag, params, options)
 %     MaxEvals  40
 %     Best      "707r-rescore-screen36"
 %     N         2000
+%     CensoredRef "stock" (B28) or "base" (B29)
 
 arguments
     tag (1,1) string
@@ -23,6 +24,7 @@ arguments
     options.MaxEvals (1,1) double = 40
     options.Best (1,1) string = "707r-rescore-screen36"
     options.N (1,1) double = 2000
+    options.CensoredRef (1,1) string = "stock"   % B29: "base" (eval/cv_calibrate_rev1 option)
 end
 % 707's switches, copied from experiments/707r-rescore-screen36/metrics.json (cfg.overrides)
 ov = '{"diffraction":"delta_cascaded_isolated","diffraction_bound":"itm_troposcatter_line","terminal_clutter":"p2108_height_gain","terminal_clutter_base":"clutter_height","terminal_clutter_frange":"hold3"}';
@@ -51,7 +53,8 @@ end
 if ~isfolder(fullfile(P.root, 'experiments', options.Best))
     error('itmexp:b28', 'Reference run experiments/%s is missing.', options.Best);
 end
-R = cv_calibrate_rev1(Tag=tag, Params=params, Constrained=true, MaxEvals=options.MaxEvals, Seed=1);
+R = cv_calibrate_rev1(Tag=tag, Params=params, Constrained=true, MaxEvals=options.MaxEvals, Seed=1, ...
+    CensoredRef=options.CensoredRef);
 G = paired_gain_rev1(tag, options.Best, N=options.N, Write=true);
 out = struct('R', R, 'G', G);
 end
