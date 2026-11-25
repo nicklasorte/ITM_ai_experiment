@@ -190,6 +190,9 @@ if ~isfinite(r.composite), return, end
 m = -Inf;
 for nm = string(fieldnames(B.checks))'
     q = B.checks.(nm);
+    if isfield(q, 'report_only') && q.report_only
+        continue                 % report-only fields (2f0692b) set no limit and lack the step fields
+    end
     if startsWith(nm, "continuity_")
         m = max(m, q.variant_max_step_db - (q.baseline_max_step_db + 1));
     elseif nm == "reciprocity"
