@@ -1687,3 +1687,8 @@ appended row 1804 to results/results.tsv
 - Fresh reviewer: analysis rebuilt byte for byte; rule and numbers pass. Reference-validity findings added to section 7: the 20-wavelength average is one point on 1,381 of 1,683 rows; 101 rows exceed the two-ray gain limit; narrow-angle error isn't screened. Each pushes the PE toward too little loss. Wording narrowed.
 - Lead (planner's reading, untested): find which part of 707 adds about 2.5 dB over stock on R1's gentle rows, model against model, after the PE fixes are registered.
 - Results: `experiments/batches/B36.md` section 7; `experiments/D36-pe-reference/`.
+
+## B37 registered (planner note; no run)
+
+- D37a: repair the PE reference (true 20-wavelength average, impedance ground with ITM's own ε_r and σ, a roughness arm, a narrow-against-wide domain screen) with four new closed-form tests written before the code. D37b: model-only attribution of 707 − stock on B36's R1 rows, one switch at a time (delta construction, cascade, troposcatter bound, spherical-earth A_s). D37c: B36's rule with the repaired PE, descriptive only (same rows, already read).
+- File: `experiments/batches/B37.md`.
