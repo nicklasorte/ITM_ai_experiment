@@ -1626,3 +1626,11 @@ appended row 1804 to results/results.tsv
 - Exploratory and post hoc: R2's error also falls with along-path tree fraction; R1 and VA siting-C show the opposite sign. Any R2-only follow-up needs data the search hasn't used.
 - Predictions: outcome B matched; "VA most E > 0 rows" and "VA most likely negative" were wrong (R2 on both).
 - Fresh reviewer reran the analysis byte for byte; seven findings applied (slope-sign wording, a prediction part, 0.26 dB, the slope-only RMS reading with the 0.42 dB full-line figure, the forest source, exploratory signs, two-step resampling).
+
+## B31 (D31) steps 1 and 2: OT Report 75-74 digitized and located (data preparation, no score)
+
+- D2 (Ofcom) parked: Ofcom's site shows a Cloudflare human check that only Nick can clear. Nick said to move on while away from the Mac.
+- OT Report 75-74 (Longley and Hufford, 1975; public, ITS): sensor links at 172 and 410 MHz, transmitters 0.35 m above ground, receivers at 10, 3 and 0.35 m, in three areas (Eglin AFB, Graham Mountain, Hunter Liggett). Not Tier B.
+- Step 1: Tables 7 to 11 digitized (210 paths, 3,780 cells). Every path has a second check: the text layer (124 paths; 2,013 of 2,016 aligned cells agreed) or an independent second visual read (86 paths; 1,548 of 1,548 cells agreed). Three disagreements settled against the image.
+- Step 2: terminals located from the site maps and refined by least squares on the tabulated distances. All four configurations pass (adjusted distance RMS 0.000 to 0.023 km; largest shift from the map 0.178 km). Map-only RMS 0.04 to 0.08 km is the independent check.
+- Step 3 (707 vs stock ITM on the measured height contrasts) needs the Mac and its own registered rule. Details: `experiments/batches/B31.md`, `experiments/D31-ot7574/`.

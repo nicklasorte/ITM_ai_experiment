@@ -1,0 +1,96 @@
+{
+ "table": 8,
+ "page": 52,
+ "render_dpi": 300,
+ "lon_lines": {
+  "-109.75": [
+   [
+    1209,
+    332
+   ],
+   [
+    1201,
+    1979
+   ]
+  ],
+  "-109.708333": [
+   [
+    2429,
+    332
+   ],
+   [
+    2435,
+    1979
+   ]
+  ]
+ },
+ "lat_ticks": {
+  "32.541667": [
+   [
+    606,
+    1547
+   ]
+  ]
+ },
+ "scale_px_per_km": 312.0,
+ "area": "Graham",
+ "note": "Page-pixel readings from a 300 dpi render of OT 75-74 Figure 16 with a grid overlay. West transmitter cluster with receivers R1 to R4 (Tables 8 and 9 give identical distances). Meridian lean averaged from the two meridians' top and bottom ticks.",
+ "terminals": {
+  "R1": [
+   2170,
+   599
+  ],
+  "R2": [
+   654,
+   876
+  ],
+  "R3": [
+   2687,
+   1016
+  ],
+  "R4": [
+   2344,
+   1638
+  ],
+  "T1": [
+   865,
+   1547
+  ],
+  "T2": [
+   964,
+   1512
+  ],
+  "T3": [
+   919,
+   1406
+  ],
+  "T4": [
+   985,
+   1391
+  ],
+  "T5": [
+   1081,
+   1422
+  ],
+  "T6": [
+   1152,
+   1308
+  ],
+  "T7": [
+   1145,
+   1029
+  ],
+  "T8": [
+   1176,
+   993
+  ],
+  "T9": [
+   1294,
+   953
+  ],
+  "T10": [
+   1403,
+   932
+  ]
+ }
+}

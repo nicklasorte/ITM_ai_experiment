@@ -1,0 +1,86 @@
+{
+ "area": "Hunter",
+ "table": 10,
+ "page": 68,
+ "render_dpi": 300,
+ "note": "Page-pixel readings (300 dpi frame) from OT 75-74 Figure 22: receivers from a 300 dpi grid overlay, transmitters from a 900 dpi crop of the cluster. The map has one meridian (121 deg 12' 30\") and one parallel (36 deg 00'); the scale bar (1 mile = 393 px) sets distance. Two dots near the label 7: the upper one is used for T7; the other is left unassigned.",
+ "lon_lines": {
+  "-121.208333": [
+   [
+    1238,
+    469
+   ],
+   [
+    1238,
+    2494
+   ]
+  ]
+ },
+ "lat_ticks": {
+  "36.0": [
+   [
+    470,
+    1636
+   ]
+  ]
+ },
+ "scale_px_per_km": 244.2,
+ "terminals": {
+  "R1": [
+   856,
+   1721
+  ],
+  "R2": [
+   1739,
+   2258
+  ],
+  "R3": [
+   1750,
+   537
+  ],
+  "R4": [
+   1881,
+   1049
+  ],
+  "T1": [
+   1515.7,
+   1571.6
+  ],
+  "T2": [
+   1536,
+   1566.6
+  ],
+  "T3": [
+   1547.7,
+   1600
+  ],
+  "T4": [
+   1560,
+   1639.3
+  ],
+  "T5": [
+   1522.3,
+   1526
+  ],
+  "T6": [
+   1503.3,
+   1556
+  ],
+  "T7": [
+   1472.7,
+   1538.3
+  ],
+  "T8": [
+   1449.3,
+   1545.6
+  ],
+  "T9": [
+   1436.7,
+   1555
+  ],
+  "T10": [
+   1438.3,
+   1583.3
+  ]
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "area": "Eglin", "table": 7, "page": 34, "render_dpi": 300,
+ "note": "Page-pixel coordinates read by the planner from a 300 dpi render of OT 75-74 Figure 10 with a pixel grid overlay. Terminal dots for T1, T2, T3 sit by the runway outline and are read from their label positions (less certain).",
+ "lon_lines": {"-86.666667": [[1063, 525], [1100, 1910]], "-86.583333": [[2365, 1910]]},
+ "lat_ticks": {"30.583333": [[573, 1209]]},
+ "scale_px_per_km": 157.7,
+ "terminals": {
+  "R1": [2347, 1431], "R2": [2168, 1725], "R3": [2240, 528], "R4": [960, 699],
+  "T1": [1672, 1232], "T2": [1705, 1195], "T3": [1805, 1158], "T4": [1678, 1037],
+  "T5": [1636, 1092], "T6": [1581, 1092], "T7": [1677, 967], "T8": [1817, 912],
+  "T9": [1813, 978], "T10": [1928, 859]
+ }
+}
