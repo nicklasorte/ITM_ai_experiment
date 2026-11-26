@@ -6,7 +6,7 @@ Base: visual_rev1.csv. Each path's check is recorded:
 - second_visual: confirmed by an independent second visual read (paths the
   text layer couldn't confirm; v1 and v2 agreed on every cell);
 plus three cells resolved by the planner against the page image
-(RESOLVED below). Cells both readers called hard to read are marked
+(RESOLVED below). Cells either reader called hard to read are marked
 uncertain.
 
 Usage: python3 -I experiments/batches/d31_build_table_rev1.py <work_dir> <out_csv>
@@ -15,9 +15,9 @@ import sys
 
 import pandas as pd
 
-AREA = {7: ("Eglin", "Nov-Dec 1972"), 8: ("Graham", "Sep-Oct 1973"), 9: ("Graham", "Apr 1974"),
+AREA = {7: ("Eglin", "Nov-Dec, year not printed (1972 inferred)"), 8: ("Graham", "Sep-Oct 1973"), 9: ("Graham", "Apr 1974"),
         10: ("Hunter Liggett", "Jan-Feb 1974"), 11: ("Hunter Liggett", "May-Jun 1974")}
-F_MHZ = {"VHF": 172, "UHF": 410}              # nominal, report section 2
+F_MHZ = {"VHF": 172.5, "UHF": 410.5}          # report Appendix A: "tuned to nominal frequencies of 172.5 and 410.5 MHz"
 RX_M = {"10": 10.0, "3": 3.0, "0.3": 0.35}    # report section 2: lowest antenna 0.35 m
 RESOLVED = {  # (table, tx, rx, band, ant, pct): (value, flag, note)
     (7, 2, 3, "VHF", "0.3", "90"): ("152.7", "", "text layer dropped the leading digit; image shows 152.7"),

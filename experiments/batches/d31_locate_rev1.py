@@ -73,9 +73,17 @@ def main(area, table_csv, report_only):
     D["dist_km"] = D.dist_km.astype(float)
     names = sorted(prior)
     ix = {n: i for i, n in enumerate(names)}
-    pairs = [(ix["T%s" % r.tx], ix["R%s" % r.rx], r.dist_km) for r in D.itertuples()
-             if "T%s" % r.tx in ix and "R%s" % r.rx in ix]
-    missing = [(r.tx, r.rx) for r in D.itertuples() if "T%s" % r.tx not in ix or "R%s" % r.rx not in ix]
+    split = m.get("split", {})        # e.g. {"T7": {"T7a": [1, 2], "T7b": [3, 4]}}: a moved transmitter
+
+    def tname(tx, rx):
+        t = "T%s" % tx
+        for sub, rxs in split.get(t, {}).items():
+            if int(rx) in rxs:
+                return sub
+        return t
+    pairs = [(ix[tname(r.tx, r.rx)], ix["R%s" % r.rx], r.dist_km) for r in D.itertuples()
+             if tname(r.tx, r.rx) in ix and "R%s" % r.rx in ix]
+    missing = [(r.tx, r.rx) for r in D.itertuples() if tname(r.tx, r.rx) not in ix or "R%s" % r.rx not in ix]
     if missing:
         print("pairs with a terminal not read from the map:", missing)
     p0 = np.array([prior[n] for n in names]).ravel()

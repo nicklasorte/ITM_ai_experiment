@@ -3,7 +3,7 @@
  "table": 10,
  "page": 68,
  "render_dpi": 300,
- "note": "Page-pixel readings (300 dpi frame) from OT 75-74 Figure 22: receivers from a 300 dpi grid overlay, transmitters from a 900 dpi crop of the cluster. The map has one meridian (121 deg 12' 30\") and one parallel (36 deg 00'); the scale bar (1 mile = 393 px) sets distance. Two dots near the label 7: the upper one is used for T7; the other is left unassigned.",
+ "note": "Page-pixel readings (300 dpi frame) from OT 75-74 Figure 22: receivers from a 300 dpi grid overlay, transmitters from a 900 dpi crop of the cluster. The map prints one meridian (121 deg 12' 30\") and the parallel 36 deg 00' on both edges (the right-edge tick is unused); the scale bar (1 mile = 393 px) sets distance. Transmitter 7 was moved and appears twice (report section 7.1: one location for paths to R1 and R2, the other for R3 and R4). The figure doesn't say which dot is which; the lower dot is assigned to R1 and R2 (T7a) and the upper to R3 and R4 (T7b) because that pairing fits the tabulated distances slightly better on the map positions (summed misfit 0.145 km against 0.169 km), which is within the table's 0.1 km precision, so the assignment is weak.",
  "lon_lines": {
   "-121.208333": [
    [
@@ -66,10 +66,6 @@
    1503.3,
    1556
   ],
-  "T7": [
-   1472.7,
-   1538.3
-  ],
   "T8": [
    1449.3,
    1545.6
@@ -81,6 +77,26 @@
   "T10": [
    1438.3,
    1583.3
+  ],
+  "T7a": [
+   1481,
+   1556
+  ],
+  "T7b": [
+   1472.7,
+   1538.3
   ]
+ },
+ "split": {
+  "T7": {
+   "T7a": [
+    1,
+    2
+   ],
+   "T7b": [
+    3,
+    4
+   ]
+  }
  }
 }
