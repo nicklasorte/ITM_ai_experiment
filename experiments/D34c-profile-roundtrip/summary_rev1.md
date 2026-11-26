@@ -9,10 +9,11 @@ renamed, instrumented copy of the core in a scratch folder.
 ## Result
 
 **The 0.197 dB discrepancy B33 found comes from the profile spacing alone,
-through an integer truncation in ITM's least-squares fit for the effective
-antenna heights. It is a property of ITM's algorithm as ported, not of
-707, and not a physical sensitivity.** The same truncation lines are in
-the pinned stock source (`matlab_itm/private/itm_p2p_core.m`, text match).
+through an integer truncation in ITM's least-squares fit for the
+effective antenna heights. It is a property of ITM's algorithm as
+ported, and it isn't a physical sensitivity.** The same truncation lines
+are in the pinned stock source (`matlab_itm/private/itm_p2p_core.m` lines
+408 and 409 at 9bd6a4e; text match, rechecked by the reviewer).
 
 | Check | Population | Result |
 | --- | --- | --- |
@@ -27,7 +28,7 @@ the pinned stock source (`matlab_itm/private/itm_p2p_core.m`, text match).
 
 The 12 stock rows are two pairs, each in two tables (seasons):
 
-| Pair | Rows | First quantity that differs (traced core, which reproduces both stock losses within 1e-9 dB) |
+| Population: pair | Rows | First instrumented integer truncation that differs (traced core, which reproduces both stock losses within 1e-9 dB) |
 | --- | --- | --- |
 | Hunter Liggett T4–R4 | 10 m receiver, both bands, Tables 10 and 11 (4 rows); stock 104.64 → 104.44 dB (VHF), 123.52 → 123.39 dB (UHF) | `linear_least_squares_fit`, end of the fit window: d_end / spacing = 92.000000000000014 (fresh) against exactly 92 (CSV spacing), so `i_end = np − fix(fdim(np, ·))` is 93 against 92 |
 | Graham T3–R3 | 3 m and 10 m receivers, both bands, Tables 8 and 9 (8 rows); differences 0.07 to 0.12 dB | `linear_least_squares_fit`, start of the fit window: d_start / spacing = 74.99999999999925 (fresh) against 75.0000000000007 (CSV), so `i_start = fix(fdim(·, 0))` is 74 against 75 |
@@ -35,25 +36,26 @@ The 12 stock rows are two pairs, each in two tables (seasons):
 The 3 m rows of Hunter Liggett T4–R4 didn't change under the CSV spacing,
 so they act as a matched control for that pair.
 
-**Sensitivity to the spacing alone** (`perturbations_rev1.csv`; stock ITM;
-spacing moved by −20 to +20 ULP, about ±7e-14 m, elevations fixed):
+**Sensitivity to the spacing alone** (`perturbations_rev1.csv`, written by
+`d34_perturb_rev1.m` with the exact spacing in hex; stock ITM; spacing
+moved by −20 to +20 ULP, about ±7e-14 m, elevations fixed; a level is a
+distinct loss after rounding to 1e-6 dB):
 
-| Pair, band, receiver | Distinct loss values | Range (dB) |
-| --- | --- | --- |
-| Hunter Liggett T4–R4, VHF, 10 m | 12 | 0.36 |
-| Hunter Liggett T4–R4, VHF, 3 m | 8 | 0.32 |
-| Hunter Liggett T4–R4, UHF, 10 m | 14 | 0.25 |
-| Hunter Liggett T4–R4, UHF, 3 m | 9 | 0.15 |
-| Graham T3–R3, VHF, 3 m | 6 | 0.12 |
-| Graham T3–R3, VHF, 10 m | 4 | 0.11 |
-| Graham T3–R3, UHF, 3 m | 5 | 0.07 |
-| Graham T3–R3, UHF, 10 m | 5 | 0.07 |
+| Population: pair, band, receiver | Levels | Range (dB) | Monotonic in the offset |
+| --- | --- | --- | --- |
+| Hunter Liggett T4–R4, VHF, 10 m | 4 | 0.36 | No |
+| Hunter Liggett T4–R4, VHF, 3 m | 2 | 0.32 | No |
+| Hunter Liggett T4–R4, UHF, 10 m | 4 | 0.25 | No |
+| Hunter Liggett T4–R4, UHF, 3 m | 2 | 0.15 | No |
+| Graham T3–R3, VHF, 3 m | 2 | 0.12 | Yes (one step) |
+| Graham T3–R3, VHF, 10 m | 2 | 0.11 | Yes (one step) |
+| Graham T3–R3, UHF, 3 m | 2 | 0.07 | Yes (one step) |
+| Graham T3–R3, UHF, 10 m | 2 | 0.07 | Yes (one step) |
 
-The loss isn't monotonic in the spacing (for example, Hunter Liggett VHF
-10 m: 104.64 dB at 0 ULP, 104.28 at −6, 104.46 at −5, 104.44 at −10). So
-the CSV round trip's 0.197 dB is one sample of a wider, representation-
-dependent spread on these paths, which also reaches rows the round trip
-happened not to flip.
+On Hunter Liggett T4–R4 the loss jumps back and forth between levels as
+the offset changes; on Graham T3–R3 it takes one step. So the CSV round
+trip's 0.197 dB is one sample of a spread that, on Hunter Liggett, also
+reaches the 3 m rows the round trip happened not to flip.
 
 ## Reading
 
@@ -65,9 +67,17 @@ happened not to flip.
   and so the loss.
 - **Not physical:** the inputs differ by about 4e-14 m in spacing; no
   terrain or geometry change is involved.
-- **707 is barely affected** on these rows (at most 5.5e-4 dB). The trace
-  followed stock ITM only; why 707's loss depends so little on this fit
-  here wasn't traced.
+- **What the trace shows and doesn't:** it logs only the integer results
+  of four truncations, so it finds the first of those that differs; the
+  real-valued quotients differ earlier (for example 68.000000000000185
+  against 68.000000000000014 at the start of the Hunter Liggett window,
+  which truncates to 68 either way). The horizon-index log stores no
+  integer, so a horizon change couldn't have been flagged; none is
+  implied.
+- **707 is barely affected** on these rows (at most 5.5e-4 dB). The
+  trace followed stock ITM only. 707's 16 rows, 4 of which (Graham
+  T10–R1) aren't among stock's 12, weren't traced, so whether 707 has a
+  second representation-dependent step of its own is open.
 - **Scoring is consistent:** the evaluator reads the same CSV profiles for
   every model, so scores are reproducible. But a stock ITM prediction on a
   path can carry a few tenths of a dB that depends on how the profile was
@@ -97,3 +107,11 @@ happened not to flip.
   evaluator's CSV profiles weren't swept).
 - `divergence_rev1.csv` as a separate file: its content is in
   `trace_rev1.csv`.
+- Repeated deterministic runs as a separate check (the smoke and full
+  runs agree on the shared pair, which is the only repeat).
+- Traces of matched stable controls; Hunter Liggett T4–R4 at 3 m is a
+  control by loss only.
+- Effective heights, Δh, reference attenuation and variability terms in
+  the trace.
+- The exact parity maximum is printed in the run log (5.1e-13 dB) but
+  not stored in a file.

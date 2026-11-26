@@ -1669,6 +1669,13 @@ appended row 1804 to results/results.tsv
 
 - 840 B32 rows (3 m and 10 m receivers, transmitter 0.5 m), 130 pairs. Fresh profiles reproduce B32 within 5.1e-13 dB; `%.17g` text and MAT round trips are bit-identical.
 - Stock ITM: the 12 rows that change under the CSV profiles (largest 0.197 dB) are reproduced by the CSV spacing alone (10 and 11 ULP off on the two pairs involved); CSV elevations alone change nothing (3.0e-11 dB). 707 changes by at most 5.5e-4 dB.
-- First divergence in all 12 rows: the fit-window index in `linear_least_squares_fit` (Hunter Liggett T4–R4 end index 93 against 92; Graham T3–R3 start index 74 against 75), from truncating a distance-over-spacing quotient that sits within a few ULP of an integer. Same lines in the pinned stock source.
-- Spacing moved alone by ±20 ULP moves stock ITM's loss on those pairs by 0.07 to 0.36 dB, non-monotonically. Representation-dependent, not physical; not a 707 defect. No patch; a repair needs its own registration.
+- First instrumented truncation that differs in all 12 rows: the fit-window index in `linear_least_squares_fit` (Hunter Liggett T4–R4 end index 93 against 92; Graham T3–R3 start index 74 against 75), from truncating a distance-over-spacing quotient that sits within a few ULP of an integer. Same lines in the pinned stock source.
+- Spacing moved alone by ±20 ULP moves stock ITM's loss by 0.15 to 0.36 dB on Hunter Liggett T4–R4 (two to four levels, not monotonic) and 0.07 to 0.12 dB on Graham T3–R3 (one step). Representation-dependent, not physical. 707's 16 rows weren't traced. No patch; a repair needs its own registration.
 - Results: `experiments/D34c-profile-roundtrip/summary_rev1.md`; B34 results section.
+
+## B35 steps 1 to 5 done (model predictions and analysis self-test; no measured value read)
+
+- Steps 1 to 4: R4 keys checked; four-arm predictions (5,184 rows; parity 0 dB; 707-C equals 707-O at 15 m and above) committed with SHA-256 before any measured value is read.
+- Step 5: `d35_analysis_rev1.py` self-test passes; a fresh reviewer's nine broken-rule mutations (20 % rule, floor, floored frequencies in the pooled number, the reading rule, the 1 dB size, seed, draw shape, sector, E2 frequencies) each make it fail. Descriptive intervals now resample only the paths with cells; B35 section 3 updated to say so, before any value is read.
+- Steps 6 to 8 wait on Nick's decision on R4 (phase plan rev 6, decision 1).
+- Same reviewer: D34c's perturbation table was redone with a committed script (`d34_perturb_rev1.m`, exact spacing in hex); Graham T3–R3 is a single step, Hunter Liggett T4–R4 has up to four levels; trace wording narrowed to "first instrumented truncation"; 707's own rows untraced.
