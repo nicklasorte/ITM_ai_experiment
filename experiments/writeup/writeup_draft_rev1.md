@@ -1,8 +1,8 @@
-# Agent-driven changes to the Irregular Terrain Model: results through B29
+# Agent-driven changes to the Irregular Terrain Model: results through B32
 
 DRAFT for Nick's read. Not for release outside the repo until Nick reviews
-it (CLAUDE.md). Planner: Claude Opus 5.5, 2026-11-25. This draft covers
-work through B29.
+it (CLAUDE.md). Planner: Claude Opus 5.5, 2026-11-25; updated 2026-11-26.
+This draft covers work through B32.
 
 ## Summary
 
@@ -19,8 +19,11 @@ no further keep. Structural candidates were rejected or closed. Calibrating
 707's constants in cross-validation (B29) gave no held-out gain for the
 diffraction and line-of-sight constants and +0.11 dB screened for the time
 spread, under the 0.3 dB threshold and the 1.0 dB complexity cost. Phase plan rev 5
-recommends stopping the search on the frozen inputs. No Tier B (lockbox)
-score exists, and all numbers below come from data the search was run on.
+recommends stopping the search on the frozen inputs. One outside test used
+data the search never saw (OT Report 75-74, B31 and B32): on the change in loss
+from a 3 m to a 10 m receiver, 707 was no better than stock ITM. No Tier B
+(lockbox) score exists; apart from section 3a (B31, B32), all numbers below
+come from data the search was run on.
 
 ## 1. Setup
 
@@ -102,10 +105,39 @@ What this shows, scoped to the development set:
 | B28 | Calibrating 707's constants (diffraction weights, line-of-sight blend, time spread) | No score; fold 4 infeasible under the calibrator's stock-referenced censored rule; no training gain in folds 1 to 3 for two groups, 0.09 to 0.20 dB for the time spread | Training rows, folds 1 to 3 |
 | B29 | B28 with the censored rule referenced to 707 (2901 to 2903) | Rejected: 2901 and 2902 gain 0.00 dB; 2903 screened +0.11 dB (99.5 % bound −0.06), long-term shape RMS 5.17 to 4.97 dB | Held-out rows, five-fold cross-validation, development set |
 | B30 (D30) | LANDFIRE 2016 vegetation height near the terminals against 707's errors (diagnostic, data proposal item D1) | Outcome B: only R2 shows a resolved negative slope; in-sample RMS gain 0.26 dB | Uncensored siting-O Phase 2 rows (12,570 rows, 400 paths) |
+| B32 (D32) | 707 against stock ITM on measured height contrasts from OT Report 75-74 (data proposal item D3; outside data) | Outcome C: no 3 m to 10 m stratum favors 707, one favors stock | OT 75-74 paths with both heights measured, 10 table-by-band strata (18 to 39 paths each) |
 
 The cell-mean ceiling (`hm_ceiling_rev1.py`) bounds what fixing every cell
 mean could do: 1.13 dB on 707's screened composite (9.91 to 8.78), on the
 screened development rows.
+
+## 3a. Outside test: OT Report 75-74 (B31, B32)
+
+OT Report 75-74 (Longley and Hufford, 1975, public ITS report) gives 50 %
+basic transmission loss on 210 sensor paths at 172.5 and 410.5 MHz, with
+transmitters 0.35 m above ground and receivers at 10, 3 and 0.35 m, at
+Eglin AFB, Graham Mountain and Hunter Liggett. The search never used it. B31
+digitized Tables 7 to 11 (every path read twice) and located the terminals
+from the site maps. B32 compared each model's height contrast with the
+measured one, under a rule registered before any model run.
+
+- ITM accepts antenna heights from 0.5 m (NTIA `ValidateInputs.cpp`), so
+  both models used 0.5 m for the 0.35 m antennas. Nick chose this
+  amendment before any loss was computed; only the 3 m to 10 m contrast
+  decided. Each model was rerun with the receiver at 0.7 and 1.0 m;
+  extrapolating that height dependence down to 0.35 m (an assumption, not
+  a model run) puts the receiver part of the clamp at a median 0.07 to
+  0.26 dB of the low-antenna contrast.
+- 3 m to 10 m contrast, 10 table-by-band strata: no clear difference, and
+  one stratum (Graham, later season, VHF) favors stock ITM;
+  mean absolute errors are 2.7 to 5.5 dB for both. Two seasons share
+  paths at Graham and at Hunter Liggett, so the strata aren't independent.
+- Not deciding, and carrying the 0.5 m height offsets for both models:
+  both models predict far less loss than measured at Eglin's forested paths
+  (mean errors of −14 to −30 dB). Across all five tables at 172.5 MHz, 707's
+  absolute error is 2.5 to 5.5 dB lower than stock ITM's at every height,
+  because 707 adds loss where both under-predict; at 410.5 MHz neither model
+  is consistently lower.
 
 ## 4. Harness lessons
 
@@ -123,7 +155,8 @@ long job failed:
 
 PR #16 added a smoke check (`Smoke=true`), a smoke test on the best
 variant, and `program.md` rules to run a one-trial check before any long
-job.
+job. In B32 the one-trial check found ITM's 0.5 m height limit before any
+result existed, so the rule could be amended without seeing outcomes.
 
 ## 5. Limits
 
@@ -133,19 +166,26 @@ job.
 - Selection: 38 candidates were scored against these sites (35 through B28, plus B29's three).
 - 707's terminal clutter rests on the Phase 2 siting code and an assumed
   15 m clutter height; vegetation height along the paths isn't an input.
-- Height contrasts rest on one fixed receiver at R1.
+- Height contrasts in the development data rest on one fixed receiver at
+  R1. The outside test (B32) adds three areas at VHF and UHF, but ITM can't
+  represent its 0.35 m antennas.
 
 ## 6. Next steps
 
-1. Data proposal rev 1 (`experiments/proposals/data_proposal_rev1.md`): a
-   LANDFIRE vegetation-height diagnostic first, Ofcom frequency contrasts
-   second. Both need Nick's approval.
-2. A validation score on the Tier B sets, if Nick chooses to run it.
+1. Phase plan rev 6: a Fable planner decides whether to stop the search
+   or test a new mechanism (`experiments/proposals/fable_prompt_phase6_rev1.md`).
+   One open lead is the absolute level on forested paths with low antennas
+   (Eglin in B32; B30's post hoc vegetation slope at R2 points the same
+   way).
+2. Data proposal item D2 (Ofcom frequency contrasts) waits on a human check
+   on Ofcom's site that only Nick can clear.
+3. A validation score on the Tier B sets, if Nick chooses to run it.
 
 ## Sources
 
 - `results/results.tsv`; `experiments/707r-rescore-screen36/summary.txt`
-  and `metrics.json`; `experiments/LOG.md`; batch plans B21 to B29;
-  FRAMEWORK.md.
+  and `metrics.json`; `experiments/LOG.md`; batch plans B21 to B32;
+  `experiments/D32-ot7574-heights/`; FRAMEWORK.md.
 - ITU-R P.452-18, P.526-11, P.526-16, P.2108-1, P.1812-8, P.2001-5.
 - NBS Technical Note 101 (Rice, Longley, Norton and Barsis, 1967).
+- OT Report 75-74 (Longley and Hufford, 1975).

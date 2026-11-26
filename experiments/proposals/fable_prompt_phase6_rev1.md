@@ -30,9 +30,10 @@ Where things stand:
     transmitters 0.35 m, receivers 10, 3 and 0.35 m; Eglin, Graham Mountain, Hunter Liggett),
     data the search never used. ITM rejects heights below 0.5 m, so B32 modeled 0.35 m antennas
     at 0.5 m (amended before any output). On the 3 m to 10 m contrast, outcome C: no stratum
-    favours 707, one favours stock. Both models predict far less loss than measured at Eglin
-    (14 to 30 dB). At 172.5 MHz, 707's absolute error is 2.5 to 5.5 dB lower than stock's in
-    every cell, because it adds loss.
+    favors 707, one favors stock. Both models predict far less loss than measured at Eglin
+    (14 to 30 dB). At 172.5 MHz, 707's absolute error is 2.5 to 5.5 dB lower than stock's at
+    every table and height, because it adds loss; at 410.5 MHz neither is consistently lower.
+    These absolute errors weren't deciding and carry the 0.5 m height offsets.
   - D2 (Ofcom frequency contrasts) is parked: the Ofcom site shows a human check that only Nick
     can clear.
 - Nick told the loop to ignore the lockbox as a gate. That doesn't lift the rule against reading
