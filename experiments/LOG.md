@@ -1679,3 +1679,11 @@ appended row 1804 to results/results.tsv
 - Step 5: `d35_analysis_rev1.py` self-test passes; a fresh reviewer's nine broken-rule mutations (20 % rule, floor, floored frequencies in the pooled number, the reading rule, the 1 dB size, seed, draw shape, sector, E2 frequencies) each make it fail. Descriptive intervals now resample only the paths with cells; B35 section 3 updated to say so, before any value is read.
 - Steps 6 to 8 wait on Nick's decision on R4 (phase plan rev 6, decision 1).
 - Same reviewer: D34c's perturbation table was redone with a committed script (`d34_perturb_rev1.m`, exact spacing in hex); Graham T3–R3 is a single step, Hunter Liggett T4–R4 has up to four levels; trace wording narrowed to "first instrumented truncation"; 707's own rows untraced.
+
+## B36 run: 2D parabolic-equation reference against 707 on gentle open Phase 2 paths (diagnostic, no score)
+
+- Population: siting O, uncensored, 1 GHz or less, steepest interval 10° or less: R1 1,427 rows on 29 paths (one receiver site), VA 243 on 61, R2 13 on 1. 354 PE runs; convergence screen 91 of 91 paths within 1 dB.
+- Outcome N. R1: D = mean |e_PE| − mean |e_707| = −1.65 dB (−2.96 to −0.49), resolved; 707 predicts too much loss there (+3.17 dB mean, stock +0.62, PE −1.00). VA: +0.64 dB (+0.08 to +1.21), not resolved; opposite signs by frequency; stock beats the PE by 1.13 dB.
+- Fresh reviewer: analysis rebuilt byte for byte; rule and numbers pass. Reference-validity findings added to section 7: the 20-wavelength average is one point on 1,381 of 1,683 rows; 101 rows exceed the two-ray gain limit; narrow-angle error isn't screened. Each pushes the PE toward too little loss. Wording narrowed.
+- Lead (planner's reading, untested): find which part of 707 adds about 2.5 dB over stock on R1's gentle rows, model against model, after the PE fixes are registered.
+- Results: `experiments/batches/B36.md` section 7; `experiments/D36-pe-reference/`.

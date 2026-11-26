@@ -1,0 +1,25 @@
+{
+  "strata": {
+    "R1": {
+      "n_rows": 1427,
+      "n_paths": 29,
+      "D": -1.6490589718134725,
+      "lo95": -2.960444133745245,
+      "hi95": -0.4856461226187565,
+      "resolved": true,
+      "dropped_share": 0.0,
+      "descriptive": false
+    },
+    "VA": {
+      "n_rows": 243,
+      "n_paths": 61,
+      "D": 0.644339694665189,
+      "lo95": 0.07898479487256023,
+      "hi95": 1.2115759837949303,
+      "resolved": false,
+      "dropped_share": 0.0,
+      "descriptive": false
+    }
+  },
+  "outcome": "N"
+}

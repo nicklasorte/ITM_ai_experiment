@@ -135,7 +135,7 @@ z = (1:N)' * dz;                                % interior points; u(0) = 0 at t
 M = 2 * (N + 1);                                % odd extension length
 p = 2 * pi / (M * dz) * [0:M/2, -M/2+1:-1]';
 prop = propagator(p, k, dx, opts.Propagator);
-% Absorber: Hann taper over the top AbsorbFrac of the domain
+% Absorber: rate rising with the square of depth over the top AbsorbFrac of the domain
 w = absorber(z, ztop, opts.AbsorbRate, dx);
 % Source: Gaussian aperture with its pattern 3 dB down at ThetaBeam
 % (angular spectrum exp(-p^2 W^2 / 4); 3 dB in power at p = k sin(theta)).
