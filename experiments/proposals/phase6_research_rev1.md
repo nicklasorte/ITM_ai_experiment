@@ -109,7 +109,7 @@ abstract). The plan relies on V sources only.
   tabulate. P.833's one-terminal model needs the depth of woodland and
   doesn't cover two terminals in forest. Eglin is already inspected, so it
   could at most illustrate, not test.
-- **Where a test is possible:** R4 (Q6). Its receiver moves from inside an 18 m canopy to a few metres above it on each path, in both leaf states, which is the
+- **Where a test is possible:** R4 (Q6). Its receiver moves from inside an 18 m canopy to a few meters above it on each path, in both leaf states, which is the
   P.833 section 2.1 geometry and the geometry of 707's own terminal term
   (ITU-R P.2108-1 section 3.1, already in `itm_variant/`).
 
@@ -140,10 +140,10 @@ All from V3.
 
 | Item | What the report says | Section |
 | --- | --- | --- |
-| Sponsor and operator | ARPA; measured by a contractor for the U.S. Army Electronic Proving Ground; analysed at ITS | 2 |
+| Sponsor and operator | ARPA; measured by a contractor for the U.S. Army Electronic Proving Ground; analyzed at ITS | 2 |
 | Transmitters | 10 packages, about 2 W, 172.5 and 410.5 MHz nominal; quarter-wave monopoles over four ground wires, feed point about 35 cm above ground | App. A |
-| Receivers | Same antenna type at 10 m, 3 m and on the ground, one per frequency; spectrum analyser under computer control | App. A |
-| Calibration | Spectrum analyser calibrated each recording day with a signal generator; loss tolerance about 140 dB at first and about 160 dB after a pre-amplifier was added | App. A |
+| Receivers | Same antenna type at 10 m, 3 m and on the ground, one per frequency; spectrum analyzer under computer control | App. A |
+| Calibration | Spectrum analyzer calibrated each recording day with a signal generator; loss tolerance about 140 dB at first and about 160 dB after a pre-amplifier was added | App. A |
 | Conversion | Recorded power converted to basic transmission loss with corrections for transmitter power, antenna gains and line losses | 2 |
 | Percentages | Tables 8 to 11 give the 10, 50 and 90 % values of the cumulative distributions of basic transmission loss; in Table 10 the values rise with the percentage | 6.2, 7.2, Table 10 |
 | Data problems | Readings on the skirts of the signal; bandwidth widened from 1 to 3 kHz after Eglin; some erroneous values certain; tuning failures frequent at Hunter Liggett; sudden changes marked questionable | 3, 7.2 |
@@ -182,7 +182,7 @@ and TR-82-100 weren't opened for this question (U8).
 - `compute_delta_h`: `x_start = d_start / xi`, `i = fix(x_start)` and
   `p10 = fix(0.1 (x_end − x_start + 8))` (lines 543 and 559).
 - Line 239: `q = fix(d_m − d_hzn(1) − d_hzn(2))` truncates a distance in
-  metres, not a spacing quotient; it's listed for completeness.
+  meters, not a spacing quotient; it's listed for completeness.
 - The callers pass distances such as a tenth of a horizon distance. A
   horizon distance is a whole number of spacings, so when the horizon
   index is a multiple of 10 the quotient is an integer up to rounding, and
@@ -192,8 +192,9 @@ and TR-82-100 weren't opened for this question (U8).
 - **Hypothesis for B34's D34c (untested):** the 12 discrepant rows are
   rows where such a quotient lands on an integer. It predicts that
   substituting only the spacing, not the elevations, reproduces the jump.
-  This is a property of ITM as published, so it affects stock ITM and 707
-  alike; it isn't a 707 defect.
+  The port follows the NTIA code, and B33 saw the jump in stock ITM as
+  well as 707, so it isn't a 707 defect; the NTIA source itself wasn't
+  opened to confirm the same truncations there.
 
 ## Q6. Public, non-lockbox measurement sets
 
@@ -249,7 +250,7 @@ working paper ever scored R4 is unknown to this planner.
 | V3 | Longley and Hufford, OT Report 75-74, 1975; <https://its.ntia.gov/publications/download/OT-75-74.pdf> (SHA-256 in B31) | Printed pages 1 to 4, 38 to 45, 58 to 62 (with Table 10), 70 to 73 and A1 to A3, as page images; the red team rechecked most of them | Q1 to Q4 |
 | V4 | Recommendation ITU-R P.833-10 (09/2021); <https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.833-10-202109-I!!PDF-E.pdf> | Section 2.1, eq. (1) and (2) and the listed constants, through a fetch of the PDF text; Figure 2 values not readable | Q2, Q3 |
 | V5 | Recommendation ITU-R P.2108-1 section 3.1, as implemented and checked against NTIA test vectors in `itm_variant/p2108_height_gain_rev1.m` | The function header and equations in the repo; the Recommendation itself wasn't reopened today | 707's terminal term |
-| V6 | `itm_variant/itm_p2p_core_exp.m` (port of NTIA ITM v1.4 at matlab_itm 9bd6a4e) | Lines 84 to 95, 239, 536 to 596, 1533 to 1582 | Q5; how 707 picks the clutter end |
+| V6 | `itm_variant/itm_p2p_core_exp.m` (port of NTIA ITM v1.4 at matlab_itm 9bd6a4e) | Lines 84 to 95, 208 to 212, 239, 536 to 596, 1533 to 1582 | Q5; how 707 picks the clutter end |
 
 ### Unverified (search result, abstract or citation only; not relied on)
 
