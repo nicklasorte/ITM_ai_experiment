@@ -1,7 +1,7 @@
 # Prompt for a Fable planner session: phase plan rev 6 (research-heavy)
 
 Written 2026-11-26 by Claude Opus 5.5 after B33; revised the same day to make the
-session research-led. Paste the block below into a Fable session with the repo checked out
+session research-led, with a red-team pass and update before committing. Paste the block below into a Fable session with the repo checked out
 at `main`.
 
 ```text
@@ -89,19 +89,45 @@ PLANNING TASK (after the research)
    configuration before any job longer than a few minutes; file list; commands; stop
    conditions; registered predictions; and a "Not done" section.
 
+RED TEAM AND UPDATE (after the drafts exist, before committing)
+5. Red team: give a separate agent that didn't see your drafting the three draft files, the
+   repo files listed above and your source register, but not your reasoning. Its job is to
+   break the plan. It must:
+   - check every cited section and equation against the source itself, and flag any citation
+     it can't open or that doesn't say what the draft claims;
+   - try to find the strongest public evidence against each ranked item and against the
+     stop-or-continue decision;
+   - check each item against every closed attempt (results.tsv, the archive, B18 to B33) and
+     name any that duplicates one under a new label;
+   - attack B34 for confounds, multiplicity, selection on already-inspected data (D31 to D33),
+     unsourced constants, checks that can't fail, and support that's too small;
+   - say which ranked item it would cut first and why.
+   It returns each finding as UNIT / VERDICT / REASON / EVIDENCE / SCOPE.
+6. Update: revise all three files to address every finding. Add a "Red-team disposition"
+   section to phase_plan_rev6.md listing each finding with accepted, partly accepted or
+   rejected, the reason, and what changed. Rejecting a finding needs evidence, not
+   preference. If the red team removes the top item, re-rank and rewrite B34; if nothing
+   survives, switch to the close-out plan in task 3.
+7. Second pass: give the red team the updated files and the disposition list. Repeat steps 5
+   and 6 once if it finds anything new at the level of a wrong citation, a duplicated closed
+   attempt or a confound in B34. Stop after two rounds and list anything still open.
+
 OUTPUTS
 - experiments/proposals/phase6_research_rev1.md: the answers to Q1 to Q7 and the source
   register (verified and unverified sources listed separately).
-- experiments/proposals/phase_plan_rev6.md: the decision and ranking.
-- experiments/batches/B34.md.
+- experiments/proposals/phase_plan_rev6.md: the decision, the ranking and the red-team
+  disposition.
+- experiments/batches/B34.md, updated after the red team.
+- experiments/proposals/phase6_red_team_rev1.md: the red team's findings from both rounds,
+  verbatim.
 
 RULES
 Edit only experiments/. Don't edit eval/, data/, FRAMEWORK.md, program.md or CLAUDE.md. Never
 read lockbox data. Public and cleared sources only; paraphrase, and quote at most a short
 phrase from any source. No invented constants: cite a source or mark it TODO. Plain technical
-English, Google developer documentation style. Before committing, have one fresh reviewer check
-each claim sentence against its data and each citation against its source, and apply the
-findings. Commit with an Agent-Role: planner trailer, run
+English, Google developer documentation style. After the red team and update, have one more
+fresh reviewer check each claim sentence against its data and each citation against its source,
+and apply the findings. Commit with an Agent-Role: planner trailer, run
 python3 .github/scripts/guard_rev1.py --range origin/main..HEAD, and push. Results that leave
 the repo need Nick's read first.
 ```
