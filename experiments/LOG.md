@@ -1645,3 +1645,13 @@ appended row 1804 to results/results.tsv
 - Fresh reviewer reran the analysis byte for byte; all six checks passed; six wording and record findings applied.
 - Results: `experiments/batches/B32.md`, `experiments/D32-ot7574-heights/`.
 - Follow-ups (B32.md section 6b, descriptive): the 0.5 m receiver clamp is worth a median 0.07 to 0.26 dB of each model's C_lo (ITM's own height dependence extrapolated below 0.5 m), so it explains little of the −2.6 to −10.7 dB C_lo under-prediction. Graham R5 summarised (2 to 9 paths per stratum, no direction).
+
+## B33 (D33) closed: OT 75-74 season pairing, quantile widths and transmitter-height sensitivity (X01, X06, X03; diagnostic, no score)
+
+- Taken from Nick's post-B32 proposal (Package F and X03). Registered in 3e70552 before any computation.
+- X01: measured 50 % loss changes between seasons on unchanged paths; 4 of 8 strata at 10 m and 3 m resolved (1.4 to 2.2 dB in size). Hunter Liggett: May-Jun lossier than Jan-Feb at 10 m in both bands. The 3 m minus 10 m interaction is resolved at Graham only, with opposite signs at VHF (+2.15 dB) and UHF (−2.75 dB). Both models predict no seasonal change, by construction; equipment and calibration per season weren't checked.
+- X06: seasonal median shifts are 0.30 to 1.05 times the within-season 10 % to 90 % width; Graham UHF widths are 2.5 to 4.5 dB narrower in April.
+- X03: moving the transmitter from 0.5 m to 0.7 and 1.0 m changes C_hi by under 1 dB on 92.9 % (707) and 92.3 % (stock) of B32's deciding paths, so the clamp is minor for C_hi except at Eglin (18 to 27 % change by 1 dB or more).
+- Found on the way: on 12 of 840 rows, ITM's loss moves by up to 0.197 dB when the profile is rounded at the 1e-13 m level (CSV round trip); B32's results used exact profiles and don't change.
+- Predictions: S resolved (60 %) yes; J resolved (30 %) yes; ratio below 0.5 everywhere (70 %) no; X03 stop rule (75 %) yes.
+- Fresh reviewer reran the analysis byte for byte; one wording fix and nits applied. Results: `experiments/batches/B33.md`, `experiments/D33-ot7574-seasons/`.

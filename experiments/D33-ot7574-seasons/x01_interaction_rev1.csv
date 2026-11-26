@@ -1,0 +1,5 @@
+area,band,n_paths,mean_J,J_lo95,J_hi95,resolved
+Graham,VHF,29,2.1517,0.0720,4.1971,True
+Graham,UHF,17,-2.7471,-4.8650,-0.6762,True
+Hunter Liggett,VHF,27,-0.5037,-1.7519,0.8668,False
+Hunter Liggett,UHF,23,-0.8435,-2.2087,0.4783,False

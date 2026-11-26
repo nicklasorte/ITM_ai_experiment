@@ -1,0 +1,13 @@
+area,band,rx_ant_m,n_paths,mean_S,S_lo95,S_hi95,resolved
+Graham,VHF,10.0000,30,0.8033,-0.9600,2.4203,False
+Graham,VHF,3.0000,34,2.0971,0.2115,3.9884,True
+Graham,VHF,0.3500,28,1.6643,-0.0964,3.2931,measured only
+Graham,UHF,10.0000,19,0.8211,-1.0789,2.7580,False
+Graham,UHF,3.0000,18,-1.5500,-2.9500,-0.2444,True
+Graham,UHF,0.3500,17,0.2059,-1.0059,1.3531,measured only
+Hunter Liggett,VHF,10.0000,34,2.2324,1.0381,3.4355,True
+Hunter Liggett,VHF,3.0000,31,1.0194,-0.3097,2.4615,False
+Hunter Liggett,VHF,0.3500,32,2.0500,0.9531,3.1313,measured only
+Hunter Liggett,UHF,10.0000,34,1.4147,0.2058,2.6794,True
+Hunter Liggett,UHF,3.0000,26,0.6615,-0.6544,2.0001,False
+Hunter Liggett,UHF,0.3500,19,0.4368,-1.5001,2.1896,measured only

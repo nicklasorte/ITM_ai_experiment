@@ -1,0 +1,18 @@
+{
+  "x01_any_S_resolved": true,
+  "x01_any_J_resolved": true,
+  "x06_ratio_below_0.5_everywhere": false,
+  "x03_overall": {
+    "n_paths": 325,
+    "share_under_1dB_707": 0.9292307692307692,
+    "median_abs_dC100_707": 0.012034719714989706,
+    "max_abs_dC100_707": 5.363714443635999,
+    "share_under_1dB_stock": 0.9230769230769231,
+    "median_abs_dC100_stock": 0.23449980493199973,
+    "max_abs_dC100_stock": 6.333165329345988,
+    "median_dC100_707_minus_stock": 0.19781667607304598,
+    "stop_rule_holds": true
+  },
+  "seed": 20261126,
+  "n_boot": 2000
+}
