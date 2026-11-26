@@ -1,0 +1,27 @@
+B30 (D30) vegetation height near the terminals vs 707 signed error (pred - meas, dB)
+
+O rows, excess E (deciding)
+  population: uncensored Phase 2 rows, 12570 rows on 400 paths
+  R1: 3481 rows, 47 paths (3 with E > 0) DESCRIPTIVE slope -0.914 dB per unit [+nan, +nan]
+  R2: 2328 rows, 39 paths (39 with E > 0) slope -1.113 dB per unit [-1.553, -0.577] NEGATIVE
+  R3: 5149 rows, 57 paths (28 with E > 0) slope -0.112 dB per unit [-1.397, +0.899]
+  VA: 1612 rows, 257 paths (105 with E > 0) slope +0.037 dB per unit [-0.436, +0.483]
+  RMS 11.32 -> 11.05 dB after per-site lines (in sample, optimistic); outcome rule B
+
+C rows, excess E (exploratory)
+  population: uncensored Phase 2 rows, 1774 rows on 108 paths
+  R1: 592 rows, 7 paths (3 with E > 0) DESCRIPTIVE slope +0.571 dB per unit [+nan, +nan]
+  R2: 232 rows, 4 paths (4 with E > 0) DESCRIPTIVE slope +0.587 dB per unit [+nan, +nan]
+  R3: 0 rows, 0 paths (0 with E > 0) DESCRIPTIVE slope +nan dB per unit [+nan, +nan]
+  VA: 950 rows, 97 paths (85 with E > 0) slope +0.300 dB per unit [+0.030, +0.564]
+  RMS 15.74 -> 15.68 dB after per-site lines (in sample, optimistic); outcome rule B
+
+O rows, along-path tree fraction (exploratory)
+  population: uncensored Phase 2 rows, 12570 rows on 400 paths
+  R1: 3481 rows, 47 paths (40 with tree_frac > 0) slope +14.473 dB per unit [+0.778, +29.188]
+  R2: 2328 rows, 39 paths (39 with tree_frac > 0) slope -44.304 dB per unit [-55.951, -33.673] NEGATIVE
+  R3: 5149 rows, 57 paths (56 with tree_frac > 0) slope -20.727 dB per unit [-95.745, +36.990]
+  VA: 1612 rows, 257 paths (254 with tree_frac > 0) slope -0.186 dB per unit [-6.496, +6.802]
+  RMS 11.32 -> 10.40 dB after per-site lines (in sample, optimistic); outcome rule B
+
+OUTCOME B (decided on uncensored siting-O rows, excess E)

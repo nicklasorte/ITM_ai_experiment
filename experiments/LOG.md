@@ -1618,3 +1618,11 @@ appended row 1804 to results/results.tsv
 - Smoke test after the `eval/` change (job 278, run after the B29 runs): passed, 152 s.
 - Fresh reviewer: numbers, held-out claim, decision and k count verified; four wording and record findings applied.
 - Results: `experiments/batches/B29.md`, `experiments/B29-decision/`.
+
+## B30 (D30) closed: LANDFIRE vegetation height near terminals, outcome B (diagnostic, no score)
+
+- Nick approved data proposal item D1 on 2026-11-25. LANDFIRE 2016 Remap EVH sampled along all 515 Phase 2 profiles (`experiments/D30-landfire-evh/`; not in `data/`).
+- Deciding population: uncensored siting-O rows, 12,570 rows on 400 paths. Only R2 has a negative slope of 707's signed error on the vegetation excess above the antennas whose interval excludes zero (−1.11 dB per m, −1.55 to −0.58); VA +0.04 (−0.44 to +0.48); R3 −0.11 (not resolved); R1 descriptive. In-sample RMS gain 0.26 dB. The rule needs two sites and 0.5 dB, so outcome B: D1 closes.
+- Exploratory and post hoc: R2's error also falls with along-path tree fraction; R1 and VA siting-C show the opposite sign. Any R2-only follow-up needs data the search hasn't used.
+- Predictions: outcome B matched; "VA most E > 0 rows" and "VA most likely negative" were wrong (R2 on both).
+- Fresh reviewer reran the analysis byte for byte; seven findings applied (slope-sign wording, a prediction part, 0.26 dB, the slope-only RMS reading with the 0.42 dB full-line figure, the forest source, exploratory signs, two-step resampling).

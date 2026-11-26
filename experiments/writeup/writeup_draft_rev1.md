@@ -101,6 +101,7 @@ What this shows, scoped to the development set:
 | B27 | Whether 707 and stock ITM bracket the measured height contrast (precondition for the NBS TN 101 height-gain terms) | Outcome C (no bracket), so the height-gain terms weren't tested | R1 open blocked-blocked height pairs (149 pairs, 29 bases, one fixed receiver) |
 | B28 | Calibrating 707's constants (diffraction weights, line-of-sight blend, time spread) | No score; fold 4 infeasible under the calibrator's stock-referenced censored rule; no training gain in folds 1 to 3 for two groups, 0.09 to 0.20 dB for the time spread | Training rows, folds 1 to 3 |
 | B29 | B28 with the censored rule referenced to 707 (2901 to 2903) | Rejected: 2901 and 2902 gain 0.00 dB; 2903 screened +0.11 dB (99.5 % bound −0.06), long-term shape RMS 5.17 to 4.97 dB | Held-out rows, five-fold cross-validation, development set |
+| B30 (D30) | LANDFIRE 2016 vegetation height near the terminals against 707's errors (diagnostic, data proposal item D1) | Outcome B: only R2 shows a resolved negative slope; in-sample RMS gain 0.26 dB | Uncensored siting-O Phase 2 rows (12,570 rows, 400 paths) |
 
 The cell-mean ceiling (`hm_ceiling_rev1.py`) bounds what fixing every cell
 mean could do: 1.13 dB on 707's screened composite (9.91 to 8.78), on the

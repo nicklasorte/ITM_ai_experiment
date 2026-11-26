@@ -1,0 +1,25 @@
+{
+ "deciding": {
+  "outcome": "B",
+  "n_sites_negative": 1,
+  "rms_before_db": 11.318069629593506,
+  "rms_after_db": 11.05404005514804,
+  "rms_gain_db_in_sample": 0.26402957444546615
+ },
+ "exploratory": {
+  "C rows, excess E (exploratory)": {
+   "outcome": "B",
+   "n_sites_negative": 0,
+   "rms_before_db": 15.742739858551161,
+   "rms_after_db": 15.681797965964844,
+   "rms_gain_db_in_sample": 0.06094189258631744
+  },
+  "O rows, along-path tree fraction (exploratory)": {
+   "outcome": "B",
+   "n_sites_negative": 1,
+   "rms_before_db": 11.318069629593506,
+   "rms_after_db": 10.395754067777341,
+   "rms_gain_db_in_sample": 0.9223155618161645
+  }
+ }
+}

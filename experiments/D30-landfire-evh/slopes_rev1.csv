@@ -1,0 +1,13 @@
+population,site,rows,paths,paths_E_pos,counted,slope_db_per_m,ci_lo,ci_hi,negative_excludes_zero
+"O rows, excess E (deciding)",R1,3481,47,3,False,-0.9142765279115226,,,False
+"O rows, excess E (deciding)",R2,2328,39,39,True,-1.1134016405239762,-1.5527552465495484,-0.5772318724909874,True
+"O rows, excess E (deciding)",R3,5149,57,28,True,-0.11242677479272356,-1.3971483791598283,0.8987594664584743,False
+"O rows, excess E (deciding)",VA,1612,257,105,True,0.037182745792469676,-0.43643216244354005,0.48324651589785594,False
+"C rows, excess E (exploratory)",R1,592,7,3,False,0.5708155334923274,,,False
+"C rows, excess E (exploratory)",R2,232,4,4,False,0.5871860513060095,,,False
+"C rows, excess E (exploratory)",R3,0,0,0,False,,,,False
+"C rows, excess E (exploratory)",VA,950,97,85,True,0.29974671584219237,0.02963878887285021,0.5642140778024337,False
+"O rows, along-path tree fraction (exploratory)",R1,3481,47,40,True,14.473183483447386,0.7781845472185853,29.187971464026607,False
+"O rows, along-path tree fraction (exploratory)",R2,2328,39,39,True,-44.303769130731496,-55.95058567029596,-33.672630545330236,True
+"O rows, along-path tree fraction (exploratory)",R3,5149,57,56,True,-20.72726400682293,-95.74502663900806,36.99033253912817,False
+"O rows, along-path tree fraction (exploratory)",VA,1612,257,254,True,-0.18623440546609923,-6.496326152664537,6.80158766381753,False
