@@ -1644,3 +1644,4 @@ appended row 1804 to results/results.tsv
 - Predictions: outcome C matched; Table 7 C_lo under-prediction matched but is confounded by the clamp.
 - Fresh reviewer reran the analysis byte for byte; all six checks passed; six wording and record findings applied.
 - Results: `experiments/batches/B32.md`, `experiments/D32-ot7574-heights/`.
+- Follow-ups (B32.md section 6b, descriptive): the 0.5 m receiver clamp is worth a median 0.07 to 0.26 dB of each model's C_lo (ITM's own height dependence extrapolated below 0.5 m), so it explains little of the −2.6 to −10.7 dB C_lo under-prediction. Graham R5 summarised (2 to 9 paths per stratum, no direction).
