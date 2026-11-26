@@ -1,0 +1,21 @@
+{
+  "outcome": "C",
+  "strata_favour_707": 0,
+  "strata_favour_stock": 1,
+  "deciding_strata": 10,
+  "rule": "B32.md section 3a: C_hi decides, A needs >= 6 of 10 favouring 707 and none favouring stock",
+  "n_boot": 2000,
+  "seed": 1,
+  "prediction_table7_clo_both_under": true,
+  "table7_clo_mean_e": {
+    "VHF": [
+      -2.8033662302270534,
+      -2.616985767934711
+    ],
+    "UHF": [
+      -3.0005550195111654,
+      -3.082531321308998
+    ]
+  },
+  "prediction_note": "The models' lower antenna is at 0.5 m (B32.md section 3a), which lowers the modeled C_lo by construction, so this match doesn't test the forest reasoning."
+}

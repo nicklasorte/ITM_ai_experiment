@@ -1634,3 +1634,13 @@ appended row 1804 to results/results.tsv
 - Step 1: Tables 7 to 11 digitized (210 paths, 3,780 cells). Every path has a second check: the text layer (124 paths; 2,013 of 2,016 aligned cells agreed) or an independent second visual read (86 paths; 1,548 of 1,548 cells agreed). Three disagreements settled against the image.
 - Step 2: terminals located from the site maps and refined by least squares on the tabulated distances. All four configurations pass (adjusted distance RMS 0.000 to 0.023 km; largest shift from the map 0.178 km). Map-only RMS 0.04 to 0.08 km is the independent check.
 - Step 3 (707 vs stock ITM on the measured height contrasts) needs the Mac and its own registered rule. Details: `experiments/batches/B31.md`, `experiments/D31-ot7574/`.
+
+## B32 (D32) closed: 707 vs stock ITM on OT 75-74 height contrasts, outcome C (diagnostic, no score)
+
+- Smoke check found that ITM v1.4 rejects antenna heights below 0.5 m (NTIA error 1000), and every OT 75-74 transmitter is at 0.35 m. Before any loss was computed, Nick chose the amendment (B32.md section 3a): both models use 0.5 m for 0.35 m heights; only C_hi = L(3 m) − L(10 m) decides (6 of 10 strata); C_lo is descriptive.
+- Run on the Mac: 130 pairs, 1,260 rows; largest profile vs tabulated distance difference 1.31 %; core at defaults matched stock ITM to 0 dB on every row; stratum counts matched the registration.
+- C_hi: no stratum favours 707; one (Table 9 VHF, D +1.28 dB, +0.38 to +2.11) favours stock. Outcome C. Tables 8 and 9, and 10 and 11, share paths.
+- Descriptive: 707 predicts a smaller 3 m to 10 m contrast than stock in all 10 C_hi strata (0.7 to 2.7 dB), without being closer. Both models under-predict C_lo in all 10 strata, partly by construction (0.5 m clamp). Both under-predict absolute loss, most at Eglin (−13.7 to −29.7 dB); at VHF 707's absolute error is 2.5 to 5.5 dB lower than stock's in every cell, because it adds loss.
+- Predictions: outcome C matched; Table 7 C_lo under-prediction matched but is confounded by the clamp.
+- Fresh reviewer reran the analysis byte for byte; all six checks passed; six wording and record findings applied.
+- Results: `experiments/batches/B32.md`, `experiments/D32-ot7574-heights/`.
