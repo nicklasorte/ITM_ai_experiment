@@ -1655,3 +1655,12 @@ appended row 1804 to results/results.tsv
 - Found on the way: on 12 of 840 rows, ITM's loss moves by up to 0.197 dB when the profile is rounded at the 1e-13 m level (CSV round trip); B32's results used exact profiles and don't change.
 - Predictions: S resolved (60 %) yes; J resolved (30 %) yes; ratio below 0.5 everywhere (70 %) no; X03 stop rule (75 %) yes.
 - Fresh reviewer reran the analysis byte for byte; one wording fix and nits applied. Results: `experiments/batches/B33.md`, `experiments/D33-ot7574-seasons/`.
+
+## Phase plan rev 6, research notes and B35 registered (planner note; no run)
+
+- Research-led planning session (Claude Fable 5.2) with two red-team rounds and a final fact check. Files: `experiments/proposals/phase6_research_rev1.md`, `phase_plan_rev6.md`, `phase6_red_team_rev1.md`, `experiments/batches/B35.md`.
+- Decision: stop the scored search on the frozen inputs (as rev 5; B29 closed the last open tier). k stays 9.
+- Found: `data/raw/its_phase2.zip` holds a fifth Phase 2 site, R4 (receiver in an 18 m cottonwood grove; 36 paths; 230 to 9190 MHz; receiver 1 to 24 m; leaves on and off), which the builder never read. Not Tier B. No measured value read by the planner or the reviewers. B35 registers a one-site out-of-sample check of 707 on it; it needs Nick's decision on whether the agent, or Nick, runs it.
+- OT 75-74 metadata (read at the page level): the equipment was modified between the Graham periods and the authors discount the period differences, so B33's Graham shifts and height-by-season interaction aren't identifiable as propagation; Hunter Liggett has no consistent period difference by the authors' own reading. Notes for B34's D34a.
+- Hypothesis for B34's D34c (untested): the 0.2 dB jumps come from integer truncation of distance-over-spacing quotients in ITM's terrain analysis (core lines 543, 559, 592, 593).
+- The prompt named B34 for the batch file; B34 was registered by another planner the same day, so the batch is B35.
