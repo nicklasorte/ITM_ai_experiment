@@ -1664,3 +1664,11 @@ appended row 1804 to results/results.tsv
 - OT 75-74 metadata (read at the page level): the equipment was modified between the Graham periods and the authors discount the period differences, so B33's Graham shifts and height-by-season interaction aren't identifiable as propagation; Hunter Liggett has no consistent period difference by the authors' own reading. Notes for B34's D34a.
 - Hypothesis for B34's D34c (untested): the 0.2 dB jumps come from integer truncation of distance-over-spacing quotients in ITM's terrain analysis (core lines 543, 559, 592, 593).
 - The prompt named B34 for the batch file; B34 was registered by another planner the same day, so the batch is B35.
+
+## B34 D34c run: profile round trip traced to an integer truncation in ITM's effective-height fit (diagnostic, no score)
+
+- 840 B32 rows (3 m and 10 m receivers, transmitter 0.5 m), 130 pairs. Fresh profiles reproduce B32 within 5.1e-13 dB; `%.17g` text and MAT round trips are bit-identical.
+- Stock ITM: the 12 rows that change under the CSV profiles (largest 0.197 dB) are reproduced by the CSV spacing alone (10 and 11 ULP off on the two pairs involved); CSV elevations alone change nothing (3.0e-11 dB). 707 changes by at most 5.5e-4 dB.
+- First divergence in all 12 rows: the fit-window index in `linear_least_squares_fit` (Hunter Liggett T4–R4 end index 93 against 92; Graham T3–R3 start index 74 against 75), from truncating a distance-over-spacing quotient that sits within a few ULP of an integer. Same lines in the pinned stock source.
+- Spacing moved alone by ±20 ULP moves stock ITM's loss on those pairs by 0.07 to 0.36 dB, non-monotonically. Representation-dependent, not physical; not a 707 defect. No patch; a repair needs its own registration.
+- Results: `experiments/D34c-profile-roundtrip/summary_rev1.md`; B34 results section.
