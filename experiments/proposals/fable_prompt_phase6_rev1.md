@@ -7,7 +7,9 @@ with the repo checked out at `main`.
 You are the planner (Agent-Role: planner) for nicklasorte/ITM_ai_experiment. Write phase plan rev 6.
 
 Read first, in order: CLAUDE.md, FRAMEWORK.md, program.md, experiments/proposals/phase_plan_rev5.md,
-experiments/proposals/data_proposal_rev1.md, results/results.tsv, results/batch_stability.tsv,
+experiments/proposals/data_proposal_rev1.md,
+experiments/proposals/post_b32_ten_experiments_rev1.md (Nick's ten proposals, X01 to X10),
+experiments/batches/B33.md, results/results.tsv, results/batch_stability.tsv,
 results/archive_rev1.txt, the last 12 entries of experiments/LOG.md, experiments/batches/B27.md
 through B32.md, and experiments/writeup/writeup_draft_rev1.md.
 
@@ -43,7 +45,8 @@ Your task:
 1. Decide whether the phase should stop under program.md's stopping rule. Say why in three
    sentences or fewer, naming the population each claim rests on. Weigh B28 and B29 (the
    constants carry no held-out gain) and B32 (no contrast advantage on outside data).
-2. If it continues, rank at most three new mechanisms or data tests. Each must:
+2. If it continues, rank at most three new mechanisms or data tests, starting from X01 to X10
+   (B33 runs X01, X03 and X06; use its results if they exist). Each must:
    - name its physics and a public source (ITU-R Recommendation, NTIA report or journal paper),
      with the section and equation numbers you read;
    - differ in mechanism from every closed attempt in results.tsv, the archive and B18 to B32,
@@ -56,7 +59,7 @@ Your task:
    Say plainly if nothing meets these bars. A short honest plan beats a padded one.
 3. If the phase stops, write the close-out plan instead: what goes into the write-up's final
    version, what the reviewers check, and what new public data would justify reopening it.
-4. For the top item (or the close-out), write experiments/batches/B33.md so a Haiku worker can
+4. For the top item (or the close-out), write the next free batch file (B34 or later) so a Haiku worker can
    run it exactly: checks written before code (including a smoke trial of the exact configuration
    before any job longer than a few minutes), file list, commands, stop conditions and a
    "Not done" section.
@@ -65,7 +68,7 @@ Rules: edit only experiments/ (plans); nothing in eval/, data/, FRAMEWORK.md, pr
 CLAUDE.md. Never read lockbox data. Public and cleared sources only. Plain technical English,
 Google developer documentation style. Before committing, have one fresh reviewer check each claim
 sentence against its data and each citation against its source. Commit
-experiments/proposals/phase_plan_rev6.md and experiments/batches/B33.md with an
+experiments/proposals/phase_plan_rev6.md and the new batch file with an
 Agent-Role: planner trailer, run python3 .github/scripts/guard_rev1.py --range origin/main..HEAD,
 and push.
 ```
