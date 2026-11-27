@@ -1,0 +1,86 @@
+{
+  "R1": {
+    "D2_total": {
+      "mean": 2.1823203974315586,
+      "lo": 1.0818194265398835,
+      "hi": 3.5526578569009533,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "principal_vs_bullington": {
+      "mean": -4.042871898667757,
+      "lo": -5.108189304975159,
+      "hi": -2.9961302440726447,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "secondary_edges": {
+      "mean": 2.2526038727929447,
+      "lo": 1.0830808411767074,
+      "hi": 3.663243733369079,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "correction_C": {
+      "mean": 3.972588423306372,
+      "lo": 2.9135747325930508,
+      "hi": 5.00259880790712,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "bullington_correction_C1_minus_C1u": {
+      "mean": 3.844341941298018,
+      "lo": 2.795247763855964,
+      "hi": 4.847547539432641,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "carries": [
+      "secondary_edges",
+      "correction_C"
+    ],
+    "identity_max_db": 0.0
+  },
+  "VA_descriptive": {
+    "D2_total": {
+      "mean": 1.5882400876781018,
+      "lo": 1.067954901945754,
+      "hi": 2.157508587823986,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "principal_vs_bullington": {
+      "mean": -2.6049767359905256,
+      "lo": -3.172999291619826,
+      "hi": -1.9847399275652033,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "secondary_edges": {
+      "mean": 1.5916420293349647,
+      "lo": 1.053530964650359,
+      "hi": 2.194722760548851,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "correction_C": {
+      "mean": 2.6015747943336622,
+      "lo": 1.954170488112181,
+      "hi": 3.1801012487362024,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "bullington_correction_C1_minus_C1u": {
+      "mean": 2.5541282649494397,
+      "lo": 1.9293053667753493,
+      "hi": 3.119699072367653,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "carries": [
+      "secondary_edges",
+      "correction_C"
+    ],
+    "identity_max_db": 0.0
+  }
+}
