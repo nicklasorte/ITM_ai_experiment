@@ -9,7 +9,11 @@ function [L_db, D] = multi_edge_diffraction_rev1(method, x_m, z_m, f_mhz, a_e_m)
 %              "deygout" | "p526_cascaded" | "p526_cascaded_isolated" |
 %              "deygout_isolated" | "bullington" | "bullington_uc" |
 %              "p526_cylinders_knife" | "p526_cascaded_isolated_one" |
-%              "p526_cascaded_isolated_tree3" | "p526_cascaded_isolated_rival"
+%              "p526_cascaded_isolated_tree3" | "p526_cascaded_isolated_rival" |
+%              "p526_cascaded_isolated_principal" | "p526_cascaded_isolated_uc"
+%              (the last two: B38 report-only parts of "p526_cascaded_isolated":
+%              the principal knife edge J_p alone, and the cascade without
+%              the P.526-11 eq. (51) correction C)
 %     x_m      distance of each profile point from the transmitter (m),
 %              increasing, x_m(1) = 0, x_m(end) = path length
 %     z_m      height above sea level (m): z_m(1) and z_m(end) are the
@@ -216,7 +220,8 @@ switch method
     case "string_ep"
         [L_db, D.edges, D.nu] = string_ep(x_m, z_m, lambda, a_e_m);
 
-    case {"p526_cascaded_isolated", "deygout_isolated"}
+    case {"p526_cascaded_isolated", "deygout_isolated", "p526_cascaded_isolated_principal", ...
+            "p526_cascaded_isolated_uc"}
         [nu_p, p] = principal(1, n, x_m, z_m, lambda, a_e_m);
         if nu_p > -0.78
             Jp = knife_J(nu_p);
@@ -224,6 +229,11 @@ switch method
             [L_r, r, nu_r, w_r] = isolated_secondary(p, n, p, x_m, z_m, lambda, a_e_m);
             if method == "deygout_isolated"
                 L_db = Jp + L_t + L_r;                       % Deygout 1966, weighted secondary edges
+            elseif method == "p526_cascaded_isolated_principal"
+                L_db = Jp;                                   % B38 report-only: principal knife edge only
+            elseif method == "p526_cascaded_isolated_uc"
+                T = 1.0 - exp(-Jp / 6.0);                    % P.526-11 eq. (52)
+                L_db = Jp + T * (L_t + L_r);                 % B38 report-only: eq. (50a) without C (eq. (51))
             else
                 C = 10.0 + 0.04 * (x_m(n) / 1000);           % P.526-11 eq. (51), D in km
                 T = 1.0 - exp(-Jp / 6.0);                    % P.526-11 eq. (52)

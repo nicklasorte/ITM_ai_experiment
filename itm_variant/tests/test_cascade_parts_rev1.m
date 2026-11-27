@@ -27,7 +27,9 @@ for q = 1:200
     c = S.cases{q};
     [Lf, D] = multi_edge_diffraction_rev1("p526_cascaded_isolated", c.x, c.z, c.f, c.ae);
     Lp = multi_edge_diffraction_rev1("p526_cascaded_isolated_principal", c.x, c.z, c.f, c.ae);
-    k = find(D.weight == 1, 1);
+    % principal edge: the middle of [t p r], else the only edge (a secondary
+    % edge can also have weight 1, so the weight doesn't identify it)
+    if numel(D.nu) == 3, k = 2; else, k = 1; end
     tc.verifyEqual(Lp, J_approx(D.nu(k)), 'AbsTol', 1e-12);
     tc.verifyLessThanOrEqual(Lp, Lf + 1e-12);
 end

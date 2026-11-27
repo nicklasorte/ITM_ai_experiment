@@ -962,6 +962,10 @@ switch cfg.diffraction
         method = "p526_cascaded_isolated_one";
     case "delta_cascaded_isolated_tree3"
         method = "p526_cascaded_isolated_tree3";
+    case "delta_cascaded_isolated_principal"
+        method = "p526_cascaded_isolated_principal";     % B38 report-only part
+    case "delta_cascaded_isolated_uc"
+        method = "p526_cascaded_isolated_uc";            % B38 report-only part
     case "delta_deygout_isolated"
         method = "deygout_isolated";
     case "delta_bullington_uc"
@@ -1025,8 +1029,14 @@ if nargout > 1
     % find which term carries the height-gain flattening. No effect on A_ref.
     E.parts = struct('L_ba_db', L_ba, 'L_bs_db', L_bs, 'A_s_db', A_s, 'A_delta_db', A_ref, ...
         'h_st_m', hst, 'h_sr_m', hsr, 'h_p_m', hp, 'h_ts_m', hts, 'h_rs_m', hrs, ...
-        'terms_ba', cascade_terms(D_ba), 'terms_bs', cascade_terms(D_bs));
+        'terms_ba', cascade_terms(D_ba), 'terms_bs', cascade_terms(D_bs), ...
+        'edges_ba', D_ba.edges, 'nu_ba', D_ba.nu, 'weight_ba', edge_weights(D_ba));   % B38 report-only
 end
+end
+
+function w = edge_weights(D)
+% Report only (B38): the edge weights when the method reported them; ones otherwise.
+if isfield(D, 'weight'), w = D.weight; else, w = ones(size(D.edges)); end
 end
 
 function t = cascade_terms(D)

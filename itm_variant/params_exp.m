@@ -52,7 +52,14 @@ cfg.diffraction = "itm";
 %                            the same cascade with one secondary edge in
 %                            total, or three edges whenever three exist
 %                            (B18 repair bracket, candidates 1801 and 1802)
-% Where the profile-based loss applies (only when cfg.diffraction ~= "itm"):
+%   "delta_cascaded_isolated_principal" | "delta_cascaded_isolated_uc"
+%                            B38 report-only parts of the cascade: the
+%                            principal knife edge alone, and the cascade
+%                            without the P.526-11 eq. (51) correction C.
+%                            Diagnostics only; not candidates
+% Note (B37): the delta forms replace ITM's reference attenuation on every
+% row, line of sight included; cfg.diffraction_region below doesn't gate them
+% Where the profile-based loss applies (only for the non-delta profile methods):
 %   "transhorizon"   transhorizon paths only (batch B01)
 %   "blocked_paths"  also line-of-sight-region paths whose profile blocks
 %                    the direct ray; keeps the loss continuous at d_sML
