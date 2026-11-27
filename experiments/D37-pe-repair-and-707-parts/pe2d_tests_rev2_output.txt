@@ -1,0 +1,19 @@
+T1 two-ray: max error 0.003 dB on 111 heights (limit 0.5)
+T2 knife edge: max error 0.089 dB on 30 heights (limit 1.0)
+T3 smooth earth 230 MHz: PE 53.98 dB, P.452 54.24 dB, error -0.26 dB (limit 2.0)
+T3 smooth earth 910 MHz: PE 61.61 dB, P.452 62.02 dB, error -0.40 dB (limit 2.0)
+T6 tilted plane (5.7 deg): max error 0.160 dB on 73 heights (limit 0.5)
+T4 absorber variant on P2_R1_R1-050-T1_O (52.6 km, 910 MHz): max change 0.000 dB (limit 0.2)
+T5 grid halved on P2_R1_R1-050-T1_O: max change 0.001 dB (limit 0.5); A = [10.63 2.67 3.81] dB
+PE validation: all pass
+T7 impedance 230 MHz, h1 2 m, 1 km: max error 0.002 dB on 15 heights (limit 0.2); all heights 0.004 dB
+T7 impedance 230 MHz, h1 2 m, 20 km: no height above -20 dB (case uninformative); all heights 0.002 dB
+T7 impedance 230 MHz, h1 20 m, 1 km: max error 0.023 dB on 19 heights (limit 0.2); all heights 0.023 dB
+T7 impedance 230 MHz, h1 20 m, 20 km: max error 0.000 dB on 10 heights (limit 0.2); all heights 0.001 dB
+T7 impedance 910 MHz, h1 2 m, 1 km: max error 0.001 dB on 19 heights (limit 0.2); all heights 0.001 dB
+T7 impedance 910 MHz, h1 2 m, 20 km: no height above -20 dB (case uninformative); all heights 0.000 dB
+T7 impedance 910 MHz, h1 20 m, 1 km: max error 0.107 dB on 19 heights (limit 0.2); all heights 0.107 dB
+T7 impedance 910 MHz, h1 20 m, 20 km: max error 0.000 dB on 18 heights (limit 0.2); all heights 0.000 dB
+T8 10 deg plane: narrow 0.484 dB, wide 0.651 dB (limit 0.3 for wide)
+T9 range average: max error 0.001 dB, 40 samples (limits 0.1 dB, 40)
+T10 roughness limit: 1.34e-11 dB (limit 1e-9)
