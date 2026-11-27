@@ -1709,3 +1709,12 @@ appended row 1804 to results/results.tsv
 - Fresh reviewer: reruns byte-identical; code and numbers pass; R3 error-size claim corrected; dependence on R3 stated; departures listed.
 - Synthesis for Nick: `experiments/proposals/what_paid_off_rev1.md`.
 - Results: `experiments/batches/B38.md` section 7; `experiments/D38-cascade-parts-landcover/`.
+
+## B39 run: R1's secondary edges are separate obstacles (no physical defect found); canopy in the Fresnel zone resolves only at R2 (diagnostic, no score)
+
+- Not a scored repair: phase plan rev 6's stop stands (decision 2 open). Correction to B38: canopy height is LANDFIRE EVH (data item D1, approved, sampled in B30), not "data PR D2" (Ofcom).
+- D39a (model only; B36's R1 rows): 0.1 % of the secondary-edge loss lies within 3 samples of the principal edge (interval 0.0 to 0.5 %); reading "separated". Partly by construction: B06's isolation weight zeroes the principal's flank. 707's cascade is P.526-11 eq. (50) with B06's weights; the PDF read owed since B01 is still owed.
+- D39b (all 12,570 siting-O uncensored rows): slope of 707's error on the share of path where only EVH canopy enters the first Fresnel zone. R2 −102 dB per unit share (−159 to −58), resolved; R1, R3, VA not. Outcome none, with any site left out too. B38's R3 slope doesn't carry over.
+- Infra/test fixes before reading EVH: B38's edges file rounded ν and w to 5 digits, so `edges_rev2.csv` was rebuilt at full precision (matches to 5e-13 dB); one self-test geometry fixed.
+- Fresh reviewer: reruns byte-identical; numbers pass; construction caveat and "not an implementation slip" wording fixed.
+- Results: `experiments/batches/B39.md` section 7; `experiments/D39-secondary-edges-canopy/`.

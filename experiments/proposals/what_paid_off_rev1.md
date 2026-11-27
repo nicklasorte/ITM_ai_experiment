@@ -54,14 +54,15 @@ development data (Phase 2 at 50 %, and the long-term rows).
 - **R1 (too much loss).** 707's cascade adds about 2.2 dB over Bullington
   on R1's gentle open rows (B37), and about 9.5 dB on its diffraction-mode
   rows. Almost all of it comes from the secondary edges (B38 D38a,
-  descriptive regrouping). Lead: limit the secondary edges where they
-  over-count, without losing what they do at VA. It's model-only.
+  descriptive regrouping). B39 found them to be separate obstacles, so
+  there's no defect to repair, only a modeling choice.
 - **R2 and R3 (missing loss).** Within site, frequency and obstruction,
   rows whose first Fresnel zone holds more forest have more loss than 707
   predicts (B38 D38b, outcome F−). The outcome needs R3, whose slope is an
   extrapolation from small forest shares; R2 only just meets the rule. Lead: a vegetation term along the path, weighted
-  by the Fresnel zone. That form hasn't been tried. It needs canopy height
-  (the held data PR D2) and its own registration.
+  by the Fresnel zone. That form hasn't been tried. Canopy height is already
+  sampled (LANDFIRE EVH, B30). B39 found the association with canopy height
+  only at R2, so it's a one-site lead.
 
 ## Caveat
 
