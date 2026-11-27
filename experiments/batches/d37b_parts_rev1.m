@@ -5,8 +5,9 @@ function T = d37b_parts_rev1(root, options)
 %   rows on 29 paths, VA 243 on 61, R2 13 on 1), runs each row at 50 % with
 %   five settings (experiments/batches/B37.md section 3: S, C1, C2, C3, C4),
 %   checks S and C3 against the rescored stock and 707 predictions, and
-%   writes experiments/D37-pe-repair-and-707-parts/parts_rev1.csv. It reads
-%   no measured value: the link table's meas_lb_db column isn't loaded.
+%   writes experiments/D37-pe-repair-and-707-parts/parts_rev1.csv. It uses
+%   no measured value: measured columns are read with the tables but
+%   dropped or ignored.
 %
 %   T = D37B_PARTS_REV1(root, Smoke=true) runs the rows of three R1 paths,
 %   checks parity, and writes nothing.

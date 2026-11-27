@@ -1692,3 +1692,11 @@ appended row 1804 to results/results.tsv
 
 - D37a: repair the PE reference (true 20-wavelength average, impedance ground with ITM's own ε_r and σ, a roughness arm, a narrow-against-wide domain screen) with four new closed-form tests written before the code. D37b: model-only attribution of 707 − stock on B36's R1 rows, one switch at a time (delta construction, cascade, troposcatter bound, spherical-earth A_s). D37c: B36's rule with the repaired PE, descriptive only (same rows, already read).
 - File: `experiments/batches/B37.md`.
+
+## B37 run: 707's excess on R1's gentle rows comes from the cascade; PE repairs stopped at the wide-angle test (diagnostic, no score)
+
+- D37b (model only; B36's rows): 707 − stock on R1 (1,427 rows, 29 paths, one receiver site) is +2.54 dB (+1.00 to +4.38). The cascade (ITU-R P.526-11 section 4.4.2 with isolation-weighted secondary edges, in place of Bullington inside the delta construction) adds +2.18 (+1.09 to +3.51) and carries it under the registered rule; the delta construction with Bullington adds +0.51 (interval spans zero); the bound −0.15. On R1's 206 ITM-diffraction rows the cascade adds +9.46 dB. VA: split about evenly (+1.54, +1.59).
+- Correction: the delta construction applies on every row, not transhorizon rows only.
+- D37a: impedance ground (T7, at most 0.107 dB), range average (T9, 0.001 dB) and roughness algebra (T10) pass; the wide-angle check on a 10° plane fails (wide 0.65 dB, narrow 0.48 dB) because the terrain transformation is narrow-angle; operator and reference checked separately. D37a stopped; D37c not run.
+- Fresh reviewer: reruns byte-identical; numbers pass; VA reading narrowed (B36's numbers are for the whole 707 bundle); T8 cause labeled as diagnosed, not proven; departures from the registration listed.
+- Results: `experiments/batches/B37.md` section 8; `experiments/D37-pe-repair-and-707-parts/`.
