@@ -1,0 +1,104 @@
+{
+  "rebuild_max_db": 4.760636329592671e-13,
+  "R1": {
+    "within_1": {
+      "share": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "total_secondary_db_sum": 3442.373667818613,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "within_2": {
+      "share": 0.0001759560223662304,
+      "lo": 0.0,
+      "hi": 0.0005783480957729056,
+      "total_secondary_db_sum": 3442.373667818613,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "within_3": {
+      "share": 0.0012370294683143486,
+      "lo": 7.438317216146351e-05,
+      "hi": 0.004679355246977304,
+      "total_secondary_db_sum": 3442.373667818613,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "within_5": {
+      "share": 0.0015580830016248774,
+      "lo": 0.00018527023359624854,
+      "hi": 0.005237087352696164,
+      "total_secondary_db_sum": 3442.373667818613,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "within_10": {
+      "share": 0.003771954502362141,
+      "lo": 0.000343217931182832,
+      "hi": 0.011652778038423533,
+      "total_secondary_db_sum": 3442.373667818613,
+      "n_rows": 1427,
+      "n_paths": 29
+    },
+    "reading": "separated",
+    "mode1_within_3": {
+      "share": 0.0029944515927110985,
+      "lo": 0.0002085230494053575,
+      "hi": 0.009805205842958775,
+      "total_secondary_db_sum": 1422.0692958958814,
+      "n_rows": 1221,
+      "n_paths": 25
+    },
+    "mode2_within_3": {
+      "share": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "total_secondary_db_sum": 2020.3043719227323,
+      "n_rows": 206,
+      "n_paths": 4
+    }
+  },
+  "VA_descriptive": {
+    "within_1": {
+      "share": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "total_secondary_db_sum": 411.7186177779824,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "within_2": {
+      "share": 2.2689243120771127e-05,
+      "lo": 0.0,
+      "hi": 8.571105876698152e-05,
+      "total_secondary_db_sum": 411.7186177779824,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "within_3": {
+      "share": 2.2689243120771127e-05,
+      "lo": 0.0,
+      "hi": 8.571105876698152e-05,
+      "total_secondary_db_sum": 411.7186177779824,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "within_5": {
+      "share": 5.829569071851397e-05,
+      "lo": 0.0,
+      "hi": 0.00016924583408894865,
+      "total_secondary_db_sum": 411.7186177779824,
+      "n_rows": 243,
+      "n_paths": 61
+    },
+    "within_10": {
+      "share": 0.046273686639882836,
+      "lo": 0.001409801804624173,
+      "hi": 0.1291036450576028,
+      "total_secondary_db_sum": 411.7186177779824,
+      "n_rows": 243,
+      "n_paths": 61
+    }
+  }
+}
