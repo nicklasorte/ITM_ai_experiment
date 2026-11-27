@@ -1700,3 +1700,12 @@ appended row 1804 to results/results.tsv
 - D37a: impedance ground (T7, at most 0.107 dB), range average (T9, 0.001 dB) and roughness algebra (T10) pass; the wide-angle check on a 10° plane fails (wide 0.65 dB, narrow 0.48 dB) because the terrain transformation is narrow-angle; operator and reference checked separately. D37a stopped; D37c not run.
 - Fresh reviewer: reruns byte-identical; numbers pass; VA reading narrowed (B36's numbers are for the whole 707 bundle); T8 cause labeled as diagnosed, not proven; departures from the registration listed.
 - Results: `experiments/batches/B37.md` section 8; `experiments/D37-pe-repair-and-707-parts/`.
+
+## B38 run: the cascade's secondary edges carry its excess on R1; forest in the first Fresnel zone goes with missing loss at R2 and R3 (diagnostic, no score)
+
+- Code (report-only, off by default): cascade parts `delta_cascaded_isolated_principal` and `_uc`; edge fields in `info.delta_parts`. Tests written and committed first; existing methods bit-identical on 2,000 random profiles; evaluator parity 6.82e-13 dB.
+- D38a (model only; B36's R1 rows): cascade step +2.18 dB = principal against Bullington −4.04, secondary edges +2.25, correction +3.97 (two parts meet the rule). Bullington's own correction is +3.84, so against uncorrected Bullington the principal edge is −0.20, secondaries +2.25, corrections +0.13 (descriptive). On R1's diffraction-mode rows the secondaries add +9.68 dB.
+- D38b (9,501 siting-O uncensored rows with a footprint): slope of 707's error on forest share in the first Fresnel zone, within frequency × obstruction: R2 −22.3 (−57.4 to −0.3), R3 −105.2 (extrapolated from shares under 0.08); R1 and VA not resolved. Outcome F−, which needs R3.
+- Fresh reviewer: reruns byte-identical; code and numbers pass; R3 error-size claim corrected; dependence on R3 stated; departures listed.
+- Synthesis for Nick: `experiments/proposals/what_paid_off_rev1.md`.
+- Results: `experiments/batches/B38.md` section 7; `experiments/D38-cascade-parts-landcover/`.
