@@ -157,9 +157,14 @@ The prompt named B34 for this file; B34 was taken the same day.
    the two runs fit together; otherwise (a), because a registered run that
    happens is worth more than a held set that waits. Also say whether your
    working paper already scored R4; if so it is a validation set, as the
-   Tier B caveat says.
+   Tier B caveat says. **Status, 2026-11-28: open.** Checked in
+   `matlab_itm`: its Phase 2 comparison (`docs/model_comparison/
+   compare_its_phase2_rev1.m`) leaves R4 out because R4 has no profiles,
+   so those scripts never scored it. Whether any other work of Nick's did
+   is still his to say.
 2. **Accept the stop** for scored candidates, as in rev 5? Recommended:
-   yes.
+   yes. **Status: accepted by Nick, 2026-11-28** ("Do what you
+   recommend", after the planner recommended yes).
 3. **Write-up:** after B35 and B34, finish the draft with the outside
    tests in one section. It still needs your read before it leaves the
    repo.

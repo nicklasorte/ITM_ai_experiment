@@ -1718,3 +1718,9 @@ appended row 1804 to results/results.tsv
 - Infra/test fixes before reading EVH: B38's edges file rounded ν and w to 5 digits, so `edges_rev2.csv` was rebuilt at full precision (matches to 5e-13 dB); one self-test geometry fixed.
 - Fresh reviewer: reruns byte-identical; numbers pass; construction caveat and "not an implementation slip" wording fixed.
 - Results: `experiments/batches/B39.md` section 7; `experiments/D39-secondary-edges-canopy/`.
+
+## Decisions recorded 2026-11-28 (planner note; no run)
+
+- Phase plan rev 6 decision 2: Nick accepted the stop on scored candidates ("Do what you recommend", after the planner recommended yes). B33 to B39 found nothing to score; the cell-mean ceiling is 1.13 dB.
+- Decision 1 (R4) stays open. Checked: `matlab_itm`'s Phase 2 comparison leaves R4 out (no profiles), so it never scored R4.
+- Write-up rev 2 (through B39): `experiments/writeup/writeup_draft_rev2.md`, for Nick's read before it leaves the repo.
