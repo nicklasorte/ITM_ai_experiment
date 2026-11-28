@@ -1,0 +1,41 @@
+{
+  "E1": {
+    "outcome": "C",
+    "D1": {
+      "n_cells": 206,
+      "n_paths": 36,
+      "mean": -0.30263490904807566,
+      "lo95": -1.2153278017962297,
+      "hi95": 0.5069856490866402,
+      "resolved": false
+    },
+    "mean_e_stock": 0.4685305798409696,
+    "mean_e_707O": 0.09165797879326228,
+    "floored_freqs": [],
+    "drop_share": 0.04629629629629628,
+    "modes_707O_top": {
+      "line_of_sight": 552,
+      "single_horizon": 72,
+      "double_horizon": 200
+    }
+  },
+  "E2": {
+    "outcome": "descriptive (no label)",
+    "D2": {
+      "n_cells": 203,
+      "n_paths": 36,
+      "mean": -6.244903331327695,
+      "lo95": -8.377890130869075,
+      "hi95": -4.090178510079919,
+      "resolved": true
+    },
+    "mean_e_707C": 3.3187963404290093,
+    "mean_e_707O": -11.987619397485517,
+    "drop_share": 0.29513888888888884
+  },
+  "seeds": [
+    20261126,
+    20261127
+  ],
+  "n_boot": 2000
+}
