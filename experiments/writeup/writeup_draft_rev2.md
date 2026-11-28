@@ -221,10 +221,12 @@ commit tests before the code they test.
 1. The scored search is stopped (Nick, 2026-11-28). Reopening it for one
    candidate, such as a Fresnel-weighted vegetation term from a published
    model screened first, would be Nick's call.
-2. R4 (ITS Phase 2's grove site, unused so far): B35 is registered and
-   waits on Nick's decision 1 (agent run, human-held, or unused).
-   matlab_itm's own comparison scripts leave R4 out (no profiles), so they
-   never scored it.
+2. R4 (ITS Phase 2's grove site) is now used: B35 ran on 2026-11-28 as
+   an agent run (Nick's decision 1 (a)). At the tower top, 707 was no
+   better than stock (outcome C; worse at 230 MHz). Inside the grove,
+   ITM's own height gain was about 12 dB short and P.2108's slightly over,
+   but that comparison is descriptive because 29.5 % of cells were
+   dropped. Details: `experiments/batches/B35.md` section 6.
 3. A validation score on the Tier B sets, if Nick chooses to run it.
 4. Data proposal item D2 (Ofcom frequency contrasts) waits on a human check
    on Ofcom's site that only Nick can clear.

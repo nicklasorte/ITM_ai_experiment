@@ -161,7 +161,8 @@ The prompt named B34 for this file; B34 was taken the same day.
    `matlab_itm`: its Phase 2 comparison (`docs/model_comparison/
    compare_its_phase2_rev1.m`) leaves R4 out because R4 has no profiles,
    so those scripts never scored it. Whether any other work of Nick's did
-   is still his to say.
+   is still his to say. **Decided 2026-11-28: (a), agent run.** B35 ran
+   the same day (results in B35 section 6).
 2. **Accept the stop** for scored candidates, as in rev 5? Recommended:
    yes. **Status: accepted by Nick, 2026-11-28** ("Do what you
    recommend", after the planner recommended yes).

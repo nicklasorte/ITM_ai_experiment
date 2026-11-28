@@ -1724,3 +1724,13 @@ appended row 1804 to results/results.tsv
 - Phase plan rev 6 decision 2: Nick accepted the stop on scored candidates ("Do what you recommend", after the planner recommended yes). B33 to B39 found nothing to score; the cell-mean ceiling is 1.13 dB.
 - Decision 1 (R4) stays open. Checked: `matlab_itm`'s Phase 2 comparison leaves R4 out (no profiles), so it never scored R4.
 - Write-up rev 2 (through B39): `experiments/writeup/writeup_draft_rev2.md`, for Nick's read before it leaves the repo.
+
+## B35 run: ITS Phase 2 site R4 (grove), agent-run after Nick's decision 1 (a) (diagnostic, no score)
+
+- Predictions committed 034657d before any measured value was read; SHA-256 checked. Section 3's descriptive resampling was amended in 11a26aa before the run (deciding rule unchanged); now disclosed in section 6.
+- E1 (deciding; top of tower 21 to 24 m, leaves off, 206 cells on 36 paths): D1 = mean |e_707-O| − mean |e_stock| = −0.30 dB (−1.22 to +0.51). Outcome C. At 230 MHz 707 is resolved worse (+1.96 dB); 410 and 910 MHz not.
+- E2 (in canopy against top, 230 to 1846 MHz): D2 = −6.24 dB (−8.38 to −4.09), but 29.5 % of cells dropped (mostly missing season-S top heights), so descriptive with no label. ITM's own height gain is about 12 dB short inside the grove; P.2108's is +3.3 dB over, with the wrong shape above 230 MHz.
+- E3: the in-canopy minus top-of-tower change between visits is +1.3 to +11.8 dB at 910 MHz and above; visits months apart, so not isolated to leaves.
+- R4 is now used up as an untouched set. matlab_itm's Phase 2 comparison never scored it (no profiles).
+- Fresh reviewer: reruns byte-identical and an independent bootstrap reproduce every interval; amendment disclosed; overreaching readings (terminal term, leaf state, 230 MHz link) narrowed; Population columns and missing reports added.
+- Results: `experiments/batches/B35.md` section 6; `experiments/D35-r4-grove/`.
